@@ -1,0 +1,237 @@
+@import "./fonts";
+@import "./variables";
+
+.game {
+  display: none;
+  canvas {
+    margin-top: 10px;
+    margin-left: 10px;
+    border: 1px solid #000;
+    float: left;
+  }
+
+  .player {
+    margin-top: 10px;
+    margin-left: 10px;
+    background-size: 100% 100%;
+    display: none;
+    border: 3px solid #8b0000;
+    background-color: tan;
+    border-radius: 4px;
+    width: 420px;
+    float: left;
+
+    .player-stats {
+      float: left;
+
+      div {
+        p {
+          float: left;
+          margin: 10px;
+          font-size: 19px;
+          font-weight: 700;
+        }
+
+        h3 {
+          width: 100%;
+          font-size: 25;
+          align-content: center;
+          text-align: center;
+          float: left;
+          width: 400px;
+          margin-bottom: 0;
+          padding-bottom: 10px;
+          border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+        }
+      }
+
+      table {
+        padding-top: 30px;
+
+        img {
+          margin-right: 5px;
+          float: left;
+          // width: 10em;
+          // height: 17em;
+        }
+      }
+    }
+
+    .inventory {
+      float: left;
+      margin-left: 10px;
+      margin-bottom: 10px;
+
+      .active-items,
+      .bag-items {
+        background: #deb887;
+        float: left;
+        margin: 2px;
+        padding: 2px;
+        border: 2px solid #8b0000;
+        border-radius: 10px;
+        overflow: hidden;
+
+        .inventory-h3 {
+          margin: 0;
+          margin-right: 2px;
+          margin-left: 3%;
+          padding: 0;
+          width: 100%;
+        }
+
+        .item {
+          margin-left: 1px;
+          height: 30px;
+          width: 30px;
+          border: 2px solid #8b0000;
+          border-radius: 10px;
+          overflow: hidden;
+          float: left;
+          background-image: url(res/avatar.png);
+          background-size: 30px 30px;
+        }
+
+        .item-clicked {
+          margin-left: 1px;
+          height: 30px;
+          width: 30px;
+          border-radius: 10px;
+          overflow: hidden;
+          float: left;
+          background-image: url(res/avatar.png);
+          background-size: 30px 30px;
+          border: 2px solid #fff;
+        }
+
+        // !Critical
+        img {
+          max-width: 100%;
+          max-height: 100%;
+        }
+      }
+    }
+
+    .action-buttons {
+      float: left;
+      display: none;
+      margin-left: 10px;
+      margin-bottom: 10px;
+    }
+  }
+
+  .action-log {
+    display: none;
+    height: 70px;
+    width: 350px;
+    margin-top: 10px;
+    margin-left: 10px;
+    background: #deb887;
+    float: left;
+    border-radius: 4px;
+    border: 3px solid #8b0000;
+
+    #attack-log,
+    #drop-log,
+    #heal-log,
+    #trade-swap-log {
+      display: none;
+      padding: 3px;
+      margin: 0;
+    }
+
+    #info {
+      font-size: 9pt;
+      font-style: italic;
+      color: #8b0000;
+      margin: 3px;
+      margin-bottom: 0;
+    }
+  }
+
+  .party {
+    display: none;
+    float: left;
+    margin-top: 10px;
+    margin-left: 10px;
+    background-color: tan;
+    border-radius: 4px;
+    border: 3px solid #8b0000;
+
+    table tr td p,
+    div {
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    #party-player-1,
+    #party-player-2,
+    #party-player-3 {
+      display: none;
+    }
+
+    td {
+      min-width: 35px;
+    }
+  }
+
+  .tooltip {
+    background: url(res/items/tooltip_background.jpg);
+    background-size: 100% 100%;
+    color: #011c33;
+    width: 400px;
+    height: auto;
+    // position: absolute;
+    border: 3px solid #8b0000;
+    border-radius: 15px;
+    padding-top: 12px;
+    overflow: hidden;
+    text-align: center;
+
+    float: left;
+
+    img {
+      float: left;
+      margin-left: 10px;
+      margin-bottom: 3px;
+      height: 125px;
+      width: 100px;
+      border-radius: 10px;
+      border: 4px solid #8b0000;
+    }
+
+    .tooltip-item-info {
+      float: left;
+      margin-top: 10px;
+      margin-left: 15px;
+    }
+
+    .tooltip-item-data {
+      font-weight: 700;
+      font-family: monospace;
+      font-size: 18px;
+      margin-top: 2px;
+    }
+
+    .h3 {
+      padding: 0 10px 10px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+      font-size: 23px;
+      text-align: center;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.6);
+    }
+  }
+}
+
+#player-stats-char-img {
+  margin-top: 10px;
+  margin-left: 10px;
+  margin-bottom: 10px;
+  margin-right: 10px;
+  width: 100px;
+  height: 200px;
+  float: left;
+  border: 2px solid #8b0000;
+  border-radius: 4px;
+}

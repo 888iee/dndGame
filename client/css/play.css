@@ -1,0 +1,244 @@
+@font-face {
+  font-family: "DevinneSwash";
+  src: url("fonts/DevinneSwash.ttf");
+}
+
+@font-face {
+  font-family: "AsapSemiBold";
+  src: url("fonts/Asap-SemiBold.ttf");
+}
+
+.game {
+  display: none;
+}
+
+.game canvas {
+  margin-top: 10px;
+  margin-left: 10px;
+  border: 1px solid #000;
+  float: left;
+}
+
+.game .player {
+  margin-top: 10px;
+  margin-left: 10px;
+  background-size: 100% 100%;
+  display: none;
+  border: 3px solid #8b0000;
+  background-color: tan;
+  border-radius: 4px;
+  width: 420px;
+  float: left;
+}
+
+.game .player .player-stats {
+  float: left;
+}
+
+.game .player .player-stats div p {
+  float: left;
+  margin: 10px;
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.game .player .player-stats div h3 {
+  width: 100%;
+  font-size: 25;
+  -ms-flex-line-pack: center;
+      align-content: center;
+  text-align: center;
+  float: left;
+  width: 400px;
+  margin-bottom: 0;
+  padding-bottom: 10px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.game .player .player-stats table {
+  padding-top: 30px;
+}
+
+.game .player .player-stats table img {
+  margin-right: 5px;
+  float: left;
+}
+
+.game .player .inventory {
+  float: left;
+  margin-left: 10px;
+  margin-bottom: 10px;
+}
+
+.game .player .inventory .active-items,
+.game .player .inventory .bag-items {
+  background: #deb887;
+  float: left;
+  margin: 2px;
+  padding: 2px;
+  border: 2px solid #8b0000;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.game .player .inventory .active-items .inventory-h3,
+.game .player .inventory .bag-items .inventory-h3 {
+  margin: 0;
+  margin-right: 2px;
+  margin-left: 3%;
+  padding: 0;
+  width: 100%;
+}
+
+.game .player .inventory .active-items .item,
+.game .player .inventory .bag-items .item {
+  margin-left: 1px;
+  height: 30px;
+  width: 30px;
+  border: 2px solid #8b0000;
+  border-radius: 10px;
+  overflow: hidden;
+  float: left;
+  background-image: url(res/avatar.png);
+  background-size: 30px 30px;
+}
+
+.game .player .inventory .active-items .item-clicked,
+.game .player .inventory .bag-items .item-clicked {
+  margin-left: 1px;
+  height: 30px;
+  width: 30px;
+  border-radius: 10px;
+  overflow: hidden;
+  float: left;
+  background-image: url(res/avatar.png);
+  background-size: 30px 30px;
+  border: 2px solid #fff;
+}
+
+.game .player .inventory .active-items img,
+.game .player .inventory .bag-items img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.game .player .action-buttons {
+  float: left;
+  display: none;
+  margin-left: 10px;
+  margin-bottom: 10px;
+}
+
+.game .action-log {
+  display: none;
+  height: 70px;
+  width: 350px;
+  margin-top: 10px;
+  margin-left: 10px;
+  background: #deb887;
+  float: left;
+  border-radius: 4px;
+  border: 3px solid #8b0000;
+}
+
+.game .action-log #attack-log,
+.game .action-log #drop-log,
+.game .action-log #heal-log,
+.game .action-log #trade-swap-log {
+  display: none;
+  padding: 3px;
+  margin: 0;
+}
+
+.game .action-log #info {
+  font-size: 9pt;
+  font-style: italic;
+  color: #8b0000;
+  margin: 3px;
+  margin-bottom: 0;
+}
+
+.game .party {
+  display: none;
+  float: left;
+  margin-top: 10px;
+  margin-left: 10px;
+  background-color: tan;
+  border-radius: 4px;
+  border: 3px solid #8b0000;
+}
+
+.game .party table tr td p,
+.game .party div {
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.game .party #party-player-1,
+.game .party #party-player-2,
+.game .party #party-player-3 {
+  display: none;
+}
+
+.game .party td {
+  min-width: 35px;
+}
+
+.game .tooltip {
+  background: url(res/items/tooltip_background.jpg);
+  background-size: 100% 100%;
+  color: #011c33;
+  width: 400px;
+  height: auto;
+  border: 3px solid #8b0000;
+  border-radius: 15px;
+  padding-top: 12px;
+  overflow: hidden;
+  text-align: center;
+  float: left;
+}
+
+.game .tooltip img {
+  float: left;
+  margin-left: 10px;
+  margin-bottom: 3px;
+  height: 125px;
+  width: 100px;
+  border-radius: 10px;
+  border: 4px solid #8b0000;
+}
+
+.game .tooltip .tooltip-item-info {
+  float: left;
+  margin-top: 10px;
+  margin-left: 15px;
+}
+
+.game .tooltip .tooltip-item-data {
+  font-weight: 700;
+  font-family: monospace;
+  font-size: 18px;
+  margin-top: 2px;
+}
+
+.game .tooltip .h3 {
+  padding: 0 10px 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-size: 23px;
+  text-align: center;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.6);
+}
+
+#player-stats-char-img {
+  margin-top: 10px;
+  margin-left: 10px;
+  margin-bottom: 10px;
+  margin-right: 10px;
+  width: 100px;
+  height: 200px;
+  float: left;
+  border: 2px solid #8b0000;
+  border-radius: 4px;
+}
+/*# sourceMappingURL=play.css.map */

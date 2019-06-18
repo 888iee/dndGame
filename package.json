@@ -1,0 +1,17 @@
+{
+  "name": "Dungeons and Dragons - A Fantasy Board Game",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "sid",
+  "license": "ISC",
+  "dependencies": {
+    "jquery": "^3.4.0",
+    "nodemon": "^1.19.0",
+    "socket.io": "^2.2.0",
+    "socketio-auth": "^0.1.1"
+  }
+}

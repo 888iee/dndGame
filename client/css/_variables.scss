@@ -1,0 +1,32 @@
+$gradBack: linear-gradient(to left, #0c0f1d 0%, #00232f 100%);
+$gradElems: rgba(1, 53, 74, 0.5);
+$gradElems2: rgba(1, 69, 96, 0.95);
+$textColor: whitesmoke;
+$btnAccent: rgb(32, 115, 50) 0px -4px 0px inset, rgba(0, 0, 0, 0.2) -4px 4px;
+$btnColor: #34a3ce;
+$btnColorDarker: #175269;
+$hoverScale: scale(1.02);
+$roomBorder: 2px $textColor solid;
+$gradientBackBtn: linear-gradient(
+    20deg,
+    rgba(212, 128, 60, 1) 0%,
+    rgba(149, 48, 24, 1) 98%
+  )
+  fixed;
+$gradientBackn: linear-gradient(
+    34deg,
+    rgba(212, 128, 60, 1) 0%,
+    rgba(149, 48, 24, 1) 38%,
+    rgba(73, 27, 16, 1) 88%
+  )
+  fixed;
+$gradientBack: linear-gradient(
+    122deg,
+    rgba(212, 128, 60, 1) 0%,
+    rgba(149, 48, 24, 1) 16%,
+    rgba(130, 44, 24, 1) 57%,
+    rgba(73, 27, 16, 1) 88%
+  )
+  fixed;
+$formBack: rgba(149, 48, 24, 0.4);
+$textColorWhite: white;

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Dungeons & Dragons</title>
+    <link rel="stylesheet" type="text/css" href="css/play.css">
+
+    <script type="text/javascript" src="js/mapGen.js"></script>
+    <script type="text/javascript" src="js/Player.js"></script>
+    <script type="text/javascript" src="js/Chest.js"></script>
+    <script type="text/javascript" src="js/Item.js"></script>
+    <script type="text/javascript" src="js/Inventory.js"></script>
+    <script type="text/javascript" src="js/Obstacle.js"></script>
+
+    <script type="text/javascript" src="socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/play.js"></script>
+</head>
+
+<body>
+    <button id="startBtn">Start Game</button>
+    <noscript>
+        <h1 style="color: antiquewhite;" id="no-script">
+            Du musst JavaScript aktivieren, um diese Seite nutzen zu können.
+        </h1>
+    </noscript>
+    <div class="game" id="game">
+        <canvas id="cnvs" height="900" width="900"></canvas>
+
+        <div class="player" id="player">
+            <div class="player-stats">
+                <div id="player-stats-name">
+                    <!-- Player Name -->
+                    <h3 id="player-stats-name-h3">Name</h3>
+                </div>
+                <!-- Player Image-->
+                <img src="res/OgqCbc.png" id="player-stats-char-img" alt="">
+                <table>
+                    <tr>
+                        <td>
+                            <!-- Player Race -->
+                            <div id="player-stats-race">
+                                <img src="res/stat_icons/race_icon.png" alt="" title="Rasse">
+                                <p>Race</p>
+                            </div>
+                        </td>
+                        <td>
+                            <!-- Player Class  -->
+                            <div id="player-stats-class">
+                                <img src="res/stat_icons/class_icon.png" alt="Klasse" title="Klasse">
+                                <p>Class</p>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <!-- Player Health Points -->
+                            <div id="player-stats-hp">
+                                <img src="res/stat_icons/hp_icon_1.png" alt="HP" title="Leben">
+                                <p>10</p>
+                            </div>
+                        </td>
+                        <td>
+                            <!-- Player Mana Points -->
+                            <div id="player-stats-mana">
+                                <img src="res/stat_icons/mana_icon.png" alt="Mana" title="Mana">
+                                <p>10</p>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <!-- Player Bag -->
+                            <div id="player-stats-bag">
+                                <img src="res/stat_icons/bag_icon.png" alt="Taschengr." title="Taschengröße">
+                                <p>10</p>
+                            </div>
+                        </td>
+                        <td>
+                            <!-- Player Move -->
+                            <div id="player-stats-move">
+                                <img src="res/stat_icons/move_icon.png" alt="Schritte" title="Schritte">
+                                <p>10</p>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div id="player-stats-actions">
+                                <p></p>
+                            </div>
+                        </td>
+                    </tr>
+
+                </table>
+
+            </div>
+            <!-- Player Inventory -->
+            <div class="inventory" id="inventory">
+                <div class="active-items" id="active-items">
+                    <h3 class="inventory-h3">Active</h3>
+                </div>
+                <div class="bag-items" id="bag-items">
+                    <h3 class="inventory-h3">Bag</h3>
+                </div>
+            </div>
+            <div class="action-buttons">
+                <button id="skipActionBtn" disabled=true>Passen</button>
+                <button id="attackBtn" disabled=true>Angriff</button>
+                <button id="healBtn" disabled=true>Heilen</button>
+                <button id="swapBtn" disabled=true>Tauschen</button>
+                <button id="tradeBtn" disabled=true>Handeln</button>
+                <button id="dropBtn" disabled=true>Fallen lassen</button>
+            </div>
+
+        </div>
+        <div class="action-log">
+            <p id="attack-log">Du willst <span id="playerToBeAttacked">Spieler</span> mit <span
+                    id="weaponToBeUsed">deinen
+                    Händen</span> angreifen?</p>
+            <p id="heal-log">Du willst <span id="playerToBeHealed">dich selbst</span> mit <span id="itemToBeUsed">deinen
+                    Gedanken</span> heilen?</p>
+            <p id="trade-swap-log">Du willst <span id="itemForTrade">Luft</span> mit <span
+                    id="itemOrPlayerForTrade">niemandem</span> tauschen?</p>
+            <p id="drop-log">Du willst <span id="itemToDrop">deine Niere</span> fallen lassen?</p>
+            <p id="info">Um die Aktion auszuführen drücke <span id="actionBtnText"></span>.</p>
+        </div>
+
+        <div class="party">
+            <table>
+                <tr id="party-player-1" tabindex="-1">
+                    <td>
+                        <p id="player-1-name">name</p>
+                    </td>
+                    <td>
+                        <img src="res/stat_icons/hp_icon_1.png" alt="HP">
+                    </td>
+                    <td>
+                        <div id="player-1-hp-div">
+                            <p id="player-1-hp">10</p>
+                        </div>
+                    </td>
+                    <td>
+                        <img src="res/stat_icons/mana_icon.png" alt="MP">
+                    </td>
+                    <td>
+                        <p id="player-1-mp">3</p>
+                    </td>
+                    <td>
+                        <img src="res/stat_icons/move_icon.png" alt="move">
+                    </td>
+                    <td>
+                        <p id="player-1-moves">5</p>
+                    </td>
+                    <td>
+                        <img src="res/stat_icons/bag_icon.png" alt="">
+                    </td>
+                    <td>
+                        <div id="player-1-actives"></div>
+                    </td>
+                </tr>
+                <tr id="party-player-2" tabindex="-1">
+                    <td>
+                        <p id="player-2-name">name</p>
+                    </td>
+                    <td>
+                        <img src="res/stat_icons/hp_icon_1.png" alt="HP">
+                    </td>
+                    <td>
+                        <p id="player-2-hp">10</p>
+                    </td>
+                    <td>
+                        <img src="res/stat_icons/mana_icon.png" alt="MP">
+                    </td>
+                    <td>
+                        <p id="player-2-mp">3</p>
+                    </td>
+                    <td>
+                        <img src="res/stat_icons/move_icon.png" alt="move">
+                    </td>
+                    <td>
+                        <p id="player-2-moves">5</p>
+                    </td>
+                    <td>
+                        <img src="res/stat_icons/bag_icon.png" alt="">
+                    </td>
+                    <td>
+                        <div id="player-2-actives"></div>
+                    </td>
+
+                </tr>
+                <tr id="party-player-3" tabindex="-1">
+                    <td>
+                        <p id="player-3-name">name</p>
+                    </td>
+                    <td>
+                        <img src="res/stat_icons/hp_icon_1.png" alt="HP">
+                    </td>
+                    <td>
+                        <p id="player-3-hp">10</p>
+                    </td>
+                    <td>
+                        <img src="res/stat_icons/mana_icon.png" alt="MP">
+                    </td>
+                    <td>
+                        <p id="player-3-mp">3</p>
+                    </td>
+                    <td>
+                        <img src="res/stat_icons/move_icon.png" alt="move">
+                    </td>
+                    <td>
+                        <p id="player-3-moves">5</p>
+                    </td>
+                    <td>
+                        <img src="res/stat_icons/bag_icon.png" alt="">
+                    </td>
+                    <td>
+                        <div id="player-3-actives"></div>
+                    </td>
+
+                </tr>
+            </table>
+        </div>
+
+        <div class="tooltip" id="tooltip" style="display: none;">
+            <h3 id="tooltip-item-name" class="tooltip-item-data">jjj</h3>
+            <img src="res/OgqCbc.png" alt="bild" id="tooltip-item-image">
+            <div class="tooltip-item-info">
+                <div class="tooltip-item-type tooltip-item-data" id="tooltip-item-type"></div>
+                <div class="tooltip-item-range tooltip-item-data" id="tooltip-item-range"></div>
+                <div class="tooltip-item-heal tooltip-item-data" id="tooltip-item-heal"></div>
+                <div class="tooltip-item-cost tooltip-item-data" id="tooltip-item-cost"></div>
+                <div class="tooltip-item-dmg tooltip-item-data" id="tooltip-item-dmg"></div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

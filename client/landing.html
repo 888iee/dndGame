@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Räume</title>
+    <link rel="stylesheet" type="text/css" href="css/landing-page.css">
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/cook.js"></script>
+    <script type="text/javascript" src="js/characters.js"></script>
+    <script type="text/javascript" src="js/landing-page.js"></script>
+</head>
+
+<body>
+    <div class="lobby-side-bar">
+        <div class="side-bar-profile">
+            <div class="side-bar-user">
+                <span>Dein Name: </span>
+                <span class="side-bar-user-name">
+                    Benutzer
+                </span>
+            </div>
+            <!-- <div class="side-bar-played">
+                <span>Spiele gesamt: </span>
+                <span class="side-bar-played-games">2</span>
+            </div>
+            <div class="last-game-room">
+                <span>Letzter Raum: </span>
+                <span class="last-game-room-name">Raum#1</span>
+            </div>
+            <div class="last-game-played">
+                <span>Letzter Charakter: </span>
+                <span class="last-game-played-character">Regdar</span>
+            </div> -->
+        </div>
+    </div>
+    <div class="lobby" id="roomList">
+        <div class="lobby-center">
+            <div class="lobby-actionbar">
+                <button class="button" id="openFormBtn">Neuer Raum</button>
+                <!-- <div class="column column-resresh" style="color:aliceblue;">IMG</div> -->
+            </div>
+            <div class="room-list">
+                <div class="room-list-header">
+                    <div class="room-list-header-element">
+                        <div class="column column-private">Private</div>
+                        <div class="column column-name">Raumname</div>
+                        <div class="column column-player-count">Spieler</div>
+                        <div class="column column-reload">
+                            <button class="button join-btn" id="refreshBtn">
+                                <img src="https://curvefever.pro/imgs/2da02b92f10e738c3aecab3cc189fce85.svg" alt="" srcset="">
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="room-list-body" id="room-list-body">
+                    <div class="room-list-element">
+                        <div class="column column-private">Private</div>
+                        <div class="column column-name">Raum #1</div>
+                        <div class="column column-player-count">1/4</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="lobby-room">
+        <div class="lobby-center">
+            <div class="side-bar">
+                <div class="player-list">
+                    <h2>Spieler</h2>
+                    <div id="p1" class="player leader">Lead</div>
+                    <div id="p2" class="player"></div>
+                    <div id="p4" class="player"></div>
+                    <div id="p3" class="player"></div>
+                    <div id="p5" class="player"></div>
+
+                </div>
+                <button class="button">Ready</button>
+                <div class="chat-room">
+                    <div class="chat">
+                        <div id="chat-content">
+                            <div>Hello!</div>
+                        </div>
+                        <form id="chat-form">
+                            <input id="chat-input" autocomplete="off" type="text" placeholder="Sende blablabla"></input>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="champion-select">
+                <div id="c1" class="champion">
+                    <h2 id="c1name" class="champion-name">
+                    </h2>
+                    <img id="c1img" src="" alt="CHAMP" srcset="">
+                    <div class="champion-info">
+                        <p id="c1info"></p>
+                    </div>
+                    <div  class="champion-stats">
+                        <p id="c1stats">
+                            
+                        </p>
+                    </div>
+                </div>
+                <div  id="c2" class="champion">
+                    <h2 id="c2name" class="champion-name">
+                    </h2>
+                    <img id="c2img" src="" alt="CHAMP" srcset="">
+                    <div class="champion-info">
+                        <p id="c2info" > </p>
+                    </div>
+                    <div  class="champion-stats">
+                        <p id="c2stats">
+                            
+                        </p>
+                    </div>
+                </div>
+                <div id="c3" class="champion">
+                    <h2 id="c3name" class="champion-name">
+                    </h2>
+                    <img id="c3img" src="" alt="CHAMP" srcset="">
+                    <div  class="champion-info">
+                        <p id="c3info">
+                            
+                        </p>
+                    </div>
+                    <div class="champion-stats">
+                        <p id="c3stats">
+                            
+                        </p>
+                    </div>
+                </div>
+                <div id="c4" class="champion">
+                    <h2 id="c4name" class="champion-name">
+                    </h2>
+                    <img id="c4img" src="" alt="CHAMP" srcset="">
+                    <div class="champion-info">
+                        <p id="c4info">
+                            
+                        </p>
+                    </div>
+                    <div class="champion-stats">
+                        <p id="c4stats">
+                            
+                        </p>
+                    </div>
+                </div>
+                <div id="c5" class="champion">
+                    <h2  id="c5name" class="champion-name">
+                    </h2>
+                    <img id="c5img"  src="" alt="CHAMP" srcset="">
+                    <div class="champion-info">
+                        <p id="c5info" >
+                            
+                        </p>
+                    </div>
+                    <div class="champion-stats">
+                        <p id="c5stats">
+                            
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="blur"></div>
+    <div class="popup-overlay" id="popup">
+        <div class="popup popup-create-room">
+            <div class="cancel-area">
+
+                <a class="cancel-button">Abbrechen</a>
+            </div>
+
+            <div class="popup-container" id="room-form">
+                <div class="popup-header">
+                    <span>Erstelle einen Raum</span>
+                </div>
+                <div class="popup-content">
+                    <div class="form">
+                        <div class="row">
+                            <label for="name">Raumname</label>
+                            <input type="text" id="room-name" name="roomname" placeholder="BananaRoom" maxlength="25"
+                                value="" autocomplete="off">
+                        </div>
+                        <div class="row">
+                            <label for="type">Typ</label>
+                            <div class="toggle">
+                                <button class="button" id="toggle1">Öffentlich</button>
+                                <button class="button unselected privateBtn" id="toggle2">Privat</button>
+                            </div>
+                        </div>
+                        <div class="row password-row">
+                            <label for="password">Passwort</label>
+                            <input type="password" id="password" data-lpignore="true" name="password"
+                                placeholder="*******" maxlength="12" autocomplete="off" value="">
+                        </div>
+                        <div class="row">
+                            <label for="maxPlayers">Spieler</label>
+                            <span>2</span>
+                        </div>
+                    </div>
+                    <button class="create-room-button button">
+                        Erstelle Raum
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="popup-overlay" id="login">
+        <div class="popup">
+
+            <div class="popup-container">
+                <div class="popup-header">
+                    <span>Login</span>
+                </div>
+                <div class="popup-content">
+                    <div class="form">
+                        <label for="username">Nutername</label>
+                        <input type="text" id="username" name="username" placeholder="Dude#101" maxlength="13" value=""
+                            autocomplete="false">
+                    </div>
+                    <button id="logInBtn" class="button">Log In</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript" src="../socket.io/socket.io.js"></script>
+
+</html>

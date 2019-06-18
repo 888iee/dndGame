@@ -1,0 +1,51 @@
+[
+    {
+        "name": "Zweihändiges Breitschwert",
+        "type": "weapon",
+        "range": "melee",
+        "dmg": 5,
+        "heal": -1,
+        "cost": -1
+    },
+    {
+        "name": "Bogen des Phoenix",
+        "type": "weapon",
+        "range": "range",
+        "dmg": 5,
+        "heal": -1,
+        "cost": -1
+    },
+    {
+        "name": "Die Axt des Meisters",
+        "type": "weapon",
+        "range": "melee",
+        "dmg": 5,
+        "heal": -1,
+        "cost": -1
+    },
+    {
+        "name": "Schwert der Verbannten Könige",
+        "type": "weapon",
+        "range": "melee",
+        "dmg": 5,
+        "heal": -1,
+        "cost": -1
+    },
+    {
+        "name": "Heiltrank für mittlere Wunden",
+        "type": "flask",
+        "range": "melee",
+        "dmg": -1,
+        "heal": 4,
+        "cost": -1
+    },
+    {
+        "name": "Trank der Genesung",
+        "type": "flask",
+        "range": "melee",
+        "dmg": -1,
+        "heal": 4,
+        "cost": -1
+    }
+
+]

@@ -1,0 +1,143 @@
+[{
+    "mapNumber": 0,
+    "outside": true,
+    "obstacles": [{
+            "type": "tree",
+            "x": 3,
+            "y": 2
+        }, {
+            "type": "tree",
+            "x": 1,
+            "y": 1
+        }, {
+            "type": "tree",
+            "x": 2,
+            "y": 2
+        }, {
+            "type": "tree",
+            "x": 1,
+            "y": 3
+        }, {
+            "type": "tree",
+            "x": 1,
+            "y": 4
+        }, {
+            "type": "stone",
+            "x": 4,
+            "y": 4
+        }, {
+            "type": "stone",
+            "x": 8,
+            "y": 9
+        }, {
+            "type": "stone",
+            "x": 5,
+            "y": 4
+        }, {
+            "type": "stone",
+            "x": 6,
+            "y": 4
+        },
+        {
+            "type": "chest",
+            "id": "#1",
+            "x": 1,
+            "y": 13
+        },
+        {
+            "type": "chest",
+            "id": "#2",
+            "x": 2,
+            "y": 13
+        },
+        {
+            "type": "chest",
+            "id": "#3",
+            "x": 3,
+            "y": 13
+        },
+        {
+            "type": "chest",
+            "id": "#4",
+            "x": 4,
+            "y": 13
+        },
+        {
+            "type": "chest",
+            "id": "#5",
+            "x": 5,
+            "y": 13
+        },
+        {
+            "type": "chest",
+            "id": "#6",
+            "x": 6,
+            "y": 13
+        },
+        {
+            "type": "chest",
+            "id": "#7",
+            "x": 7,
+            "y": 13
+        }
+    ],
+    "entry": [0, 0],
+    "exit": [14, 14]
+}, {
+    "mapNumber": 1,
+    "outside": false,
+    "obstacles": [{
+            "type": "tree",
+            "x": 3,
+            "y": 2
+        },
+        {
+            "type": "tree",
+            "x": 1,
+            "y": 1
+        },
+        {
+            "type": "tree",
+            "x": 2,
+            "y": 2
+        },
+        {
+            "type": "tree",
+            "x": 1,
+            "y": 3
+        },
+        {
+            "type": "tree",
+            "x": 1,
+            "y": 4
+        },
+        {
+            "type": "stone",
+            "x": 4,
+            "y": 4
+        },
+        {
+            "type": "stone",
+            "x": 8,
+            "y": 9
+        },
+        {
+            "type": "stone",
+            "x": 5,
+            "y": 4
+        },
+        {
+            "type": "stone",
+            "x": 6,
+            "y": 4
+        },
+        {
+            "type": "chest",
+            "id": "#8",
+            "x": 9,
+            "y": 9
+        }
+    ],
+    "entry": [0, 13],
+    "exit": [14, 14]
+}]
