@@ -36,18 +36,26 @@ let Connection = (io) => {
     // creates object of client information 
     let createUsrObj = (socket) => {
         return {
-            clID: users[socket].clientID,
+            sessionID: users[socket].sessionID,
             usr: users[socket].username,
             orID: users[socket].originID
         }
     }
 
-    let joinToRoom = (data) => {
-        data.socket.join(data.name);
-        findRoom(data.name).player_count++;
-        findRoom(data.name).players.push(createUsrObj(data.socket));
-        console.table(findRoom(data.name).players);
-        // console.table(roomData.players)
+    // let socket join specific room
+    let joinToRoom = (data, cb) => {
+        if(data.create) {
+            let sock = data.sock;
+            let room = data.roomData;
+            // socket joins room
+            sock.join(room.roomName);
+            room.leader = createUsrObj(sock);
+            sock.emit("openRoom", roomData);
+
+            cb();
+        }else{
+            
+        }
     }
     io.on("connection", (socket) => {
         console.log(socket.id)
@@ -57,24 +65,10 @@ let Connection = (io) => {
                 console.log(`${socket.id} tried to create an already existing Room \n=> ${roomData.roomName}`)
                 socket.emit("msg", "Room already exist!");
             } else {
-                // !! Settings for Room
-                roomData.player_count = 1;
-                roomData.leader = socket.id;
-
-
-                roomData.players = [createUsrObj(socket)];
-                rooms.push(roomData);
-
-                // Let leader join room
-                socket.join(roomData.roomName);
-                socket.emit("openRoom", roomData);
-
-                // changes flag to broadcast new room
-                roomFlag = true;
-
-                // ! test message
-                socket.emit("getChat", `Welcome to ${roomData.roomName}`);
-                console.table(roomData);
+                joinToRoom(roomData, () => {
+                    // ! test message
+                    socket.emit("getChat", `Welcome to ${roomData.roomName}`);
+                })
 
             }
         });
