@@ -43,7 +43,7 @@ let Connection = (io) => {
     }
 
     // let socket join specific room
-    let joinToRoom = (data, cb) => {
+    let joinToRoom = (data) => {
         if (data.create) {
             let sock = data.sock;
             let room = data.roomData;
@@ -52,9 +52,12 @@ let Connection = (io) => {
             sock.join(room.roomName);
             room.leader = createUsrObj(sock);
             sock.emit("openRoom", room);
+            sock.emit("addPlayer", {
+                "name": sock.username
+            });
 
-            cb;
         } else {
+
 
         }
     }
