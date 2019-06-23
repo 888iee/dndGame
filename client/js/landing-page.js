@@ -150,7 +150,7 @@ let initSockConnection = (pass) => {
         socket.on("openRoom", data => {
             // hide roomlist
             $("#roomList").css("display", "none");
-
+            $("#roomName").text(data.roomName);
 
             // TODO: load champion info 
             updateChampSelect()
@@ -161,6 +161,20 @@ let initSockConnection = (pass) => {
             hidePopUp();
         });
 
+        socket.on("addPlayer", data => {
+            for (let i = 1; i < 5; i++) {
+                console.log(i)
+                // change to jquery 
+                if ( // check if member is called already or not
+                    document.getElementById("p" + i).innerText == ""
+                ) {
+                    // if not add player to list
+                    $("#p" + i).text(data.name)
+                    // document.getElementById("p" + i).innerText == data.name;
+                    return
+                }
+            }
+        });
         // send chat message to server
         sendToServer = () => {
             if ($("#chat-input").val() !== "") {
@@ -213,7 +227,7 @@ let insertList = (roomList, joinBtn) => {
         // btn.addEventListener("click", joiiinRoom(roomList[i].roomName, roomList[i].public));
         btn.addEventListener("click", e => {
             e.preventDefault();
-            if(e.target) {
+            if (e.target) {
                 joinRoom(roomList[i].roomName, roomList[i].public);
             }
         });
