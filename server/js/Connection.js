@@ -32,7 +32,7 @@ let Connection = (io) => {
     let findRoomByUsrId = (id) => {
         return rooms.findIndex(room => room.players.find(player => player == id));
     }
-    
+
     // creates object of client information 
     let createUsrObj = (socket) => {
         return {
@@ -44,17 +44,18 @@ let Connection = (io) => {
 
     // let socket join specific room
     let joinToRoom = (data, cb) => {
-        if(data.create) {
+        if (data.create) {
             let sock = data.sock;
             let room = data.roomData;
+            rooms.push(room);
             // socket joins room
             sock.join(room.roomName);
             room.leader = createUsrObj(sock);
-            sock.emit("openRoom", roomData);
+            sock.emit("openRoom", room);
 
-            cb();
-        }else{
-            
+            cb;
+        } else {
+
         }
     }
     io.on("connection", (socket) => {
@@ -65,10 +66,17 @@ let Connection = (io) => {
                 console.log(`${socket.id} tried to create an already existing Room \n=> ${roomData.roomName}`)
                 socket.emit("msg", "Room already exist!");
             } else {
-                joinToRoom(roomData, () => {
-                    // ! test message
-                    socket.emit("getChat", `Welcome to ${roomData.roomName}`);
-                })
+                let data = {
+                    create: true,
+                    sock: socket,
+                    roomData: roomData,
+                }
+                joinToRoom(data);
+
+                // , () => {
+                //     // ! test message
+                //     socket.emit("getChat", `Welcome to ${roomData.roomName}`);
+                // }
 
             }
         });
