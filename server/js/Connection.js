@@ -118,7 +118,6 @@ let Connection = (io) => {
                     if (room.players.includes(socket.id)) {
 
                     } else {
-
                         data.socket = socket;
                         joinToRoom(data);
                         console.log(`${socket.username} joined Room ${data.name}.`)
@@ -131,7 +130,7 @@ let Connection = (io) => {
             } else {
                 console.log(`ERROR\n${socket.username} tried to join not existing room.`)
             }
-        })
+        });
 
 
 
