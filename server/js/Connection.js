@@ -44,6 +44,8 @@ let Connection = (io) => {
         }
     }
 
+    // sends welcome msg to client and broadcast to 
+    // all other members of client's room a notification
     let welcomeToRoomMsg = (sock) => {
         setTimeout(() => {
             let room = retunRoomFromSock(sock);
