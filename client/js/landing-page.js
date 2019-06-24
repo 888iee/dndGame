@@ -159,25 +159,26 @@ let initSockConnection = (pass) => {
             $(".lobby-room").css("display", "block");
             hidePopUp();
         });
-
-        socket.on("addPlayer", data => {
-            for (let i = 0; i < data.length; i++) {
-                console.log(data[i]);
-                for (let j = 1; j < 5; j++) {
-                    if ($(`.player-list > div:contains(${data[i].name})`).length <= 0) {
-
-                        // change to jquery 
-                        if ( // check if member is called already or not
-                            document.getElementById("p" + j).innerText == ""
-                        ) {
-                            // if not add player to list
-                            $("#p" + j).text(data[i].name)
-                            // document.getElementById("p" + i).innerText == data.name;
-                            return
-                        }
-                    }
-                }
+        let deletePlayerList = () => {
+            for (let i = 0; i < 5; i++) {
+                $(`#p${i}`).text("");
             }
+        }
+        socket.on("addPlayer", data => {
+            deletePlayerList();
+            for (let i = 0; i < data.length; i++) {
+                $(`#p${i+1}`).text(data[i].name)
+                // console.log(data);
+                // for (let j = 1; j < 5; j++) {
+                //     if ($(`.player-list > div:contains(${data[i].name})`).length <= 0 && $(`#p${j}:empty`)) {
+                // if not add player to list
+                // $("#p" + j).text(data[i].name)
+                // document.getElementById("p" + i).innerText == data.name;
+                // }
+                // }
+                // $(`#p1:contains(${data[i].name})`).length
+            }
+
         });
         // send chat message to server
         sendToServer = () => {
