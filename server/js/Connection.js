@@ -53,7 +53,7 @@ let Connection = (io) => {
     // creates object of client information 
     let createUsrObj = (socket) => {
         return {
-            sessionID: users[socket].sessionID,
+            sessionID: socket.id,
             usr: users[socket].username,
             orID: users[socket].originID
         }
@@ -94,15 +94,16 @@ let Connection = (io) => {
             sock.join(room.roomName);
             // emit room display to client
             sock.emit("openRoom", room);
-            let members = [];
-            let list = io.sockets.clients(room.roomName);
-            list.forEach((client) => members.push({
-                "name": client.username
-            }));
+            // let members = [];
+            // let list = io.sockets.clients(room.roomName);
+            // list.forEach((client) => members.push({
+            //     "name": client.username
+            // }));
+            console.table("ROOMLOG:\n" + io.sockets.adapter.rooms[room.roomName].sockets);
             // return list;
-            sock.emit("addPlayer", list);
+            // sock.emit("addPlayer", list);
             // add player to room array
-            rooms[getIndexByUsrId(sock.id)].players.push(createUsrObj(sock));
+            // rooms[getIndexByUsrId(sock.id)].players.push(createUsrObj(sock));
         }
     }
     io.on("connection", (socket) => {
