@@ -32,11 +32,13 @@ let Connection = (io) => {
     // get players in room
     let getPlayersInRoom = (name) => {
         let members = [];
-        let list = io.sockets.clients(name);
-        list.forEach((client) => members.push({
-            "name": client.username
-        }));
-        return list;
+        Object.keys(io.sockets.adapter.rooms[name].sockets).forEach((id) => {
+            members.push({
+                "name": users[id].username,
+            })
+
+        });
+        return members;
     }
 
     // returns room
@@ -79,8 +81,8 @@ let Connection = (io) => {
             sock.join(room.roomName);
             // assigns socket to leader and push to players
             room.leader = createUsrObj(sock);
-            room.players = [];
-            room.players.push(room.leader);
+            // room.players = [];
+            // room.players.push(room.leader);
             // emit room display to client
             sock.emit("openRoom", room);
             sock.emit("addPlayer", [{
@@ -94,20 +96,18 @@ let Connection = (io) => {
             sock.join(room.roomName);
             // emit room display to client
             sock.emit("openRoom", room);
-            // let members = [];
-            // let list = io.sockets.clients(room.roomName);
-            // list.forEach((client) => members.push({
-            //     "name": client.username
-            // }));
-            console.table("ROOMLOG:\n" + io.sockets.adapter.rooms[room.roomName].sockets);
             // return list;
-            // sock.emit("addPlayer", list);
+            sock.emit("addPlayer", getPlayersInRoom(room.roomName));
             // add player to room array
             // rooms[getIndexByUsrId(sock.id)].players.push(createUsrObj(sock));
         }
     }
     io.on("connection", (socket) => {
-        console.log(socket.id)
+        // console.log(socket.id)
+        users[socket.id] = socket;
+        // users[socket.id].username = socket.username;
+        // console.log(users[socket.id].username)
+
         socket.on("createRoom", (roomData) => {
             console.log(`Room Data => ${roomData.roomName}:${roomData.password}`)
             if (findRoom(roomData.roomName)) {
@@ -155,23 +155,23 @@ let Connection = (io) => {
             if (room) {
                 console.log(room);
                 if (getPlayerCount(room.roomName) < room.max_players) {
-                    if (room.players.includes(socket.id)) {
+                    // if (room.players.includes(socket.id)) {
 
-                    } else {
-                        let package = {
-                            create: false,
-                            sock: socket,
-                            roomData: {
-                                "roomName": data.name,
-                                "public": data.public
-                            },
-                        }
-                        joinToRoom(package, () => {
-                            console.log(`${socket.username} joined Room ${package.roomData.name}.`)
-                            // socket.emit("openRoom", room);
-                            // console.table(room.players);
-                        });
+                    // } else {
+                    let package = {
+                        create: false,
+                        sock: socket,
+                        roomData: {
+                            "roomName": data.name,
+                            "public": data.public
+                        },
                     }
+                    joinToRoom(package, () => {
+                        console.log(`${socket.username} joined Room ${package.roomData.name}.`)
+                        // socket.emit("openRoom", room);
+                        // console.table(room.players);
+                    });
+                    // }
                 } else {
                     console.log(`${socket.username} tried to join full room.`)
                 }
