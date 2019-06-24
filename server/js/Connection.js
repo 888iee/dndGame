@@ -66,7 +66,7 @@ let Connection = (io) => {
     let welcomeToRoomMsg = (sock) => {
         setTimeout(() => {
             let room = retunRoomFromSock(sock);
-            sock.emit("getChat", `Wilkommen im Raum \n${room}.`);
+            sock.emit("getChat", `Wilkommen im Raum <br>${room}.`);
             sock.broadcast.to(room).emit("getChat", `${sock.username} ist dem Raum beigetreten.`);
         })
     }
