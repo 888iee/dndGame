@@ -162,16 +162,18 @@ let initSockConnection = (pass) => {
         });
 
         socket.on("addPlayer", data => {
-            for (let i = 1; i < 5; i++) {
-                console.log(i)
-                // change to jquery 
-                if ( // check if member is called already or not
-                    document.getElementById("p" + i).innerText == ""
-                ) {
-                    // if not add player to list
-                    $("#p" + i).text(data.name)
-                    // document.getElementById("p" + i).innerText == data.name;
-                    return
+            for (let i = 0; i < data.length; i++) {
+                for (let j = 1; j < 5; j++) {
+                    console.log(j)
+                    // change to jquery 
+                    if ( // check if member is called already or not
+                        document.getElementById("p" + j).innerText == ""
+                    ) {
+                        // if not add player to list
+                        $("#p" + j).text(data[i].name)
+                        // document.getElementById("p" + i).innerText == data.name;
+                        return
+                    }
                 }
             }
         });
@@ -226,14 +228,15 @@ let insertList = (roomList, joinBtn) => {
 
         // btn.addEventListener("click", joiiinRoom(roomList[i].roomName, roomList[i].public));
         btn.addEventListener("click", e => {
+            console.log("wok")
             e.preventDefault();
             if (e.target) {
                 joinRoom(roomList[i].roomName, roomList[i].public);
             }
         });
-        if (!roomList[i].canIJoin) {
-            btn.disabled = "disabled";
-        }
+        // if (!roomList[i].canIJoin) {
+        //     btn.disabled = "disabled";
+        // }
         container.appendChild(btn);
         document.getElementById("room-list-body").appendChild(container);
         // else {

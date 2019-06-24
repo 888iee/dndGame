@@ -24,12 +24,17 @@ let Connection = (io) => {
     ]
     let roomFlag;
 
+    // returns actual size of room
+    let getPlayerCount = (roomName) => {
+        return io.sockets.adapter.rooms[roomName].length;
+    }
+
     // returns room
     let findRoom = (name) => {
         return rooms.find(room => room.roomName === name);
     }
     // retuns index of room
-    let findRoomByUsrId = (id) => {
+    let getIndexByUsrId = (id) => {
         return rooms.findIndex(room => room.players.find(player => player == id));
     }
     let retunRoomFromSock = (sock) => {
@@ -56,20 +61,29 @@ let Connection = (io) => {
     }
 
     // let socket join specific room
-    let joinToRoom = (data) => {
+    let joinToRoom = (data, cb) => {
+        let sock = data.sock;
+        let room = data.roomData;
         if (data.create) {
-            let sock = data.sock;
-            let room = data.roomData;
-            rooms.push(room);
             // socket joins room
             sock.join(room.roomName);
             room.leader = createUsrObj(sock);
             sock.emit("openRoom", room);
-            sock.emit("addPlayer", {
+            sock.emit("addPlayer", [{
                 "name": sock.username
-            });
+            }]);
             welcomeToRoomMsg(sock);
+            rooms.push(room);
         } else {
+            sock.join(room.roomName);
+            sock.emit("openRoom", room);
+            let members = [];
+            let list = io.sockets.clients(room.roomName);
+            list.forEach((client) => members.push({
+                "name": client.username
+            }));
+            sock.emit("addPlayer", members);
+
 
 
         }
@@ -97,7 +111,7 @@ let Connection = (io) => {
             }
         });
         socket.on("getChat", (data) => {
-            let roomName = findRoomByUsrId(socket.id);
+            let roomName = getIndexByUsrId(socket.id);
             io.to(roomName).emit("getChat", `${socket.username}: ${data}`);
         });
 
@@ -127,15 +141,17 @@ let Connection = (io) => {
             let room = findRoom(data.name);
             console.log(`${socket.username} asked to join a room`);
             if (room) {
-                if (room.player_count < room.max_players) {
+                console.log(room);
+                if (getPlayerCount(room.roomName) < room.max_players) {
                     if (room.players.includes(socket.id)) {
 
                     } else {
                         data.socket = socket;
-                        joinToRoom(data);
-                        console.log(`${socket.username} joined Room ${data.name}.`)
-                        socket.emit("openRoom", room);
-                        console.table(room.players);
+                        joinToRoom(data, () => {
+                            console.log(`${socket.username} joined Room ${data.name}.`)
+                            // socket.emit("openRoom", room);
+                            console.table(room.players);
+                        });
                     }
                 } else {
                     console.log(`${socket.username} tried to join full room.`)
@@ -166,7 +182,7 @@ let Connection = (io) => {
         socket.on("disconnect", () => {
             console.log(`${socket.username} has been disconnected. [${socket.id}]`);
             try {
-                let num = findRoomByUsrId(socket.id);
+                let num = getIndexByUsrId(socket.id);
                 // socket.leave(rooms[num].roomName);
                 rooms[num].player_count--;
                 rooms[num].players.splice(num, 1);
@@ -194,7 +210,7 @@ let Connection = (io) => {
             package.push({
                 "roomName": rooms[i].roomName,
                 "public": rooms[i].public,
-                "player_count": rooms[i].player_count,
+                "player_count": getPlayerCount(rooms[i].roomName),
                 "max_players": rooms[i].max_players,
                 "leader": rooms[i].leader,
                 "canIJoin": canIJoin
