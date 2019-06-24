@@ -74,16 +74,12 @@ $(document).ready(function () {
     })
 });
 let updateChampSelect = () => {
-
-    let cAr = ["c1", "c2", "c3", "c4", "c5"];
-    // console.log(characters);
     for (let j = 0; j < characters.length; j++) {
-        $("#" + cAr[j] + "name").text(characters[j].name);
-        $("#" + cAr[j] + "img").attr("src", characters[j].img);
-        $("#" + cAr[j] + "info").text(characters[j].info);
-        $("#" + cAr[j] + "stats").text(characters[j].stats);
+        $(`#c${j}name`).text(characters[j].name);
+        $(`#c${j}img`).attr("src", characters[j].img);
+        $(`#c${j}info`).text(characters[j].info);
+        $(`#c${j}stats`).text(characters[j].stats);
     }
-
 }
 
 let toggleButtons = () => {
@@ -169,6 +165,9 @@ let initSockConnection = (pass) => {
             deletePlayerList();
             for (let i = 0; i < data.length; i++) {
                 $(`#p${i+1}`).text(data[i].name)
+                if (data[i].character) {
+                    $(`#p${i+1}`).append(` ${data[i].character} `);
+                }
                 if (i == 0) {
                     $(`#p${i+1}`).append(" - Lead");
                 }

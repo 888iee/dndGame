@@ -102,9 +102,6 @@ let Connection = (io) => {
             console.log(getPlayersInRoom(room.roomName))
             // process.nextTick(() => io.in(room.roomName).emit("addPlayer", getPlayersInRoom(room.roomName)));
             setTimeout(() => io.in(room.roomName).emit("addPlayer", getPlayersInRoom(room.roomName)), 300)
-            // sock.emit("addPlayer", getPlayersInRoom(room.roomName))
-            // add player to room array
-            // rooms[getIndexByUsrId(sock.id)].players.push(createUsrObj(sock));
         }
     }
     io.on("connection", (socket) => {
