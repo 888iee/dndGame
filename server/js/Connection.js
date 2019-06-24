@@ -68,7 +68,6 @@ let Connection = (io) => {
             let room = retunRoomFromSock(sock);
             sock.emit("getChat", `Wilkommen im Raum \n${room}.`);
             sock.broadcast.to(room).emit("getChat", `${sock.username} ist dem Raum beigetreten.`);
-            // console.log()
         })
     }
 
@@ -98,15 +97,13 @@ let Connection = (io) => {
             sock.emit("openRoom", room);
             // return list;
             sock.emit("addPlayer", getPlayersInRoom(room.roomName));
+            welcomeToRoomMsg(sock);
             // add player to room array
             // rooms[getIndexByUsrId(sock.id)].players.push(createUsrObj(sock));
         }
     }
     io.on("connection", (socket) => {
-        // console.log(socket.id)
         users[socket.id] = socket;
-        // users[socket.id].username = socket.username;
-        // console.log(users[socket.id].username)
 
         socket.on("createRoom", (roomData) => {
             console.log(`Room Data => ${roomData.roomName}:${roomData.password}`)
@@ -153,13 +150,8 @@ let Connection = (io) => {
             let room = findRoom(data.name);
             console.log(`${socket.username} asked to join a room`);
             if (room) {
-                console.log(room);
                 if (getPlayerCount(room.roomName) < room.max_players) {
-                    // if (room.players.includes(socket.id)) {
-
-                    // } else {
                     let package = {
-                        create: false,
                         sock: socket,
                         roomData: {
                             "roomName": data.name,
@@ -168,10 +160,8 @@ let Connection = (io) => {
                     }
                     joinToRoom(package, () => {
                         console.log(`${socket.username} joined Room ${package.roomData.name}.`)
-                        // socket.emit("openRoom", room);
-                        // console.table(room.players);
                     });
-                    // }
+                    console.log(getPlayersInRoom(room.roomName))
                 } else {
                     console.log(`${socket.username} tried to join full room.`)
                 }
