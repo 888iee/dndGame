@@ -32,7 +32,9 @@ let Connection = (io) => {
     let findRoomByUsrId = (id) => {
         return rooms.findIndex(room => room.players.find(player => player == id));
     }
-
+    let retunRoomFromSock = (sock) => {
+        return Object.keys(sock.rooms).filter(key => key !== sock.id);
+    }
     // creates object of client information 
     let createUsrObj = (socket) => {
         return {
@@ -40,6 +42,15 @@ let Connection = (io) => {
             usr: users[socket].username,
             orID: users[socket].originID
         }
+    }
+
+    let welcomeToRoomMsg = (sock) => {
+        setTimeout(() => {
+            let room = retunRoomFromSock(sock);
+            sock.emit("getChat", `Wilkommen im Raum \n${room}.`);
+            sock.broadcast.to(room).emit("getChat", `${sock.username} ist dem Raum beigetreten.`);
+            // console.log()
+        })
     }
 
     // let socket join specific room
@@ -55,7 +66,7 @@ let Connection = (io) => {
             sock.emit("addPlayer", {
                 "name": sock.username
             });
-
+            welcomeToRoomMsg(sock);
         } else {
 
 
@@ -154,7 +165,7 @@ let Connection = (io) => {
             console.log(`${socket.username} has been disconnected. [${socket.id}]`);
             try {
                 let num = findRoomByUsrId(socket.id);
-                socket.leave(rooms[num].roomName);
+                // socket.leave(rooms[num].roomName);
                 rooms[num].player_count--;
                 rooms[num].players.splice(num, 1);
             } catch (error) {
