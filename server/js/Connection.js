@@ -68,6 +68,7 @@ let Connection = (io) => {
             let room = retunRoomFromSock(sock);
             sock.emit("getChat", `Wilkommen im Raum <br>${room}.`);
             sock.broadcast.to(room).emit("getChat", `${sock.username} ist dem Raum beigetreten.`);
+
         })
     }
 
@@ -96,8 +97,12 @@ let Connection = (io) => {
             // emit room display to client
             sock.emit("openRoom", room);
             // return list;
-            sock.emit("addPlayer", getPlayersInRoom(room.roomName));
             welcomeToRoomMsg(sock);
+            console.log("my output")
+            console.log(getPlayersInRoom(room.roomName))
+            // process.nextTick(() => io.in(room.roomName).emit("addPlayer", getPlayersInRoom(room.roomName)));
+            setTimeout(() => io.in(room.roomName).emit("addPlayer", getPlayersInRoom(room.roomName)), 300)
+            // sock.emit("addPlayer", getPlayersInRoom(room.roomName))
             // add player to room array
             // rooms[getIndexByUsrId(sock.id)].players.push(createUsrObj(sock));
         }

@@ -164,19 +164,14 @@ let initSockConnection = (pass) => {
                 $(`#p${i}`).text("");
             }
         }
+        // updates player list
         socket.on("addPlayer", data => {
             deletePlayerList();
             for (let i = 0; i < data.length; i++) {
                 $(`#p${i+1}`).text(data[i].name)
-                // console.log(data);
-                // for (let j = 1; j < 5; j++) {
-                //     if ($(`.player-list > div:contains(${data[i].name})`).length <= 0 && $(`#p${j}:empty`)) {
-                // if not add player to list
-                // $("#p" + j).text(data[i].name)
-                // document.getElementById("p" + i).innerText == data.name;
-                // }
-                // }
-                // $(`#p1:contains(${data[i].name})`).length
+                if (i == 0) {
+                    $(`#p${i+1}`).append(" - Lead");
+                }
             }
 
         });
