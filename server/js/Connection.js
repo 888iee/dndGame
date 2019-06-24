@@ -29,6 +29,16 @@ let Connection = (io) => {
         return io.sockets.adapter.rooms[roomName].length;
     }
 
+    // get players in room
+    let getPlayersInRoom = (name) => {
+        let members = [];
+        let list = io.sockets.clients(name);
+        list.forEach((client) => members.push({
+            "name": client.username
+        }));
+        return list;
+    }
+
     // returns room
     let findRoom = (name) => {
         return rooms.find(room => room.roomName === name);
@@ -67,25 +77,32 @@ let Connection = (io) => {
         if (data.create) {
             // socket joins room
             sock.join(room.roomName);
+            // assigns socket to leader and push to players
             room.leader = createUsrObj(sock);
+            room.players = [];
+            room.players.push(room.leader);
+            // emit room display to client
             sock.emit("openRoom", room);
             sock.emit("addPlayer", [{
                 "name": sock.username
             }]);
             welcomeToRoomMsg(sock);
+            // add room to global array
             rooms.push(room);
         } else {
+            // socket joins room
             sock.join(room.roomName);
+            // emit room display to client
             sock.emit("openRoom", room);
             let members = [];
             let list = io.sockets.clients(room.roomName);
             list.forEach((client) => members.push({
                 "name": client.username
             }));
-            sock.emit("addPlayer", members);
-
-
-
+            // return list;
+            sock.emit("addPlayer", list);
+            // add player to room array
+            rooms[getIndexByUsrId(sock.id)].players.push(createUsrObj(sock));
         }
     }
     io.on("connection", (socket) => {
@@ -102,12 +119,6 @@ let Connection = (io) => {
                     roomData: roomData,
                 }
                 joinToRoom(data);
-
-                // , () => {
-                //     // ! test message
-                //     socket.emit("getChat", `Welcome to ${roomData.roomName}`);
-                // }
-
             }
         });
         socket.on("getChat", (data) => {
@@ -146,11 +157,18 @@ let Connection = (io) => {
                     if (room.players.includes(socket.id)) {
 
                     } else {
-                        data.socket = socket;
-                        joinToRoom(data, () => {
-                            console.log(`${socket.username} joined Room ${data.name}.`)
+                        let package = {
+                            create: false,
+                            sock: socket,
+                            roomData: {
+                                "roomName": data.name,
+                                "public": data.public
+                            },
+                        }
+                        joinToRoom(package, () => {
+                            console.log(`${socket.username} joined Room ${package.roomData.name}.`)
                             // socket.emit("openRoom", room);
-                            console.table(room.players);
+                            // console.table(room.players);
                         });
                     }
                 } else {
