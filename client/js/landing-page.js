@@ -1,3 +1,4 @@
+let selected;
 $(document).ready(function () {
 
     // click event to open popup
@@ -71,7 +72,7 @@ $(document).ready(function () {
     });
     $("#refreshBtn").click(() => {
         requestList();
-    })
+    });
 });
 let updateChampSelect = () => {
     for (let j = 0; j < characters.length; j++) {
@@ -96,10 +97,20 @@ let updateChampSelect = () => {
             e.preventDefault();
         });
 
+
         $(`#c${j}`).click((e) => {
-            console.log(e.target.id);
+            checkSelected(e.target.id);
+            $(`#c${j}`).toggleClass("selectedChamp notSelected");
+            // $(`#c${j}`).toggleClass("champion");
         });
 
+    }
+}
+let checkSelected = (name) => {
+    if (selected !== name) {
+        $(`#${selected}`).toggleClass("selectedChamp notSelected");
+        selected = name;
+        sendSelection(selected);
     }
 }
 
@@ -147,7 +158,9 @@ let initSockConnection = (pass) => {
                 "max_players": maxPlayers,
             });
         }
-
+        sendSelection = (name) => {
+            socket.emit("selected", name);
+        }
         // listen for roomlist 
         socket.on("getList", (data) => {
             insertList(data);

@@ -311,8 +311,8 @@ body {
   padding: 5px;
   display: -ms-grid;
   display: grid;
-  -ms-grid-columns: (1fr)[5];
-      grid-template-columns: repeat(5, 1fr);
+  -ms-grid-columns: (2fr)[5];
+      grid-template-columns: repeat(5, 2fr);
   grid-column-gap: 1em;
   border-radius: inherit;
   font-family: "DevinneSwash";
@@ -326,7 +326,6 @@ body {
   overflow-y: scroll;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  border: 1px white solid;
 }
 
 .lobby-room .lobby-center .champion-select .champion::-webkit-scrollbar {
@@ -348,9 +347,18 @@ body {
   text-align: center;
 }
 
-.lobby-room .lobby-center .champion-select .champion:hover {
+.lobby-room .lobby-center .champion-select .notSelected {
+  border: 1px white solid;
+}
+
+.lobby-room .lobby-center .champion-select .notSelected:hover {
   -webkit-transform: scale(1.02);
           transform: scale(1.02);
+}
+
+.lobby-room .lobby-center .champion-select .notSelected .selectedChamp {
+  border: 1px black solid;
+  width: 80%;
 }
 
 .create-room-button {

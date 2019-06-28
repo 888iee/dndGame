@@ -257,7 +257,7 @@ body {
       // border: 2px $textColor solid;
       padding: 5px;
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
+      grid-template-columns: repeat(5, 2fr);
       grid-column-gap: 1em;
       // grid-auto-rows: max(1000px);
       border-radius: inherit;
@@ -274,7 +274,6 @@ body {
           display: none;
         }
 
-        border: 1px white solid;
         h2 {
           // margin-top: -2px;
           img {
@@ -291,14 +290,24 @@ body {
         div {
           text-align: center;
         }
+      }
+      .notSelected {
+        border: 1px white solid;
         &:hover {
           transform: $hoverScale;
+        }
+        .selectedChamp {
+          border: 1px black solid;
+          // transform: $hoverScaleDown;
+          width: 80%;
+          // &:hover {
+          //   transform: none;
+          // }
         }
       }
     }
   }
 }
-
 .create-room-button {
   width: 96%;
   border-radius: 5px;
