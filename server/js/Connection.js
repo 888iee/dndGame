@@ -45,10 +45,11 @@ let Connection = (io) => {
     let findRoom = (name) => {
         return rooms.find(room => room.roomName === name);
     }
+    // !! DEPRECRATED
     // retuns index of room
-    let getIndexByUsrId = (id) => {
-        return rooms.findIndex(room => room.players.find(player => player == id));
-    }
+    // let getIndexByUsrId = (id) => {
+    //     return rooms.findIndex(room => room.players.find(player => player == id));
+    // }
     let retunRoomFromSock = (sock) => {
         return Object.keys(sock.rooms).filter(key => key !== sock.id);
     }
@@ -122,7 +123,7 @@ let Connection = (io) => {
             }
         });
         socket.on("getChat", (data) => {
-            let roomName = getIndexByUsrId(socket.id);
+            let roomName = retunRoomFromSock(socket);
             io.to(roomName).emit("getChat", `${socket.username}: ${data}`);
         });
 
@@ -171,8 +172,12 @@ let Connection = (io) => {
                 console.log(`ERROR\n${socket.username} tried to join not existing room.`)
             }
         });
-
-
+        socket.on("selected", (data) => {
+            let chararacters = require("../../client/js/characters");
+            let roomName = retunRoomFromSock(socket);
+            // console.log(cha)data.replace("c", "")
+            io.to(roomName).emit("getChat", `${socket.username} spielt nun ${chararacters[data.replace("c", "")].name}`);
+        });
 
         // !! UPDATE LOOP !!
         // TODO: Change Interval time after debugging

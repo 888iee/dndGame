@@ -1,5 +1,4 @@
-let characters = [
-    {
+let characters = [{
         "name": "Regdar",
         "img": "res/Untitled.png",
         "info": "Regdar kämpft für das Gute und schwingt sein mächtiges Schwert im Namen der Gerechtigkeit. Auf seinen Abenteuern will er das Böse bezwingen sowie die Fähigkeiten und Erfahrungen sammeln, die er für seinen Kreuzzug braucht. Regdars Afugabe ist es, Monster zu töten und die anderen Helden zu beschützen.",
@@ -9,12 +8,12 @@ let characters = [
         "name": "Mialee",
         "img": "res/Untitled.png",
         "info": "Mialee lernt noch, wie man Zauber wirkt. Da sie einmal Zaubermeisterin werden will, nutzt sie jede Gelegenheit, ihre Fähigkeiten an ihren Feinden auszuprobieren. Mialees Aufgabe ist es die anderen Helden beim Kampf gegen die Monster mit ihren mächtigen Zaubern zu unterstützen.",
-        "stats": "Move: 6 <br> Rüstung: *<br> Rucksack: 5<br> HP: 5 Mana: 2<br> Aktiv: 1 Waffe 1 Item <br>1 Zauber<br> 'Mialee's Rüstung sinkt sobald ihre Mana unter 3 fallen.''" 
+        "stats": "Move: 6 <br> Rüstung: *<br> Rucksack: 5<br> HP: 5 Mana: 2<br> Aktiv: 1 Waffe 1 Item <br>1 Zauber<br> 'Mialee's Rüstung sinkt sobald ihre Mana unter 3 fallen.''"
     },
     {
         "name": "Jozan",
         "img": "res/Untitled.png",
-        "info": "Jozan ist ein treuer Gefolgsmann von Pelor, dem mächtigen Sonnengott der Wahrheit und Gerechtigkeit, in dessen Dienst er immer wieder gegen böse Monster kämpfen muss. Jozans Rolle in den Abenteuern besteht darin, die Helden an seiner Seite mit Zaubern zu beschützen und Monster zu töten.", 
+        "info": "Jozan ist ein treuer Gefolgsmann von Pelor, dem mächtigen Sonnengott der Wahrheit und Gerechtigkeit, in dessen Dienst er immer wieder gegen böse Monster kämpfen muss. Jozans Rolle in den Abenteuern besteht darin, die Helden an seiner Seite mit Zaubern zu beschützen und Monster zu töten.",
         "stats": "Move: 5 <br> Rüstung: 2 <br> Rucksack: 5<br> HP: 5<br> Aktiv: 1 Waffe 1 Item 1 Zauber<br> 'Skills:<br> Untote vertreiben<br> Heilen'<br>"
     },
     {
@@ -30,3 +29,4 @@ let characters = [
         "stats": "Du kannst Fallen auf dem Spielfeld sehen."
     }
 ]
+module.exports = characters;
