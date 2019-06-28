@@ -79,6 +79,27 @@ let updateChampSelect = () => {
         $(`#c${j}img`).attr("src", characters[j].img);
         $(`#c${j}info`).text(characters[j].info);
         $(`#c${j}stats`).text(characters[j].stats);
+        $(`#c${j}name`).click((e) => {
+            e.stopPropagation();
+            e.preventDefault();
+        });
+        $(`#c${j}img`).click((e) => {
+            e.stopPropagation();
+            e.preventDefault();
+        });
+        $(`#c${j}info`).click((e) => {
+            e.stopPropagation();
+            e.preventDefault();
+        });
+        $(`#c${j}stats`).click((e) => {
+            e.stopPropagation();
+            e.preventDefault();
+        });
+
+        $(`#c${j}`).click((e) => {
+            console.log(e.target.id);
+        });
+
     }
 }
 

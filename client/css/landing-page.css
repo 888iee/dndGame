@@ -12,6 +12,10 @@
   scrollbar-color: #2a2c2e #1c1e1f;
 }
 
+.champion > * {
+  pointer-events: none;
+}
+
 body {
   font-family: "AsapSemiBold";
   background: -webkit-gradient(linear, right top, left top, from(#0c0f1d), to(#00232f));

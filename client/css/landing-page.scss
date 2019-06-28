@@ -3,6 +3,9 @@
 * {
   scrollbar-color: #2a2c2e #1c1e1f;
 }
+.champion > * {
+  pointer-events: none;
+}
 
 body {
   font-family: "AsapSemiBold";
@@ -96,7 +99,7 @@ body {
           margin-top: 5px;
           border-radius: 5px;
           // border-top: 0.1px solid rgba(255, 255, 255, .2);
-  
+
           background-color: $gradElems;
           .column {
             flex-wrap: nowrap;
@@ -105,17 +108,17 @@ body {
             padding-top: 1.2em;
             padding-bottom: 1.2em;
           }
-  
+
           .column-private {
             flex: 0.3;
             padding-left: 1em;
           }
-  
+
           .column-name {
             padding-left: 2em;
             flex: 2;
           }
-  
+
           .column-player-count {
             text-align: center;
             padding-right: 2em;
@@ -268,7 +271,7 @@ body {
         scrollbar-width: none;
         -ms-overflow-style: none;
         &::-webkit-scrollbar {
-          display: none
+          display: none;
         }
 
         border: 1px white solid;
