@@ -69,8 +69,7 @@ let Connection = (io) => {
             let room = retunRoomFromSock(sock);
             sock.emit("getChat", `Wilkommen im Raum <br>${room}.`);
             sock.broadcast.to(room).emit("getChat", `${sock.username} ist dem Raum beigetreten.`);
-
-        })
+        });
     }
 
     // let socket join specific room
@@ -208,7 +207,6 @@ let Connection = (io) => {
             delete users[socket.id];
         })
     });
-
 
     io.of("/g").on("connection", (socket) => {
         socket.emit("msg", "you are in namespace g");
