@@ -1,62 +1,9 @@
 let Connection = (io) => {
+    let users = {};
 
-    let users = {}
+    const Lobby = require("./Lobby");
+    let lobby = new Lobby(io);
 
-    // contains room objects
-    let rooms = [
-        // {
-        //     "roomName": "123",
-        //     "password": "",
-        //     "public": true,
-        //     "player_count": 2,
-        //     "max_players": 2,
-        //     "leader": "you",
-        //     "players": ["you"]
-        // }
-        // , {
-        //     "roomName": "asda",
-        //     "password": "",
-        //     "public": false,
-        //     "actual_players": 1,
-        //     "players": 2,
-        //     "leader": "me"
-        // }
-    ]
-    let roomFlag;
-
-    // returns actual size of room
-    let getPlayerCount = (roomName) => {
-        return io.sockets.adapter.rooms[roomName].length;
-    }
-
-    // get players in room
-    let getPlayersInRoom = (name) => {
-        let members = [];
-        Object.keys(io.sockets.adapter.rooms[name].sockets).forEach((id) => {
-            members.push({
-                "name": users[id].username,
-            });
-
-        });
-        return members;
-    }
-
-    // returns room
-    let findRoom = (name) => {
-        return rooms.find(room => room.roomName === name);
-    }
-
-    let findRoomIndex = (name) => {
-        return rooms.findIndex(room => room.roomName === name);
-    }
-    // !! DEPRECRATED
-    // retuns index of room
-    // let getIndexByUsrId = (id) => {
-    //     return rooms.findIndex(room => room.players.find(player => player == id));
-    // }
-    let retunRoomFromSock = (sock) => {
-        return Object.keys(sock.rooms).filter(key => key !== sock.id);
-    }
     // creates object of client information 
     let createUsrObj = (socket) => {
         return {
@@ -70,64 +17,26 @@ let Connection = (io) => {
     // all other members of client's room a notification
     let welcomeToRoomMsg = (sock) => {
         setTimeout(() => {
-            let room = retunRoomFromSock(sock);
+            let room = lobby.returnRoomFromSock(sock);
             sock.emit("getChat", `Wilkommen im Raum <br>${room}.`);
             sock.broadcast.to(room).emit("getChat", `${sock.username} ist dem Raum beigetreten.`);
         });
     }
-    let getR = (sock) => {
-        return users[sock.id].rooms.find(name => name !== sock.id);
-    }
-    // let socket join specific room
-    let joinToRoom = (data, cb) => {
-        let sock = data.sock;
-        let room = data.roomData;
-        if (data.create) {
-            // socket joins room
-            sock.join(room.roomName);
-            // assigns socket to leader and push to players
-            room.leader = createUsrObj(sock);
-            // emit room display to client
-            sock.emit("openRoom", room);
-            sock.emit("addPlayer", [{
-                "name": sock.username
-            }]);
-            welcomeToRoomMsg(sock);
-            // add room to global array
-            rooms.push(room);
-            // console.log(room.players);
-        } else {
-            // socket joins room
-            sock.join(room.roomName);
-            // emit room display to client
-            sock.emit("openRoom", room);
-            welcomeToRoomMsg(sock);
-            setTimeout(() => {
-                io.in(room.roomName).emit("addPlayer", getPlayersInRoom(room.roomName));
-            }, 300)
-        }
-        setTimeout(() =>
-            console.log(`${sock.id} ist ${Object.keys(users[sock.id].rooms).find(room => room !== sock.id)} beigetreten.`), 300);
-    }
+
     io.on("connection", (socket) => {
         users[socket.id] = socket;
+        socket.on("createRoom", (roomData) => lobby.creatingRoom(roomData));
 
-        socket.on("createRoom", (roomData) => {
-            console.log(`Room Data => ${roomData.roomName}:${roomData.password}`)
-            if (findRoom(roomData.roomName)) {
-                console.log(`${socket.id} tried to create an already existing Room \n=> ${roomData.roomName}`)
-                socket.emit("msg", "Room already exist!");
-            } else {
-                let data = {
-                    create: true,
-                    sock: socket,
-                    roomData: roomData,
-                }
-                joinToRoom(data);
-            }
+        socket.on("joinToRoom", data => lobby.joiningRoom(data));
+
+        socket.on("selected", (data) => {
+            let chararacters = require("../../client/js/characters");
+            let roomName = returnRoomFromSock(socket);
+            io.to(roomName).emit("getChat", `${socket.username} spielt nun ${chararacters[data.replace("c", "")].name}`);
         });
+
         socket.on("getChat", (data) => {
-            let roomName = retunRoomFromSock(socket);
+            let roomName = lobby.returnRoomFromSock(socket);
             io.to(roomName).emit("getChat", `${socket.username}: ${data}`);
         });
 
@@ -153,36 +62,6 @@ let Connection = (io) => {
             console.log("reqlist sent")
         });
 
-        socket.on("joinToRoom", data => {
-            let room = findRoom(data.name);
-            console.log(`${socket.username} asked to join a room`);
-            if (room) {
-                if (getPlayerCount(room.roomName) < room.max_players) {
-                    let package = {
-                        sock: socket,
-                        roomData: {
-                            "roomName": data.name,
-                            "public": data.public
-                        },
-                    }
-                    joinToRoom(package, () => {
-                        console.log(`${socket.username} joined Room ${package.roomData.name}.`)
-                    });
-                } else {
-                    console.log(`${socket.username} tried to join full room.`)
-                }
-            } else {
-                console.log(`ERROR\n${socket.username} tried to join not existing room.`)
-            }
-        });
-
-        socket.on("selected", (data) => {
-            let chararacters = require("../../client/js/characters");
-            let roomName = retunRoomFromSock(socket);
-
-
-            io.to(roomName).emit("getChat", `${socket.username} spielt nun ${chararacters[data.replace("c", "")].name}`);
-        });
 
         // !! UPDATE LOOP !!
         // TODO: Change Interval time after debugging
@@ -190,8 +69,8 @@ let Connection = (io) => {
             // check if socket is in room
             // if not send getList package
             let roomKeys = Object.keys(socket.rooms);
-            for (let i = 0; i < rooms.length; i++) {
-                if (!roomKeys.includes(rooms[i].roomName)) {
+            for (let i = 0; i < lobby.rooms.length; i++) {
+                if (!roomKeys.includes(lobby.rooms[i].roomName)) {
                     socket.emit("getList", getRoomList());
                 }
             }
@@ -219,14 +98,14 @@ let Connection = (io) => {
     let getRoomList = () => {
         let package = [];
         // console.log(`roomsList: \n ${rooms[0].roomName}`)
-        for (let i = 0; i < rooms.length; i++) {
-            let canIJoin = rooms[i].player_count < rooms[i].max_players;
+        for (let i = 0; i < lobby.rooms.length; i++) {
+            let canIJoin = lobby.rooms[i].player_count < lobby.rooms[i].max_players;
             package.push({
-                "roomName": rooms[i].roomName,
-                "public": rooms[i].public,
-                "player_count": getPlayerCount(rooms[i].roomName),
-                "max_players": rooms[i].max_players,
-                "leader": rooms[i].leader,
+                "roomName": lobby.rooms[i].roomName,
+                "public": lobby.rooms[i].public,
+                "player_count": lobby.getPlayerCount(lobby.rooms[i].roomName),
+                "max_players": lobby.rooms[i].max_players,
+                "leader": lobby.rooms[i].leader,
                 "canIJoin": canIJoin
             })
 
