@@ -35,7 +35,7 @@ let Connection = (io) => {
         Object.keys(io.sockets.adapter.rooms[name].sockets).forEach((id) => {
             members.push({
                 "name": users[id].username,
-            })
+            });
 
         });
         return members;
@@ -44,6 +44,10 @@ let Connection = (io) => {
     // returns room
     let findRoom = (name) => {
         return rooms.find(room => room.roomName === name);
+    }
+
+    let findRoomIndex = (name) => {
+        return rooms.findIndex(room => room.roomName === name);
     }
     // !! DEPRECRATED
     // retuns index of room
@@ -71,7 +75,9 @@ let Connection = (io) => {
             sock.broadcast.to(room).emit("getChat", `${sock.username} ist dem Raum beigetreten.`);
         });
     }
-
+    let getR = (sock) => {
+        return users[sock.id].rooms.find(name => name !== sock.id);
+    }
     // let socket join specific room
     let joinToRoom = (data, cb) => {
         let sock = data.sock;
@@ -81,8 +87,6 @@ let Connection = (io) => {
             sock.join(room.roomName);
             // assigns socket to leader and push to players
             room.leader = createUsrObj(sock);
-            // room.players = [];
-            // room.players.push(room.leader);
             // emit room display to client
             sock.emit("openRoom", room);
             sock.emit("addPlayer", [{
@@ -91,18 +95,19 @@ let Connection = (io) => {
             welcomeToRoomMsg(sock);
             // add room to global array
             rooms.push(room);
+            // console.log(room.players);
         } else {
             // socket joins room
             sock.join(room.roomName);
             // emit room display to client
             sock.emit("openRoom", room);
-            // return list;
             welcomeToRoomMsg(sock);
-            console.log("my output")
-            console.log(getPlayersInRoom(room.roomName))
-            // process.nextTick(() => io.in(room.roomName).emit("addPlayer", getPlayersInRoom(room.roomName)));
-            setTimeout(() => io.in(room.roomName).emit("addPlayer", getPlayersInRoom(room.roomName)), 300)
+            setTimeout(() => {
+                io.in(room.roomName).emit("addPlayer", getPlayersInRoom(room.roomName));
+            }, 300)
         }
+        setTimeout(() =>
+            console.log(`${sock.id} ist ${Object.keys(users[sock.id].rooms).find(room => room !== sock.id)} beigetreten.`), 300);
     }
     io.on("connection", (socket) => {
         users[socket.id] = socket;
@@ -163,7 +168,6 @@ let Connection = (io) => {
                     joinToRoom(package, () => {
                         console.log(`${socket.username} joined Room ${package.roomData.name}.`)
                     });
-                    console.log(getPlayersInRoom(room.roomName))
                 } else {
                     console.log(`${socket.username} tried to join full room.`)
                 }
@@ -171,10 +175,12 @@ let Connection = (io) => {
                 console.log(`ERROR\n${socket.username} tried to join not existing room.`)
             }
         });
+
         socket.on("selected", (data) => {
             let chararacters = require("../../client/js/characters");
             let roomName = retunRoomFromSock(socket);
-            // console.log(cha)data.replace("c", "")
+
+
             io.to(roomName).emit("getChat", `${socket.username} spielt nun ${chararacters[data.replace("c", "")].name}`);
         });
 
@@ -195,22 +201,16 @@ let Connection = (io) => {
 
 
         socket.on("disconnect", () => {
-            console.log(`${socket.username} has been disconnected. [${socket.id}]`);
             try {
                 let num = getIndexByUsrId(socket.id);
-                // socket.leave(rooms[num].roomName);
                 rooms[num].player_count--;
-                rooms[num].players.splice(num, 1);
             } catch (error) {
                 console.log("No Room to leave error occured");
             }
             delete users[socket.id];
+            console.log(`${socket.username} has been disconnected. [${socket.id}]`);
         })
     });
-
-    io.of("/g").on("connection", (socket) => {
-        socket.emit("msg", "you are in namespace g");
-    })
 
     let splitPassedCookiesData = (data) => {
         return data.split("&&");
