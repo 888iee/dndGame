@@ -356,9 +356,14 @@ body {
           transform: scale(1.02);
 }
 
-.lobby-room .lobby-center .champion-select .notSelected .selectedChamp {
+.lobby-room .lobby-center .champion-select .selectedChamp {
+  border: 1px green solid;
+  width: 99%;
+}
+
+.lobby-room .lobby-center .champion-select .someoneElseSelected {
   border: 1px black solid;
-  width: 80%;
+  width: 99%;
 }
 
 .create-room-button {

@@ -99,8 +99,10 @@ let updateChampSelect = () => {
 
 
         $(`#c${j}`).click((e) => {
-            checkSelected(e.target.id);
-            $(`#c${j}`).toggleClass("selectedChamp notSelected");
+            if (!$(this).hasClass("someoneElseSelected")) {
+                checkSelected(e.target.id);
+                $(`#c${j}`).toggleClass("selectedChamp notSelected");
+            }
             // $(`#c${j}`).toggleClass("champion");
         });
 
@@ -161,6 +163,10 @@ let initSockConnection = (pass) => {
         sendSelection = (name) => {
             socket.emit("selected", name);
         }
+        socket.on("selected", data => {
+            console.log(`someoneElseSelected ${data}`)
+            $(`#${data}`).toggleClass("notSelected someoneElseSelected");
+        })
         // listen for roomlist 
         socket.on("getList", (data) => {
             insertList(data);

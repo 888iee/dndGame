@@ -296,14 +296,18 @@ body {
         &:hover {
           transform: $hoverScale;
         }
-        .selectedChamp {
-          border: 1px black solid;
-          // transform: $hoverScaleDown;
-          width: 80%;
-          // &:hover {
-          //   transform: none;
-          // }
-        }
+      }
+      .selectedChamp {
+        border: 1px green solid;
+        width: 99%;
+        // transform: $hoverScaleDown;
+        // &:hover {
+        //   transform: none;
+        // }
+      }
+      .someoneElseSelected {
+        border: 1px black solid;
+        width: 99%;
       }
     }
   }
