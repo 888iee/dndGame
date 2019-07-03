@@ -99,23 +99,23 @@ let updateChampSelect = () => {
 
 
         $(`#c${j}`).click((e) => {
-            if ($(`#c${j}`).hasClass("someoneElseSelected")) {} else {
-                checkSelected(e.target.id);
-                $(`#c${j}`).toggleClass("selectedChamp notSelected");
-            }
+            // if ($(`#c${j}`).hasClass("someoneElseSelected")) {} else {
+            //     checkSelected(e.target.id);
+            //     $(`#c${j}`).toggleClass("selectedChamp notSelected");
+            // }
             // $(`#c${j}`).toggleClass("champion");
         });
 
     }
 }
 let checkSelected = (id) => {
-    console.log(`selected is ${selected}, check for new selection ${id}`)
-    if (selected !== id) {
-        $(`#${selected}`).toggleClass("selectedChamp notSelected");
-        selected = id;
-        console.log(`new selected is ${selected}`)
-        sendSelection(selected);
-    }
+    // console.log(`selected is ${selected}, check for new selection ${id}`)
+    // if (selected !== id) {
+    //     $(`#${selected}`).toggleClass("selectedChamp notSelected");
+    //     selected = id;
+    //     console.log(`new selected is ${selected}`)
+    //     sendSelection(selected);
+    // }
 }
 
 let toggleButtons = () => {
@@ -162,8 +162,12 @@ let initSockConnection = (pass) => {
                 "max_players": maxPlayers,
             });
         }
-        sendSelection = (name) => {
-            socket.emit("selected", name);
+        sendSelection = (id) => {
+            let char = {
+                "id": id,
+                "name": chararacters[id.replace("c", "")].name
+            }
+            socket.emit("selected", char);
         }
         socket.on("selected", char => {
             console.log(`someoneElseSelected ${char.name}`)

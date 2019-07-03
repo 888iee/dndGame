@@ -12,6 +12,14 @@ let Connection = (io) => {
             orID: users[socket].originID
         }
     }
+
+    // helper function to check if value exists in any key
+    // returns key
+    let getKeyByValue = (object, value) => {
+        return Object.keys(object).find(key => object[key] === value);
+    }
+
+
     // sends welcome msg to client and broadcast to 
     // all other members of client's room a notification
     let welcomeToRoomMsg = (sock) => {
@@ -67,14 +75,34 @@ let Connection = (io) => {
         });
 
         socket.on("selected", (data) => {
-            let chararacters = require("../../client/js/characters");
-            let roomName = lobby.returnRoomFromSock(socket);
-            let char = {
-                "id": data,
-                "name": chararacters[data.replace("c", "")].name,
-            };
-            io.to(roomName).emit("getChat", `${socket.username} spielt nun ${char.name}`);
-            socket.in(roomName).emit("selected", char);
+            // let chararacters = require("../../client/js/characters");
+            // let roomName = lobby.returnRoomFromSock(socket);
+            // let char = {
+            //     "id": data,
+            //     "name": chararacters[data.replace("c", "")].name,
+            // };
+            // io.to(roomName).emit("getChat", `${socket.username} spielt nun ${char.name}`);
+            // socket.in(roomName).emit("selected", char);
+
+            // check if char exists
+            if (getKeyByValue(chars, socket.id)) {
+                // if exists delete socket.id from character selection
+                chars[getKeyByValue(chars, socket.id)] = "none";
+
+                // TODO:
+                // add socket.id to new cha-selection
+
+                // TODO:
+                // send to all players in room
+
+                // if (data in chars) {
+
+                // } else {
+                //     // if not create and assign socket id to it
+                //     chars[data] = socket.id;
+
+                // }
+            }
         });
 
         socket.on("getChat", (data) => {
