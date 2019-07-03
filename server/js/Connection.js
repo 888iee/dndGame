@@ -89,19 +89,23 @@ let Connection = (io) => {
                 // if exists delete socket.id from character selection
                 chars[getKeyByValue(chars, socket.id)] = "none";
 
-                // TODO:
-                // add socket.id to new cha-selection
+                // check if new cha-selection is exists
+                if (data in chars) {
+                    // check if character is taken
+                    if (chars[data] === "none") {
+                        // if not create and assign socket id to it
+                        chars[data] = socket.id;
+                    } else {
+                        socket.emit("error", `${data.name} is already taken`);
+                    }
+                } else {
+                    // if not create and assign socket id to it
+                    chars[data] = socket.id;
+                }
 
                 // TODO:
                 // send to all players in room
 
-                // if (data in chars) {
-
-                // } else {
-                //     // if not create and assign socket id to it
-                //     chars[data] = socket.id;
-
-                // }
             }
         });
 
