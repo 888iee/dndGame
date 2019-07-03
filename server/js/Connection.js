@@ -4,14 +4,7 @@ let Connection = (io) => {
     const Lobby = require("./Lobby");
     let lobby = new Lobby(io);
 
-    // creates object of client information 
-    let createUsrObj = (socket) => {
-        return {
-            sessionID: socket.id,
-            usr: users[socket].username,
-            orID: users[socket].originID
-        }
-    }
+
 
     // sends welcome msg to client and broadcast to 
     // all other members of client's room a notification
@@ -27,7 +20,27 @@ let Connection = (io) => {
         users[socket.id] = socket;
         socket.on("createRoom", (roomData) => lobby.creatingRoom(roomData));
 
-        socket.on("joinToRoom", data => lobby.joiningRoom(data));
+        socket.on("joinToRoom", data => lobby.joiningRoom(data, (bool) => {
+            if (bool) {
+                // socket joins room
+                sock.join(room.roomName);
+                // emit room display to client
+                sock.emit("openRoom", room);
+                sock.emit("addPlayer", [{
+                    "name": sock.username
+                }]);
+            } else {
+
+                // socket joins room
+                sock.join(room.roomName);
+                // emit room display to client
+                sock.emit("openRoom", room);
+                setTimeout(() => {
+                    io.in(room.roomName).emit("addPlayer", getPlayersInRoom(room.roomName));
+                }, 300)
+            }
+
+        }));
 
         socket.on("selected", (data) => {
             let chararacters = require("../../client/js/characters");
