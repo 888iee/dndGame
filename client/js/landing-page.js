@@ -104,6 +104,7 @@ let updateChampSelect = () => {
             //     $(`#c${j}`).toggleClass("selectedChamp notSelected");
             // }
             // $(`#c${j}`).toggleClass("champion");
+            sendSelection(e.target.id);
         });
 
     }
@@ -165,13 +166,15 @@ let initSockConnection = (pass) => {
         sendSelection = (id) => {
             let char = {
                 "id": id,
-                "name": chararacters[id.replace("c", "")].name
+                // "name": chararacters[id.replace("c", "")].name
             }
             socket.emit("selected", char);
         }
-        socket.on("selected", char => {
-            console.log(`someoneElseSelected ${char.name}`)
-            $(`#${char.id}`).toggleClass("notSelected someoneElseSelected");
+        socket.on("selection", chars => {
+            // console.log(`someoneElseSelected ${char.name}`)
+            // $(`#${char.id}`).toggleClass("notSelected someoneElseSelected");
+            let ar = $(".champion-select").children();
+            console.log(ar);
         })
         // listen for roomlist 
         socket.on("getList", (data) => {
