@@ -4,7 +4,6 @@ let Connection = (io) => {
     const Lobby = require("./Lobby");
     let lobby = new Lobby(io);
 
-<<<<<<< HEAD
     // creates object of client information 
     let createUsrObj = (socket) => {
         return {
@@ -13,10 +12,6 @@ let Connection = (io) => {
             orID: users[socket].originID
         }
     }
-=======
-
->>>>>>> newIdea
-
     // sends welcome msg to client and broadcast to 
     // all other members of client's room a notification
     let welcomeToRoomMsg = (sock) => {
@@ -29,33 +24,35 @@ let Connection = (io) => {
 
     io.on("connection", (socket) => {
         users[socket.id] = socket;
-        socket.on("createRoom", (roomData) => lobby.creatingRoom(roomData));
-
-<<<<<<< HEAD
-        socket.on("joinToRoom", data => lobby.joiningRoom(data));
-=======
-        socket.on("joinToRoom", data => lobby.joiningRoom(data, (bool) => {
-            if (bool) {
+        socket.on("createRoom", (roomData) => {
+            // assigns socket to leader 
+            roomData.leader = createUsrObj(socket);
+            lobby.creatingRoom(roomData, socket, () => {
                 // socket joins room
-                sock.join(room.roomName);
+                socket.join(roomData.roomName);
                 // emit room display to client
-                sock.emit("openRoom", room);
-                sock.emit("addPlayer", [{
-                    "name": sock.username
+                socket.emit("openRoom", roomData);
+                socket.emit("addPlayer", [{
+                    "name": socket.username
                 }]);
-            } else {
+            });
+        });
 
-                // socket joins room
-                sock.join(room.roomName);
-                // emit room display to client
-                sock.emit("openRoom", room);
-                setTimeout(() => {
-                    io.in(room.roomName).emit("addPlayer", getPlayersInRoom(room.roomName));
-                }, 300)
-            }
+        socket.on("joinToRoom", data => lobby.joiningRoom(data, () => {
 
+            let room = data.roomData;
+
+            // socket joins room
+            socket.join(room.roomName);
+            // emit room display to client
+            socket.emit("openRoom", room);
+            setTimeout(() => {
+                io.in(room.roomName).emit("addPlayer", getPlayersInRoom(room.roomName));
+            }, 300)
+
+            setTimeout(() =>
+                console.log(`${socket.id} ist ${Object.keys(users[socket.id].rooms).find(room => room !== socket.id)} beigetreten.`), 300);
         }));
->>>>>>> newIdea
 
         socket.on("selected", (data) => {
             let chararacters = require("../../client/js/characters");
@@ -124,19 +121,30 @@ let Connection = (io) => {
         return data.split("&&");
     }
 
+    // returns actual size of room
+    let getPlayerCount = (roomName) => {
+        try {
+            return io.sockets.adapter.rooms[roomName].length;
+
+        } catch (error) {
+            return 1;
+        }
+    }
     let getRoomList = () => {
         let package = [];
         // console.log(`roomsList: \n ${rooms[0].roomName}`)
         for (let i = 0; i < lobby.rooms.length; i++) {
             let canIJoin = lobby.rooms[i].player_count < lobby.rooms[i].max_players;
+            // setTimeout(() => {
             package.push({
                 "roomName": lobby.rooms[i].roomName,
                 "public": lobby.rooms[i].public,
-                "player_count": lobby.getPlayerCount(lobby.rooms[i].roomName),
+                "player_count": getPlayerCount(lobby.rooms[i].roomName),
                 "max_players": lobby.rooms[i].max_players,
                 "leader": lobby.rooms[i].leader,
                 "canIJoin": canIJoin
             })
+            // }, 100)
 
         }
         return package;

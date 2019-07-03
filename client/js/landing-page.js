@@ -183,6 +183,7 @@ let initSockConnection = (pass) => {
 
         // listen for create room request auth
         socket.on("openRoom", data => {
+            console.log(data);
             // hide roomlist
             $("#roomList").css("display", "none");
             $("#roomName").text(data.roomName);

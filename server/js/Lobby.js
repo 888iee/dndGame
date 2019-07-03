@@ -4,14 +4,7 @@ class Lobby {
         this.rooms = [];
 
     }
-    // creates object of client information 
-    createUsrObj(socket) {
-        return {
-            sessionID: socket.id,
-            usr: users[socket].username,
-            orID: users[socket].originID
-        }
-    }
+
     // returns actual size of room
     getPlayerCount(roomName) {
         return this.io.sockets.adapter.rooms[roomName].length;
@@ -49,37 +42,21 @@ class Lobby {
         return users[sock.id].rooms.find(name => name !== sock.id);
     }
     // let socket join specific room
-    joinToRoom(data, socket) {
-        let sock = socket;
+    joinToRoom(data, cb) {
+        let sock = data.sock;
         let room = data.roomData;
         if (data.create) {
-            // assigns socket to leader and push to players
-            room.leader = this.createUsrObj(sock);
-            // socket joins room
-            sock.join(room.roomName);
-            // emit room display to client
-            sock.emit("openRoom", room);
-            sock.emit("addPlayer", [{
-                "name": sock.username
-            }]);
-            welcomeToRoomMsg(sock);
+            cb()
             // add room to global array
-            rooms.push(room);
+            this.rooms.push(room);
             // console.log(room.players);
         } else {
-            // socket joins room
-            sock.join(room.roomName);
-            // emit room display to client
-            sock.emit("openRoom", room);
-            setTimeout(() => {
-                io.in(room.roomName).emit("addPlayer", getPlayersInRoom(room.roomName));
-            }, 300)
+            cb()
             welcomeToRoomMsg(sock);
         }
-        setTimeout(() =>
-            console.log(`${sock.id} ist ${Object.keys(users[sock.id].rooms).find(room => room !== sock.id)} beigetreten.`), 300);
+
     }
-    creatingRoom(roomData, socket) {
+    creatingRoom(roomData, socket, cb) {
         console.log(`Room Data => ${roomData.roomName}:${roomData.password}`)
         if (this.findRoom(roomData.roomName)) {
             console.log(`${socket.id} tried to create an already existing Room \n=> ${roomData.roomName}`)
@@ -90,10 +67,10 @@ class Lobby {
                 sock: socket,
                 roomData: roomData,
             }
-            this.joinToRoom(data, socket);
+            this.joinToRoom(data, cb);
         }
     }
-    joiningRoom(data, socket) {
+    joiningRoom(data, cb) {
         let room = findRoom(data.name);
         console.log(`${socket.username} asked to join a room`);
         if (room) {
@@ -105,7 +82,7 @@ class Lobby {
                         "public": data.public
                     },
                 }
-                this.joinToRoom(pack, socket);
+                this.joinToRoom(pack, () => cb);
             } else {
                 console.log(`${socket.username} tried to join full room.`)
             }

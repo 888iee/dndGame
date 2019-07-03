@@ -15,7 +15,7 @@ require("./server/routes")(app, path, express);
 
 // Starts the server.
 server.listen(port, function () {
-    console.log('Starting server on port 5000');
+    console.log(`Started server on port ${port}`);
 });
 
 // const game = require("./server/js/game/Game")(io);
