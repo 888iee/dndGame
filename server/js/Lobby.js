@@ -11,7 +11,7 @@ class Lobby {
     }
 
     // get players in room
-    getPlayersInRoom(name) {
+    getPlayersInRoom(name, users) {
         let members = [];
         Object.keys(this.io.sockets.adapter.rooms[name].sockets).forEach((id) => {
             members.push({
@@ -49,8 +49,6 @@ class Lobby {
             cb()
             // add room to global array
             this.rooms.push(room);
-            // console.log(this.rooms);
-            // console.log(this.findRoom(room.roomName))
         } else {
             cb()
         }

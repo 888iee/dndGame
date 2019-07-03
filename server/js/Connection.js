@@ -48,17 +48,19 @@ let Connection = (io) => {
             data.socket = socket;
             lobby.joiningRoom(data, () => {
 
-                // let room = data;
-                console.log(data)
                 // socket joins room
                 socket.join(data.roomName);
                 // try {
                 // emit room display to client
-                socket.emit("openRoom", data);
                 setTimeout(() => {
-                    io.in(data.roomName).emit("addPlayer", getPlayersInRoom(data.roomName));
+                    try {
+                        socket.emit("openRoom", data.roomName);
+                    } catch (error) {
+                        console.log(error)
+                    }
+                    io.in(data.roomName).emit("addPlayer", lobby.getPlayersInRoom(data.roomName, users));
                     console.log(`${socket.id} ist ${Object.keys(users[socket.id].rooms).find(room => room !== socket.id)} beigetreten.`)
-                }, 300)
+                }, 0)
 
                 // } catch (error) {
 
