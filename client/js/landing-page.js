@@ -231,7 +231,7 @@ let initSockConnection = (pass) => {
         joinRoom = (name, public) => {
             // TODO: ask if public ..
             socket.emit("joinToRoom", {
-                "name": name,
+                "roomName": name,
                 "public": public
             });
         }

@@ -52,9 +52,7 @@ class Lobby {
             // console.log(room.players);
         } else {
             cb()
-            welcomeToRoomMsg(sock);
         }
-
     }
     creatingRoom(roomData, socket, cb) {
         console.log(`Room Data => ${roomData.roomName}:${roomData.password}`)
@@ -71,23 +69,22 @@ class Lobby {
         }
     }
     joiningRoom(data, cb) {
-        let room = findRoom(data.name);
-        console.log(`${socket.username} asked to join a room`);
+        let room = this.findRoom(data.name);
         if (room) {
-            if (getPlayerCount(room.roomName) < room.max_players) {
+            if (this.getPlayerCount(room.roomName) < room.max_players) {
                 let pack = {
-                    sock: socket,
+                    sock: data.socket,
                     roomData: {
                         "roomName": data.name,
                         "public": data.public
                     },
                 }
-                this.joinToRoom(pack, () => cb);
+                this.joinToRoom(pack, cb);
             } else {
-                console.log(`${socket.username} tried to join full room.`)
+                console.log(`${data.socket.username} tried to join full room.`)
             }
         } else {
-            console.log(`ERROR\n${socket.username} tried to join not existing room.`)
+            console.log(`ERROR\n${data.socket.username} tried to join not existing room.`)
         }
     }
 }

@@ -25,34 +25,48 @@ let Connection = (io) => {
     io.on("connection", (socket) => {
         users[socket.id] = socket;
         socket.on("createRoom", (roomData) => {
-            // assigns socket to leader 
-            roomData.leader = createUsrObj(socket);
-            lobby.creatingRoom(roomData, socket, () => {
-                // socket joins room
-                socket.join(roomData.roomName);
-                // emit room display to client
-                socket.emit("openRoom", roomData);
-                socket.emit("addPlayer", [{
-                    "name": socket.username
-                }]);
-            });
+            try {
+                // assigns socket to leader 
+                roomData.leader = createUsrObj(socket);
+                lobby.creatingRoom(roomData, socket, () => {
+                    // socket joins room
+                    socket.join(roomData.roomName);
+                    // emit room display to client
+                    socket.emit("openRoom", roomData);
+                    socket.emit("addPlayer", [{
+                        "name": socket.username
+                    }]);
+                    welcomeToRoomMsg(socket);
+                });
+            } catch (error) {
+                console.log(error);
+            }
         });
 
-        socket.on("joinToRoom", data => lobby.joiningRoom(data, () => {
+        socket.on("joinToRoom", data => {
+            try {
+                data.socket = socket;
+                lobby.joiningRoom(data, () => {
 
-            let room = data.roomData;
+                    // let room = data;
+                    console.log(room)
+                    // socket joins room
+                    socket.join(data.roomName);
+                    // emit room display to client
+                    socket.emit("openRoom", data);
+                    setTimeout(() => {
+                        io.in(data.roomName).emit("addPlayer", getPlayersInRoom(data.roomName));
+                    }, 300)
 
-            // socket joins room
-            socket.join(room.roomName);
-            // emit room display to client
-            socket.emit("openRoom", room);
-            setTimeout(() => {
-                io.in(room.roomName).emit("addPlayer", getPlayersInRoom(room.roomName));
-            }, 300)
+                    setTimeout(() =>
+                        console.log(`${socket.id} ist ${Object.keys(users[socket.id].rooms).find(room => room !== socket.id)} beigetreten.`), 300);
+                    welcomeToRoomMsg(socket);
+                });
 
-            setTimeout(() =>
-                console.log(`${socket.id} ist ${Object.keys(users[socket.id].rooms).find(room => room !== socket.id)} beigetreten.`), 300);
-        }));
+            } catch (error) {
+                console.log(error);
+            }
+        });
 
         socket.on("selected", (data) => {
             let chararacters = require("../../client/js/characters");
