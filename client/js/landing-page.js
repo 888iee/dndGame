@@ -268,6 +268,7 @@ let insertList = (roomList, joinBtn) => {
             e.preventDefault();
             if (e.target) {
                 joinRoom(roomList[i].roomName, roomList[i].public);
+                console.log(roomList[i].roomName, roomList[i].public)
             }
         });
         // if (!roomList[i].canIJoin) {

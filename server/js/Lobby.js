@@ -49,7 +49,8 @@ class Lobby {
             cb()
             // add room to global array
             this.rooms.push(room);
-            // console.log(room.players);
+            // console.log(this.rooms);
+            // console.log(this.findRoom(room.roomName))
         } else {
             cb()
         }
@@ -69,13 +70,15 @@ class Lobby {
         }
     }
     joiningRoom(data, cb) {
-        let room = this.findRoom(data.name);
+        console.log(`TRYY > ${data.roomName}`)
+        let room = this.findRoom(data.roomName);
+        console.log(room);
         if (room) {
             if (this.getPlayerCount(room.roomName) < room.max_players) {
                 let pack = {
                     sock: data.socket,
                     roomData: {
-                        "roomName": data.name,
+                        "roomName": data.roomName,
                         "public": data.public
                     },
                 }

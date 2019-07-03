@@ -44,28 +44,32 @@ let Connection = (io) => {
         });
 
         socket.on("joinToRoom", data => {
-            try {
-                data.socket = socket;
-                lobby.joiningRoom(data, () => {
+            // try {
+            data.socket = socket;
+            lobby.joiningRoom(data, () => {
 
-                    // let room = data;
-                    console.log(room)
-                    // socket joins room
-                    socket.join(data.roomName);
-                    // emit room display to client
-                    socket.emit("openRoom", data);
-                    setTimeout(() => {
-                        io.in(data.roomName).emit("addPlayer", getPlayersInRoom(data.roomName));
-                    }, 300)
+                // let room = data;
+                console.log(data)
+                // socket joins room
+                socket.join(data.roomName);
+                // try {
+                // emit room display to client
+                socket.emit("openRoom", data);
+                setTimeout(() => {
+                    io.in(data.roomName).emit("addPlayer", getPlayersInRoom(data.roomName));
+                    console.log(`${socket.id} ist ${Object.keys(users[socket.id].rooms).find(room => room !== socket.id)} beigetreten.`)
+                }, 300)
 
-                    setTimeout(() =>
-                        console.log(`${socket.id} ist ${Object.keys(users[socket.id].rooms).find(room => room !== socket.id)} beigetreten.`), 300);
-                    welcomeToRoomMsg(socket);
-                });
+                // } catch (error) {
 
-            } catch (error) {
-                console.log(error);
-            }
+                //     console.log(`Error occured inside joinToRoom Handler \n${error}`);
+                // }
+                welcomeToRoomMsg(socket);
+            });
+
+            // } catch (error) {
+            //     console.log(`Error occured in joinToRoom Handler \n${error}`);
+            // }
         });
 
         socket.on("selected", (data) => {
