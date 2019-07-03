@@ -1,6 +1,6 @@
 let Connection = (io) => {
     let users = {};
-
+    let chars = {};
     const Lobby = require("./Lobby");
     let lobby = new Lobby(io);
 
@@ -62,22 +62,19 @@ let Connection = (io) => {
                     console.log(`${socket.id} ist ${Object.keys(users[socket.id].rooms).find(room => room !== socket.id)} beigetreten.`)
                 }, 0)
 
-                // } catch (error) {
-
-                //     console.log(`Error occured inside joinToRoom Handler \n${error}`);
-                // }
                 welcomeToRoomMsg(socket);
             });
-
-            // } catch (error) {
-            //     console.log(`Error occured in joinToRoom Handler \n${error}`);
-            // }
         });
 
         socket.on("selected", (data) => {
             let chararacters = require("../../client/js/characters");
-            let roomName = returnRoomFromSock(socket);
-            io.to(roomName).emit("getChat", `${socket.username} spielt nun ${chararacters[data.replace("c", "")].name}`);
+            let roomName = lobby.returnRoomFromSock(socket);
+            let char = {
+                "id": data,
+                "name": chararacters[data.replace("c", "")].name,
+            };
+            io.to(roomName).emit("getChat", `${socket.username} spielt nun ${char.name}`);
+            socket.in(roomName).emit("selected", char);
         });
 
         socket.on("getChat", (data) => {
@@ -119,8 +116,6 @@ let Connection = (io) => {
                     socket.emit("getList", getRoomList());
                 }
             }
-
-
         }, 2000);
 
 
