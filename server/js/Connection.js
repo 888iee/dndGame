@@ -105,7 +105,7 @@ let Connection = (io) => {
 
                 // TODO:
                 // send to all players in room
-
+                io.to(lobby.returnRoomFromSock(socket)).emit("selection", chars);
             }
         });
 
