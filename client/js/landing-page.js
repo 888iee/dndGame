@@ -96,27 +96,48 @@ let updateChampSelect = () => {
             e.stopPropagation();
             e.preventDefault();
         });
-
-
+        // only click event
         $(`#c${j}`).click((e) => {
             // if ($(`#c${j}`).hasClass("someoneElseSelected")) {} else {
             //     checkSelected(e.target.id);
             //     $(`#c${j}`).toggleClass("selectedChamp notSelected");
             // }
             // $(`#c${j}`).toggleClass("champion");
-            sendSelection(e.target.id);
+            checkSelected(e.target.id);
         });
 
     }
 }
+// console.log(`selected is ${selected}, check for new selection ${id}`)
+// if (selected !== id) {
+//     $(`#${selected}`).toggleClass("selectedChamp notSelected");
+//     selected = id;
+//     console.log(`new selected is ${selected}`)
+//     sendSelection(selected);
+// }
 let checkSelected = (id) => {
-    // console.log(`selected is ${selected}, check for new selection ${id}`)
-    // if (selected !== id) {
-    //     $(`#${selected}`).toggleClass("selectedChamp notSelected");
-    //     selected = id;
-    //     console.log(`new selected is ${selected}`)
-    //     sendSelection(selected);
-    // }
+    // TODO: check if selected char has class notSelected 
+    if ($(`#${id}`).hasClass("notSelected")) {
+        // TODO: send selection to server
+        sendSelection({
+            "id": id,
+            "name": $(`#${id}name`).text(),
+            "select": true,
+        });
+    } else {
+        // TODO: ELSE check if elem has class selectedChamp
+        if ($(`#${id}`).hasClass("selectedChamp")) {
+            // TODO: send deselect to server
+            sendSelection({
+                "id": id,
+                "name": $(`#${id}name`).text(),
+                "select": false,
+            })
+        }
+        // else do nothing
+
+    }
+
 }
 
 let toggleButtons = () => {
@@ -163,18 +184,15 @@ let initSockConnection = (pass) => {
                 "max_players": maxPlayers,
             });
         }
-        sendSelection = (id) => {
-            let char = {
-                "id": id,
-                // "name": chararacters[id.replace("c", "")].name
-            }
+        sendSelection = (char) => {
+            console.table(char)
             socket.emit("selected", char);
         }
+        // console.log(`someoneElseSelected ${char.name}`)
+        // $(`#${char.id}`).toggleClass("notSelected someoneElseSelected");
         socket.on("selection", chars => {
-            // console.log(`someoneElseSelected ${char.name}`)
-            // $(`#${char.id}`).toggleClass("notSelected someoneElseSelected");
             let ar = $(".champion-select").children();
-            console.log(ar);
+            console.table(`${Object.keys(chars)}`);
         })
         // listen for roomlist 
         socket.on("getList", (data) => {
