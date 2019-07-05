@@ -29,4 +29,4 @@ let characters = [{
         "stats": "Du kannst Fallen auf dem Spielfeld sehen."
     }
 ]
-module.exports = characters;
+// module.exports = characters;

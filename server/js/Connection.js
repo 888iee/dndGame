@@ -32,6 +32,7 @@ let Connection = (io) => {
 
     io.on("connection", (socket) => {
         users[socket.id] = socket;
+        socket.emit("id", socket.id);
         socket.on("createRoom", (roomData) => {
             try {
                 // assigns socket to leader 
@@ -74,39 +75,66 @@ let Connection = (io) => {
             });
         });
 
-        socket.on("selected", (data) => {
-            // let chararacters = require("../../client/js/characters");
-            // let roomName = lobby.returnRoomFromSock(socket);
-            // let char = {
-            //     "id": data,
-            //     "name": chararacters[data.replace("c", "")].name,
-            // };
-            // io.to(roomName).emit("getChat", `${socket.username} spielt nun ${char.name}`);
-            // socket.in(roomName).emit("selected", char);
-
-            // check if char exists
+        // let chararacters = require("../../client/js/characters");
+        // let roomName = lobby.returnRoomFromSock(socket);
+        // let char = {
+        //     "id": data,
+        //     "name": chararacters[data.replace("c", "")].name,
+        // };
+        // io.to(roomName).emit("getChat", `${socket.username} spielt nun ${char.name}`);
+        // socket.in(roomName).emit("selected", char);
+        socket.on("selected", (char) => {
+            // check if socket has picked char before
             if (getKeyByValue(chars, socket.id)) {
-                // if exists delete socket.id from character selection
-                chars[getKeyByValue(chars, socket.id)] = "none";
-
-                // check if new cha-selection is exists
-                if (data in chars) {
-                    // check if character is taken
-                    if (chars[data] === "none") {
-                        // if not create and assign socket id to it
-                        chars[data] = socket.id;
-                    } else {
-                        socket.emit("error", `${data.name} is already taken`);
+                console.log(`${socket.username} has selected ${char.name}`)
+                // check if selected char is already selected by client itself
+                if (getKeyByValue(chars, socket.id) === char.id) {
+                    // check if char should be deselected
+                    if (char.select === false) {
+                        // if yes delete clients socket.id from character selection
+                        chars[getKeyByValue(chars, socket.id)] = "none";
                     }
                 } else {
-                    // if not create and assign socket id to it
-                    chars[data] = socket.id;
+                    // if client hasn't selected char
+                    // check if char was selected by someone else
+                    if (char in chars) {
+                        // check if character is taken
+                        if (chars[char.id] === "none") {
+                            // if none create and assign socket id to it
+                            chars[char.id] = socket.id;
+                        } else {
+                            // if char is taken send message to client
+                            socket.emit("error", `${char.name} is already taken`);
+                        }
+                    } else {
+                        // if cha isn't linked with any client
+                        //  create and assign socket id to it
+                        chars[char.id] = socket.id;
+                    }
+                }
+            } else {
+                // if client hasn't selected any char before
+                // check if char was selected by someone else
+                if (char in chars) {
+                    // check if character is taken
+                    if (chars[char.id] === "none") {
+                        // if none create and assign socket id to it
+                        chars[char.id] = socket.id;
+                    } else {
+                        // if char is taken send message to client
+                        socket.emit("error", `${char.name} is already taken`);
+                    }
+                } else {
+                    // if cha isn't linked with any client
+                    //  create and assign socket id to it
+                    chars[char.id] = socket.id;
                 }
 
-                // TODO:
-                // send to all players in room
-                io.to(lobby.returnRoomFromSock(socket)).emit("selection", chars);
             }
+            console.log(chars)
+            // TODO:
+            // send to all players in room
+            io.to(lobby.returnRoomFromSock(socket)).emit("selection", chars);
         });
 
         socket.on("getChat", (data) => {

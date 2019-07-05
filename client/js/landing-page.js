@@ -1,3 +1,4 @@
+let myID;
 let selected;
 $(document).ready(function () {
 
@@ -166,6 +167,7 @@ let submitID = () => {
 let initSockConnection = (pass) => {
     let socket = io();
     socket.on("connect", () => {
+        socket.on("id", id => myID = id);
 
         pass = socket.id + "&&" + getCookie("id");
         if (getCookie("auth") === "") {
@@ -185,14 +187,23 @@ let initSockConnection = (pass) => {
             });
         }
         sendSelection = (char) => {
-            console.table(char)
+            // console.table(char)
             socket.emit("selected", char);
         }
         // console.log(`someoneElseSelected ${char.name}`)
         // $(`#${char.id}`).toggleClass("notSelected someoneElseSelected");
         socket.on("selection", chars => {
-            let ar = $(".champion-select").children();
-            console.table(`${Object.keys(chars)}`);
+            // let ar = $(".champion-select").children();
+            // console.log(chars);
+            let ar = Object.keys(chars);
+            // iterate through received data
+            for (let i = 0; i < ar.length; i++) {
+                if (chars[ar[i]] === myID) {
+                    $(`#${ar[i]}`).toggleClass("selectedChamp notSelected");
+                } else if (chars[ar[i]] === "none") {} else {
+                    $(`#${ar[i]}`).toggleClass("someoneElseSelected notSelected");
+                }
+            }
         })
         // listen for roomlist 
         socket.on("getList", (data) => {
