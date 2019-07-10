@@ -13,11 +13,7 @@ let Connection = (io) => {
         }
     }
 
-    // helper function to check if value exists in any key
-    // returns key
-    let getKeyByValue = (object, value) => {
-        return Object.keys(object).find(key => object[key] === value);
-    }
+
 
 
     // sends welcome msg to client and broadcast to 
@@ -75,67 +71,7 @@ let Connection = (io) => {
             });
         });
 
-        // let chararacters = require("../../client/js/characters");
-        // let roomName = lobby.returnRoomFromSock(socket);
-        // let char = {
-        //     "id": data,
-        //     "name": chararacters[data.replace("c", "")].name,
-        // };
-        // io.to(roomName).emit("getChat", `${socket.username} spielt nun ${char.name}`);
-        // socket.in(roomName).emit("selected", char);
-        socket.on("selected", (char) => {
-            // check if socket has picked char before
-            if (getKeyByValue(chars, socket.id)) {
-                console.log(`${socket.username} has selected ${char.name}`)
-                // check if selected char is already selected by client itself
-                if (getKeyByValue(chars, socket.id) === char.id) {
-                    // check if char should be deselected
-                    if (char.select === false) {
-                        // if yes delete clients socket.id from character selection
-                        chars[getKeyByValue(chars, socket.id)] = "none";
-                    }
-                } else {
-                    // if client hasn't selected char
-                    // check if char was selected by someone else
-                    if (char in chars) {
-                        // check if character is taken
-                        if (chars[char.id] === "none") {
-                            // if none create and assign socket id to it
-                            chars[char.id] = socket.id;
-                        } else {
-                            // if char is taken send message to client
-                            socket.emit("error", `${char.name} is already taken`);
-                        }
-                    } else {
-                        // if cha isn't linked with any client
-                        //  create and assign socket id to it
-                        chars[char.id] = socket.id;
-                    }
-                }
-            } else {
-                // if client hasn't selected any char before
-                // check if char was selected by someone else
-                if (char in chars) {
-                    // check if character is taken
-                    if (chars[char.id] === "none") {
-                        // if none create and assign socket id to it
-                        chars[char.id] = socket.id;
-                    } else {
-                        // if char is taken send message to client
-                        socket.emit("error", `${char.name} is already taken`);
-                    }
-                } else {
-                    // if cha isn't linked with any client
-                    //  create and assign socket id to it
-                    chars[char.id] = socket.id;
-                }
 
-            }
-            console.log(chars)
-            // TODO:
-            // send to all players in room
-            io.to(lobby.returnRoomFromSock(socket)).emit("selection", chars);
-        });
 
         socket.on("getChat", (data) => {
             let roomName = lobby.returnRoomFromSock(socket);

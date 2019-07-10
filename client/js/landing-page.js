@@ -117,29 +117,29 @@ let updateChampSelect = () => {
 //     sendSelection(selected);
 // }
 let checkSelected = (id) => {
-    // TODO: check if selected char has class notSelected 
-    if ($(`#${id}`).hasClass("notSelected")) {
-        // TODO: send selection to server
-        sendSelection({
-            "id": id,
-            "name": $(`#${id}name`).text(),
-            "select": true,
-        });
-    } else {
-        // TODO: ELSE check if elem has class selectedChamp
-        if ($(`#${id}`).hasClass("selectedChamp")) {
-            // TODO: send deselect to server
-            sendSelection({
-                "id": id,
-                "name": $(`#${id}name`).text(),
-                "select": false,
-            })
-        }
-        // else do nothing
+    // // TODO: check if selected char has class notSelected 
+    // if ($(`#${id}`).hasClass("notSelected")) {
+    //     // TODO: send selection to server
+    //     sendSelection({
+    //         "id": id,
+    //         "name": $(`#${id}name`).text(),
+    //         "select": true,
+    //     });
+    // } else if ($(`#${id}`).hasClass("selectedChamp")) {
+    //     // TODO: ELSE check if elem has class selectedChamp
 
-    }
+    //     // TODO: send deselect to server
+    //     sendDeselection({
+    //         "id": id,
+    //         "name": $(`#${id}name`).text(),
+    //         "select": false,
+    //     });
+    // }
+    // else do nothing
 
 }
+
+
 
 let toggleButtons = () => {
     $("#toggle1").toggleClass("unselected");
@@ -186,22 +186,41 @@ let initSockConnection = (pass) => {
                 "max_players": maxPlayers,
             });
         }
-        sendSelection = (char) => {
-            // console.table(char)
-            socket.emit("selected", char);
-        }
+        // sendSelection = (char) => {
+        //     // console.table(char)
+        //     socket.emit("selected", char);
+        // }
+        // sendDeselection = (char) => {
+        //     // console.table(char)
+        //     socket.emit("deselected", char);
+        // }
         // console.log(`someoneElseSelected ${char.name}`)
         // $(`#${char.id}`).toggleClass("notSelected someoneElseSelected");
         socket.on("selection", chars => {
-            // let ar = $(".champion-select").children();
-            // console.log(chars);
+            let children = $(".champion-select").children();
+            for (let i = 0; i < children.length; i++) {
+                if ($(`#${children[i].id}`).hasClass("someoneElseSelected") ||
+                    $(`#${children[i].id}`).hasClass("selectedChamp")) {
+                    try {
+
+                        $(`#${children[i].id}`).removeClass("someoneElseSelected notSelected selectedChamp");
+                    } catch (error) {}
+                }
+                $(`#${children[i].id}`).addClass("notSelected");
+            }
             let ar = Object.keys(chars);
             // iterate through received data
             for (let i = 0; i < ar.length; i++) {
                 if (chars[ar[i]] === myID) {
-                    $(`#${ar[i]}`).toggleClass("selectedChamp notSelected");
-                } else if (chars[ar[i]] === "none") {} else {
-                    $(`#${ar[i]}`).toggleClass("someoneElseSelected notSelected");
+                    $(`#${ar[i]}`).addClass("selectedChamp");
+                    $(`#${ar[i]}`).removeClass("notSelected someoneElseSelected");
+                    selected = ar[i];
+                } else if (chars[ar[i]] === "none") {
+                    $(`#${ar[i]}`).addClass("notSelected");
+                    $(`#${ar[i]}`).removeClass("selectedChamp someoneElseSelected");
+                } else {
+                    $(`#${ar[i]}`).addClass("someoneElseSelected");
+                    $(`#${ar[i]}`).removeClass("selectedChamp notSelected");
                 }
             }
         })
