@@ -117,26 +117,10 @@ let updateChampSelect = () => {
 //     sendSelection(selected);
 // }
 let checkSelected = (id) => {
-    // // TODO: check if selected char has class notSelected 
-    // if ($(`#${id}`).hasClass("notSelected")) {
-    //     // TODO: send selection to server
-    console.log("send selection")
     sendSelection({
         "id": id,
         "name": $(`#${id}name`).text(),
-        // "select": true,
     });
-    // } else if ($(`#${id}`).hasClass("selectedChamp")) {
-    //     // TODO: ELSE check if elem has class selectedChamp
-
-    //     // TODO: send deselect to server
-    //     sendDeselection({
-    //         "id": id,
-    //         "name": $(`#${id}name`).text(),
-    //         "select": false,
-    //     });
-    // }
-    // else do nothing
 
 }
 
@@ -186,15 +170,8 @@ let initSockConnection = (pass) => {
             });
         }
         sendSelection = (char) => {
-            // console.table(char)
             socket.emit("select", char);
         }
-        // sendDeselection = (char) => {
-        //     // console.table(char)
-        //     socket.emit("deselected", char);
-        // }
-        // console.log(`someoneElseSelected ${char.name}`)
-        // $(`#${char.id}`).toggleClass("notSelected someoneElseSelected");
         socket.on("selection", chars => {
             let children = $(".champion-select").children();
             for (let i = 0; i < children.length; i++) {
@@ -208,7 +185,7 @@ let initSockConnection = (pass) => {
                 $(`#${children[i].id}`).addClass("notSelected");
             }
             let ar = Object.keys(chars);
-            // iterate through received data
+            // iterate through received data and reassign css classes
             for (let i = 0; i < ar.length; i++) {
                 if (chars[ar[i]] === myID) {
                     $(`#${ar[i]}`).addClass("selectedChamp");

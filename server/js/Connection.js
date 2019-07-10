@@ -99,6 +99,7 @@ let Connection = (io) => {
                 chars[char.id] = socket.id;
             }
             console.log(chars)
+            // send to all clients in room 
             io.to(lobby.returnRoomFromSock(socket)).emit("selection", chars);
         })
 
