@@ -1,4 +1,5 @@
 let myID;
+let ready = false;
 $(document).ready(function () {
 
     // click event to open popup
@@ -73,6 +74,18 @@ $(document).ready(function () {
     $("#refreshBtn").click(() => {
         requestList();
     });
+    $("#readyBtn").click(() => {
+        if (!ready) {
+            ready = true;
+            $("#readyBtn").addClass("clicked");
+        } else {
+            ready = false;
+            $("#readyBtn").removeClass("clicked");
+        }
+        console.log(ready);
+        sendReady(ready);
+    });
+    $("#readyBtn").attr("disabled", true);
 });
 let updateChampSelect = () => {
     for (let j = 0; j < characters.length; j++) {
@@ -98,10 +111,12 @@ let updateChampSelect = () => {
         });
         // only click event
         $(`#c${j}`).click((e) => {
-            sendSelection({
-                "id": `c${j}`,
-                "name": $(`#${e.target.id}name`).text(),
-            });
+            if (!ready) {
+                sendSelection({
+                    "id": `c${j}`,
+                    "name": $(`#${e.target.id}name`).text(),
+                });
+            }
         });
 
     }
@@ -156,7 +171,11 @@ let initSockConnection = (pass) => {
         sendSelection = (char) => {
             socket.emit("select", char);
         }
+        sendReady = (ready) => {
+            socket.emit("rdy", ready);
+        }
         socket.on("selection", chars => {
+            let selected = false;
             let children = $(".champion-select").children();
             // removes all classes from characters
             for (let i = 0; i < children.length; i++) {
@@ -174,6 +193,7 @@ let initSockConnection = (pass) => {
             for (let i = 0; i < ar.length; i++) {
                 // check if char was chosen by myself
                 if (chars[ar[i]] === $(".side-bar-user-name").text()) {
+                    selected = true;
                     $(`#${ar[i]}`).addClass("selectedChamp");
                     $(`#${ar[i]}`).removeClass("notSelected someoneElseSelected");
                 } else if (chars[ar[i]] === "none") {
@@ -185,6 +205,11 @@ let initSockConnection = (pass) => {
                     $(`#${ar[i]}`).addClass("someoneElseSelected");
                     $(`#${ar[i]}`).removeClass("selectedChamp notSelected");
                 }
+            }
+            if (selected) {
+                $("#readyBtn").attr("disabled", false);
+            } else {
+                $("#readyBtn").attr("disabled", true);
             }
         })
         // listen for roomlist 

@@ -11,13 +11,17 @@ class Lobby {
     }
 
     // get players in room
-    getPlayersInRoom(name, users) {
+    getPlayersInRoom(name, users, bool) {
         let members = [];
         Object.keys(this.io.sockets.adapter.rooms[name].sockets).forEach((id) => {
-            members.push({
+            let obj = {
                 "name": users[id].username,
                 "character": users[id].char,
-            });
+            }
+            if (bool) {
+                obj["rdy"] = users[id].rdy;
+            }
+            members.push(obj);
 
         });
         return members;

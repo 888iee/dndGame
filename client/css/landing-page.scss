@@ -38,6 +38,7 @@ body {
     color: black;
   }
 }
+
 .unselected {
   background-color: rgb(0, 30, 41);
   box-shadow: rgb(0, 22, 30) 0px 4px 0px 0px inset;
@@ -219,6 +220,24 @@ body {
         width: 100%;
         &:hover {
           transform: $hoverScale;
+        }
+      }
+      .button:disabled,
+      .button[disabled] {
+        margin-top: 6px;
+        margin-bottom: 6px;
+        border-radius: inherit;
+        width: 100%;
+        &:hover {
+          transform: none;
+        }
+      }
+
+      .clicked {
+        color: black;
+        background: $btnColorDarker;
+        &:hover {
+          transform: none;
         }
       }
       .chat-room {

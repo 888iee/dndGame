@@ -36,6 +36,7 @@ let Connection = (io) => {
     io.on("connection", (socket) => {
         users[socket.id] = socket;
         socket.char = "none";
+        socket.rdy = false;
         socket.emit("id", socket.id);
         socket.on("createRoom", (roomData) => {
             try {
@@ -108,6 +109,10 @@ let Connection = (io) => {
             io.to(room).emit("selection", chars);
         })
 
+        socket.on("rdy", bool => {
+            socket.rdy = bool;
+            checkReady(lobby.getPlayersInRoom(lobby.returnRoomFromSock(socket), users, true));
+        });
 
         socket.on("getChat", (data) => {
             let roomName = lobby.returnRoomFromSock(socket);
@@ -150,6 +155,13 @@ let Connection = (io) => {
             }
         }, 2000);
 
+        let checkReady = (arReadyCheck) => {
+            for (var i in arReadyCheck) {
+                if (!arReadyCheck[i].rdy) return console.log("Not all ready yet");
+            }
+            // TODO: start countdown and redirect all sockets.of(room) to game site
+            console.log("Everyone is ready\n Starting Game in \n3 \n2 \n1");
+        }
 
         socket.on("disconnect", () => {
             try {

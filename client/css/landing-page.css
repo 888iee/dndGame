@@ -272,6 +272,30 @@ body {
           transform: scale(1.02);
 }
 
+.lobby-room .lobby-center .side-bar .button:disabled,
+.lobby-room .lobby-center .side-bar .button[disabled] {
+  margin-top: 6px;
+  margin-bottom: 6px;
+  border-radius: inherit;
+  width: 100%;
+}
+
+.lobby-room .lobby-center .side-bar .button:disabled:hover,
+.lobby-room .lobby-center .side-bar .button[disabled]:hover {
+  -webkit-transform: none;
+          transform: none;
+}
+
+.lobby-room .lobby-center .side-bar .clicked {
+  color: black;
+  background: #175269;
+}
+
+.lobby-room .lobby-center .side-bar .clicked:hover {
+  -webkit-transform: none;
+          transform: none;
+}
+
 .lobby-room .lobby-center .side-bar .chat-room {
   border-radius: inherit;
 }
