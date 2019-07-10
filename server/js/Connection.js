@@ -87,6 +87,7 @@ let Connection = (io) => {
                     chars[getKeyByValue(chars, socket.id)] = "none"
                     // select new char
                     chars[char.id] = socket.id;
+                    socket.broadcast.to(lobby.returnRoomFromSock(socket)).emit("getChat", `${socket.username} hat ${char.name} ausgewählt.`)
                 } else {
                     // check if selected char should be unchecked
                     if (chars[char.id] === socket.id) {
@@ -97,6 +98,7 @@ let Connection = (io) => {
             } else {
                 // select new char
                 chars[char.id] = socket.id;
+                socket.broadcast.to(lobby.returnRoomFromSock(socket)).emit("getChat", `${socket.username} hat ${char.name} ausgewählt.`)
             }
             console.log(chars)
             // send to all clients in room 
