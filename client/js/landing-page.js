@@ -120,11 +120,12 @@ let checkSelected = (id) => {
     // // TODO: check if selected char has class notSelected 
     // if ($(`#${id}`).hasClass("notSelected")) {
     //     // TODO: send selection to server
-    //     sendSelection({
-    //         "id": id,
-    //         "name": $(`#${id}name`).text(),
-    //         "select": true,
-    //     });
+    console.log("send selection")
+    sendSelection({
+        "id": id,
+        "name": $(`#${id}name`).text(),
+        // "select": true,
+    });
     // } else if ($(`#${id}`).hasClass("selectedChamp")) {
     //     // TODO: ELSE check if elem has class selectedChamp
 
@@ -138,8 +139,6 @@ let checkSelected = (id) => {
     // else do nothing
 
 }
-
-
 
 let toggleButtons = () => {
     $("#toggle1").toggleClass("unselected");
@@ -186,10 +185,10 @@ let initSockConnection = (pass) => {
                 "max_players": maxPlayers,
             });
         }
-        // sendSelection = (char) => {
-        //     // console.table(char)
-        //     socket.emit("selected", char);
-        // }
+        sendSelection = (char) => {
+            // console.table(char)
+            socket.emit("select", char);
+        }
         // sendDeselection = (char) => {
         //     // console.table(char)
         //     socket.emit("deselected", char);

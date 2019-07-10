@@ -1,6 +1,12 @@
 let Connection = (io) => {
     let users = {};
-    let chars = {};
+    let chars = {
+        c1: "none",
+        c2: "none",
+        c3: "none",
+        c4: "none",
+        c5: "none",
+    };
     const Lobby = require("./Lobby");
     let lobby = new Lobby(io);
 
@@ -13,8 +19,9 @@ let Connection = (io) => {
         }
     }
 
-
-
+    function getKeyByValue(object, value) {
+        return Object.keys(object).find(key => object[key] === value);
+    }
 
     // sends welcome msg to client and broadcast to 
     // all other members of client's room a notification
@@ -71,6 +78,29 @@ let Connection = (io) => {
             });
         });
 
+        socket.on("select", char => {
+            // check if char.id exist in chars 
+            if (char.id in chars) {
+                // check if chars[char.id] is selected by none
+                if (chars[char.id] === "none") {
+                    // deselect previous char
+                    chars[getKeyByValue(chars, socket.id)] = "none"
+                    // select new char
+                    chars[char.id] = socket.id;
+                } else {
+                    // check if selected char should be unchecked
+                    if (chars[char.id] === socket.id) {
+                        // deselect char
+                        chars[char.id] = "none";
+                    }
+                }
+            } else {
+                // select new char
+                chars[char.id] = socket.id;
+            }
+            console.log(chars)
+            io.to(lobby.returnRoomFromSock(socket)).emit("selection", chars);
+        })
 
 
         socket.on("getChat", (data) => {
