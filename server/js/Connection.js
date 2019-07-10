@@ -80,26 +80,28 @@ let Connection = (io) => {
 
         socket.on("select", char => {
             // check if char.id exist in chars 
-            if (char.id in chars) {
-                // check if chars[char.id] is selected by none
-                if (chars[char.id] === "none") {
-                    // deselect previous char
-                    chars[getKeyByValue(chars, socket.id)] = "none"
-                    // select new char
-                    chars[char.id] = socket.id;
-                    socket.broadcast.to(lobby.returnRoomFromSock(socket)).emit("getChat", `${socket.username} hat ${char.name} ausgewählt.`)
-                } else {
-                    // check if selected char should be unchecked
-                    if (chars[char.id] === socket.id) {
-                        // deselect char
-                        chars[char.id] = "none";
-                    }
+            // if (char.id in chars) {
+            // check if chars[char.id] is selected by none
+            if (chars[char.id] === "none") {
+                // deselect previous char
+                if (chars[getKeyByValue(chars, socket.username)]) {
+                    chars[getKeyByValue(chars, socket.username)] = "none"
                 }
-            } else {
                 // select new char
-                chars[char.id] = socket.id;
+                chars[char.id] = socket.username;
                 socket.broadcast.to(lobby.returnRoomFromSock(socket)).emit("getChat", `${socket.username} hat ${char.name} ausgewählt.`)
+            } else {
+                // check if selected char should be unchecked
+                if (chars[char.id] === socket.username) {
+                    // deselect char
+                    chars[char.id] = "none";
+                }
             }
+            // } else {
+            //     // select new char
+            //     chars[char.id] = socket.id;
+            //     socket.broadcast.to(lobby.returnRoomFromSock(socket)).emit("getChat", `${socket.username} hat ${char.name} ausgewählt.`)
+            // }
             console.log(chars)
             // send to all clients in room 
             io.to(lobby.returnRoomFromSock(socket)).emit("selection", chars);

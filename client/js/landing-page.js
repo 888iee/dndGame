@@ -1,5 +1,4 @@
 let myID;
-let selected;
 $(document).ready(function () {
 
     // click event to open popup
@@ -99,30 +98,15 @@ let updateChampSelect = () => {
         });
         // only click event
         $(`#c${j}`).click((e) => {
-            // if ($(`#c${j}`).hasClass("someoneElseSelected")) {} else {
-            //     checkSelected(e.target.id);
-            //     $(`#c${j}`).toggleClass("selectedChamp notSelected");
-            // }
-            // $(`#c${j}`).toggleClass("champion");
-            checkSelected(e.target.id);
+            sendSelection({
+                "id": `c${j}`,
+                "name": $(`#${e.target.id}name`).text(),
+            });
         });
 
     }
 }
-// console.log(`selected is ${selected}, check for new selection ${id}`)
-// if (selected !== id) {
-//     $(`#${selected}`).toggleClass("selectedChamp notSelected");
-//     selected = id;
-//     console.log(`new selected is ${selected}`)
-//     sendSelection(selected);
-// }
-let checkSelected = (id) => {
-    sendSelection({
-        "id": id,
-        "name": $(`#${id}name`).text(),
-    });
 
-}
 
 let toggleButtons = () => {
     $("#toggle1").toggleClass("unselected");
@@ -187,10 +171,9 @@ let initSockConnection = (pass) => {
             let ar = Object.keys(chars);
             // iterate through received data and reassign css classes
             for (let i = 0; i < ar.length; i++) {
-                if (chars[ar[i]] === myID) {
+                if (chars[ar[i]] === $(".side-bar-user-name").text()) {
                     $(`#${ar[i]}`).addClass("selectedChamp");
                     $(`#${ar[i]}`).removeClass("notSelected someoneElseSelected");
-                    selected = ar[i];
                 } else if (chars[ar[i]] === "none") {
                     $(`#${ar[i]}`).addClass("notSelected");
                     $(`#${ar[i]}`).removeClass("selectedChamp someoneElseSelected");
