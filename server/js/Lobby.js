@@ -16,6 +16,7 @@ class Lobby {
         Object.keys(this.io.sockets.adapter.rooms[name].sockets).forEach((id) => {
             members.push({
                 "name": users[id].username,
+                "character": users[id].char,
             });
 
         });

@@ -158,6 +158,7 @@ let initSockConnection = (pass) => {
         }
         socket.on("selection", chars => {
             let children = $(".champion-select").children();
+            // removes all classes from characters
             for (let i = 0; i < children.length; i++) {
                 if ($(`#${children[i].id}`).hasClass("someoneElseSelected") ||
                     $(`#${children[i].id}`).hasClass("selectedChamp")) {
@@ -171,13 +172,16 @@ let initSockConnection = (pass) => {
             let ar = Object.keys(chars);
             // iterate through received data and reassign css classes
             for (let i = 0; i < ar.length; i++) {
+                // check if char was chosen by myself
                 if (chars[ar[i]] === $(".side-bar-user-name").text()) {
                     $(`#${ar[i]}`).addClass("selectedChamp");
                     $(`#${ar[i]}`).removeClass("notSelected someoneElseSelected");
                 } else if (chars[ar[i]] === "none") {
+                    // check if char isn't selected
                     $(`#${ar[i]}`).addClass("notSelected");
                     $(`#${ar[i]}`).removeClass("selectedChamp someoneElseSelected");
                 } else {
+                    // was selected by other players
                     $(`#${ar[i]}`).addClass("someoneElseSelected");
                     $(`#${ar[i]}`).removeClass("selectedChamp notSelected");
                 }
@@ -222,8 +226,8 @@ let initSockConnection = (pass) => {
             deletePlayerList();
             for (let i = 0; i < data.length; i++) {
                 $(`#p${i+1}`).text(data[i].name)
-                if (data[i].character) {
-                    $(`#p${i+1}`).append(` ${data[i].character} `);
+                if (data[i].character && data[i].character !== "none") {
+                    $(`#p${i+1}`).append(` - ${data[i].character} `);
                 }
                 if (i == 0) {
                     $(`#p${i+1}`).append(" - Lead");

@@ -35,6 +35,7 @@ let Connection = (io) => {
 
     io.on("connection", (socket) => {
         users[socket.id] = socket;
+        socket.char = "none";
         socket.emit("id", socket.id);
         socket.on("createRoom", (roomData) => {
             try {
@@ -79,6 +80,7 @@ let Connection = (io) => {
         });
 
         socket.on("select", char => {
+            let room = lobby.returnRoomFromSock(socket);
             // check if char.id exist in chars 
             // if (char.id in chars) {
             // check if chars[char.id] is selected by none
@@ -89,22 +91,21 @@ let Connection = (io) => {
                 }
                 // select new char
                 chars[char.id] = socket.username;
-                socket.broadcast.to(lobby.returnRoomFromSock(socket)).emit("getChat", `${socket.username} hat ${char.name} ausgewählt.`)
+                socket.char = char.name;
+                socket.broadcast.to(room).emit("getChat", `${socket.username} hat ${char.name} ausgewählt.`)
+                io.in(room).emit("addPlayer", lobby.getPlayersInRoom(room, users));
             } else {
                 // check if selected char should be unchecked
                 if (chars[char.id] === socket.username) {
                     // deselect char
                     chars[char.id] = "none";
+                    socket.char = "none";
                 }
             }
-            // } else {
-            //     // select new char
-            //     chars[char.id] = socket.id;
-            //     socket.broadcast.to(lobby.returnRoomFromSock(socket)).emit("getChat", `${socket.username} hat ${char.name} ausgewählt.`)
-            // }
             console.log(chars)
             // send to all clients in room 
-            io.to(lobby.returnRoomFromSock(socket)).emit("selection", chars);
+            io.in(room).emit("addPlayer", lobby.getPlayersInRoom(room, users));
+            io.to(room).emit("selection", chars);
         })
 
 
