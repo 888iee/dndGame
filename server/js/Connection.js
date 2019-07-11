@@ -161,6 +161,16 @@ let Connection = (io) => {
             }
             // TODO: start countdown and redirect all sockets.of(room) to game site
             console.log("Everyone is ready\n Starting Game in \n3 \n2 \n1");
+            io.to(lobby.returnRoomFromSock(socket)).emit("getChat", "Spiel startet in..")
+            setTimeout(() => {
+                io.to(lobby.returnRoomFromSock(socket)).emit("getChat", 3);
+                setTimeout(() => {
+                    io.to(lobby.returnRoomFromSock(socket)).emit("getChat", 2);
+                    setTimeout(() => {
+                        io.to(lobby.returnRoomFromSock(socket)).emit("getChat", 1);
+                    }, 1000);
+                }, 1000);
+            }, 1000);
         }
 
         socket.on("disconnect", () => {
