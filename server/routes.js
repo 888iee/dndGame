@@ -13,6 +13,13 @@ module.exports = (app, path, express) => {
         // console.log(mapData);
         res.json(mapData);
     });
+    // ajax character Request for Client
+    app.get("/chars", (req, res) => {
+        let json = require("./lib/characters");
+        let x = JSON.stringify(json);
+        res.json(x)
+    });
+
 
     // custom Fonts
     app.get("/styles/fonts/Asap-SemiBold.tff", (req, res) => {

@@ -88,38 +88,7 @@ $(document).ready(function () {
     $("#readyBtn").attr("disabled", true);
 });
 let updateChampSelect = () => {
-    for (let j = 0; j < characters.length; j++) {
-        $(`#c${j}name`).text(characters[j].name);
-        $(`#c${j}img`).attr("src", characters[j].img);
-        $(`#c${j}info`).text(characters[j].info);
-        $(`#c${j}stats`).text(characters[j].stats);
-        $(`#c${j}name`).click((e) => {
-            e.stopPropagation();
-            e.preventDefault();
-        });
-        $(`#c${j}img`).click((e) => {
-            e.stopPropagation();
-            e.preventDefault();
-        });
-        $(`#c${j}info`).click((e) => {
-            e.stopPropagation();
-            e.preventDefault();
-        });
-        $(`#c${j}stats`).click((e) => {
-            e.stopPropagation();
-            e.preventDefault();
-        });
-        // only click event
-        $(`#c${j}`).click((e) => {
-            if (!ready) {
-                sendSelection({
-                    "id": `c${j}`,
-                    "name": $(`#${e.target.id}name`).text(),
-                });
-            }
-        });
 
-    }
 }
 
 
@@ -228,7 +197,6 @@ let initSockConnection = (pass) => {
 
         // listen for create room request auth
         socket.on("openRoom", data => {
-            console.log(data);
             // hide roomlist
             $("#roomList").css("display", "none");
             $("#roomName").text(data.roomName);
@@ -279,6 +247,52 @@ let initSockConnection = (pass) => {
                 "roomName": name,
                 "public": public
             });
+        }
+
+        updateChampSelect = () => {
+            $.ajax({
+                    type: "GET",
+                    url: "http://localhost:5000/chars",
+                    dataType: "json",
+                    success: (chars) => {
+                        let characters = JSON.parse(chars)
+                        for (let j = 0; j < characters.length; j++) {
+                            $(`#c${j+1}name`).text(characters[j].name);
+                            $(`#c${j+1}img`).attr("src", characters[j].img);
+                            $(`#c${j+1}info`).text(characters[j].info);
+                            $(`#c${j+1}stats`).text(characters[j].stats);
+                            $(`#c${j+1}name`).click((e) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                            });
+                            $(`#c${j+1}img`).click((e) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                            });
+                            $(`#c${j+1}info`).click((e) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                            });
+                            $(`#c${j+1}stats`).click((e) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                            });
+                            // only click event
+                            $(`#c${j+1}`).click((e) => {
+                                if (!ready) {
+                                    sendSelection({
+                                        "id": `c${j+1}`,
+                                        "name": $(`#${e.target.id}name`).text(),
+                                    });
+                                }
+                            });
+
+                        }
+                    }
+                })
+                .fail((jqXHR, textStatus) => {
+                    console.log("AJAX ERROR: ", textStatus);
+                });
         }
     });
 }
