@@ -1,4 +1,9 @@
 [{
+        "name": "Regdar",
+        "img": "res/Untitled.png",
+        "info": "Regdar kämpft für das Gute und schwingt sein mächtiges Schwert im Namen der Gerechtigkeit. Auf seinen Abenteuern will er das Böse bezwingen sowie die Fähigkeiten und Erfahrungen sammeln, die er für seinen Kreuzzug braucht. Regdars Aufgabe ist es, Monster zu töten und die anderen Helden zu beschützen.",
+        "stats": "Move: 4 <br> Rüstung: 2<br> Rucksack: 4<br> HP: 8<br> Aktiv: 2 Waffen 1 Item"
+    }, {
         "name": "Mialee",
         "img": "res/Untitled.png",
         "info": "Mialee lernt noch, wie man Zauber wirkt. Da sie einmal Zaubermeisterin werden will, nutzt sie jede Gelegenheit, ihre Fähigkeiten an ihren Feinden auszuprobieren. Mialees Aufgabe ist es die anderen Helden beim Kampf gegen die Monster mit ihren mächtigen Zaubern zu unterstützen.",
@@ -21,10 +26,5 @@
         "img": "res/Untitled.png",
         "info": "Du bist die unsichtbare Hand, die alle Monster kontrolliert. Die Helden sind deine Feinde, deren Sinn für Wahrheit und Gerechtigkeit gilt es zu brechen und in die ewige Verdammnis zu schicken. Deine Aufgabe ist es mithilfe deiner Untertanen, deine Schätze zu verteidigen die Helden zu töten, falls möglich.",
         "stats": "Du kannst Fallen auf dem Spielfeld sehen."
-    }, {
-        "name": "Regdar",
-        "img": "res/Untitled.png",
-        "info": "Regdar kämpft für das Gute und schwingt sein mächtiges Schwert im Namen der Gerechtigkeit. Auf seinen Abenteuern will er das Böse bezwingen sowie die Fähigkeiten und Erfahrungen sammeln, die er für seinen Kreuzzug braucht. Regdars Afugabe ist es, Monster zu töten und die anderen Helden zu beschützen.",
-        "stats": "Move: 4 <br> Rüstung: 2<br> Rucksack: 4<br> HP: 8<br> Aktiv: 2 Waffen 1 Item"
     }
 ]

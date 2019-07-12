@@ -174,12 +174,9 @@ let Connection = (io) => {
         }
 
         socket.on("disconnect", () => {
-            try {
-                let num = getIndexByUsrId(socket.id);
-                rooms[num].player_count--;
-
-            } catch (error) {
-                console.log("No Room to leave error occured");
+            if (typeof socket.raum !== undefined) {
+                console.log(socket.raum)
+                socket.broadcast.in(socket.raum).emit("getChat", `${socket.username} hat den Raum verlassen.`);
             }
             delete users[socket.id];
             console.log(`${socket.username} has been disconnected. [${socket.id}]`);

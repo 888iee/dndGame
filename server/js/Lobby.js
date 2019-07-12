@@ -27,6 +27,9 @@ class Lobby {
         return members;
     }
 
+    getIndexByName(name) {
+        return this.rooms.findIndex(obj => obj.roomName === name);
+    }
     // returns room
     findRoom(name) {
         return this.rooms.find(room => room.roomName === name);
@@ -54,7 +57,9 @@ class Lobby {
             cb()
             // add room to global array
             this.rooms.push(room);
+            sock.raum = room.roomName;
         } else {
+            sock.raum = room.roomName;
             cb()
         }
     }
@@ -93,5 +98,6 @@ class Lobby {
             console.log(`ERROR\n${data.socket.username} tried to join not existing room.`)
         }
     }
+
 }
 module.exports = Lobby;

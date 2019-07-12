@@ -12,6 +12,14 @@
   scrollbar-color: #2a2c2e #1c1e1f;
 }
 
+* ::-webkit-scrollbar {
+  background: #2a2c2e #1c1e1f;
+}
+
+* ::-webkit-scrollbar-corner {
+  background: #2a2c2e #1c1e1f;
+}
+
 .champion > * {
   pointer-events: none;
 }
@@ -206,10 +214,10 @@ body {
   border-radius: 8px;
   display: -ms-grid;
   display: grid;
-  -ms-grid-columns: 1fr 9fr;
-      grid-template-columns: 1fr 9fr;
+  -ms-grid-columns: 1fr 8fr;
+      grid-template-columns: 1fr 8fr;
   grid-gap: 1em;
-  grid-auto-rows: 989px;
+  grid-auto-rows: 900px;
   overflow: hidden;
 }
 
@@ -307,8 +315,8 @@ body {
   background: rgba(1, 53, 74, 0.5);
   display: -ms-grid;
   display: grid;
-  -ms-grid-rows: 22fr 1.4fr;
-      grid-template-rows: 22fr 1.4fr;
+  -ms-grid-rows: 20fr 1.4fr;
+      grid-template-rows: 20fr 1.4fr;
   color: whitesmoke;
   font-size: 18px;
 }
