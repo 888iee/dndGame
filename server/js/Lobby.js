@@ -58,13 +58,14 @@ class Lobby {
             // add room to global array
             this.rooms.push(room);
             sock.raum = room.roomName;
+            console.log(`Room ${room.roomName} was created with pass:${room.password}`)
         } else {
             sock.raum = room.roomName;
             cb()
+            console.log(`${sock.username} joined the room ${sock.raum}`);
         }
     }
     creatingRoom(roomData, socket, cb) {
-        console.log(`Room Data => ${roomData.roomName}:${roomData.password}`)
         if (this.findRoom(roomData.roomName)) {
             console.log(`${socket.id} tried to create an already existing Room \n=> ${roomData.roomName}`)
             socket.emit("msg", "Room already exist!");
@@ -78,9 +79,7 @@ class Lobby {
         }
     }
     joiningRoom(data, cb) {
-        console.log(`TRYY > ${data.roomName}`)
         let room = this.findRoom(data.roomName);
-        console.log(room);
         if (room) {
             if (this.getPlayerCount(room.roomName) < room.max_players) {
                 let pack = {
@@ -97,6 +96,9 @@ class Lobby {
         } else {
             console.log(`ERROR\n${data.socket.username} tried to join not existing room.`)
         }
+    }
+    removeRoom(count) {
+        this.rooms.splice(count, 1);
     }
 
 }

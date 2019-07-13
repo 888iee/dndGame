@@ -187,31 +187,25 @@ let Connection = (io) => {
         return data.split("&&");
     }
 
-    // returns actual size of room
-    let getPlayerCount = (roomName) => {
-        try {
-            return io.sockets.adapter.rooms[roomName].length;
-
-        } catch (error) {
-            return 1;
-        }
-    }
     let getRoomList = () => {
         let package = [];
-        // console.log(`roomsList: \n ${rooms[0].roomName}`)
         for (let i = 0; i < lobby.rooms.length; i++) {
-            let canIJoin = lobby.rooms[i].player_count < lobby.rooms[i].max_players;
-            // setTimeout(() => {
-            package.push({
-                "roomName": lobby.rooms[i].roomName,
-                "public": lobby.rooms[i].public,
-                "player_count": getPlayerCount(lobby.rooms[i].roomName),
-                "max_players": lobby.rooms[i].max_players,
-                "leader": lobby.rooms[i].leader,
-                "canIJoin": canIJoin
-            })
-            // }, 100)
+            try {
+                let player_count = lobby.getPlayerCount(lobby.rooms[i].roomName);
+                let canIJoin = player_count < lobby.rooms[i].max_players;
+                package.push({
+                    "roomName": lobby.rooms[i].roomName,
+                    "public": lobby.rooms[i].public,
+                    "player_count": player_count,
+                    "max_players": lobby.rooms[i].max_players,
+                    "leader": lobby.rooms[i].leader,
+                    "canIJoin": canIJoin
+                })
 
+            } catch (error) {
+                lobby.removeRoom(i);
+                continue
+            }
         }
         return package;
     }
