@@ -169,6 +169,8 @@ let Connection = (io) => {
                     setTimeout(() => {
                         io.to(lobby.returnRoomFromSock(socket)).emit("getChat", 1);
                         io.to(lobby.returnRoomFromSock(socket)).emit("redirect", "/play.html");
+                        let Game = require("./game/Game");
+                        Game.launch();
                     }, 1000);
                 }, 1000);
             }, 1000);

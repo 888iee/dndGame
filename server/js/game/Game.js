@@ -15,7 +15,7 @@ class Game {
 
         // //
         // limit for maxPlayers
-        this.maxPlayers = 2;
+        this.maxPlayers = 1;
         // bool for loading map
         this.loadMapTrigger = true;
         // ar for round
@@ -81,10 +81,10 @@ class Game {
                     }
                     player.updateStats();
                 }
-                let package = Player.update();
+                pack = Player.update();
                 for (let i in users) {
                     // users[i].emit("newPos", (package));
-                    users[i].emit("update", package);
+                    users[i].emit("update", pack);
                     // user.emit("remove", removePackage);
                 }
             }, 1000 / 80);
@@ -148,7 +148,7 @@ class Game {
     ////////////// 
 
     // returns startPos on specific map
-    findPlayerPosOnMap = (mapNumber) => {
+    findPlayerPosOnMap(mapNumber) {
         for (let i in mapData) {
             if (mapNumber == mapData[i].mapNumber) {
                 return mapData[i].entry;
@@ -166,7 +166,7 @@ class Game {
             users[i].emit("init", initPackage);
         }
     }
-    
+
 }
 module.exports = Game;
 // returns size of object
