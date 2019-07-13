@@ -11,7 +11,7 @@ class Lobby {
     }
 
     // get players in room
-    getPlayersInRoom(name, users, bool) {
+    getPlayersInRoom(name, users, bool, bool2) {
         let members = [];
         Object.keys(this.io.sockets.adapter.rooms[name].sockets).forEach((id) => {
             let obj = {
@@ -20,6 +20,9 @@ class Lobby {
             }
             if (bool) {
                 obj["rdy"] = users[id].rdy;
+            }
+            if (bool2) {
+                obj["originID"] = users[id].originID;
             }
             members.push(obj);
 

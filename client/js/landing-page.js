@@ -238,6 +238,7 @@ let initSockConnection = (pass) => {
             }
         }
 
+        socket.on("redirect", url => window.location.href = url);
         // request roomlist
         requestList = () => socket.emit("reqList");
 

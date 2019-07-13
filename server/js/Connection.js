@@ -168,6 +168,7 @@ let Connection = (io) => {
                     io.to(lobby.returnRoomFromSock(socket)).emit("getChat", 2);
                     setTimeout(() => {
                         io.to(lobby.returnRoomFromSock(socket)).emit("getChat", 1);
+                        io.to(lobby.returnRoomFromSock(socket)).emit("redirect", "/play.html");
                     }, 1000);
                 }, 1000);
             }, 1000);
