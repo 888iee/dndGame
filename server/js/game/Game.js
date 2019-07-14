@@ -1,6 +1,6 @@
 "use strict";
 class Game {
-    constructor(io) {
+    constructor(io, room) {
         this.fs = require("fs");
         this.mapData = require("../../lib/map");
 
@@ -32,6 +32,7 @@ class Game {
         // TODO: 
         this.preLoadLoop;
         this.io = io;
+        this.room = room;
     }
     preloader() {
         let preLoadLoop = setInterval(() => {

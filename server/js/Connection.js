@@ -160,17 +160,22 @@ let Connection = (io) => {
             for (var i in arReadyCheck) {
                 if (!arReadyCheck[i].rdy) return console.log("Not all ready yet");
             }
+            let roomName = lobby.returnRoomFromSock(socket);
             // TODO: start countdown and redirect all sockets.of(room) to game site
-            console.log("Everyone is ready\n Starting Game in \n3 \n2 \n1");
-            io.to(lobby.returnRoomFromSock(socket)).emit("getChat", "Spiel startet in..")
+            console.log("Everyone is ready\nStarting Game in \n3 \n2 \n1");
+            io.to(roomName).emit("getChat", "Spiel startet in..")
             setTimeout(() => {
-                io.to(lobby.returnRoomFromSock(socket)).emit("getChat", 3);
+                io.to(roomName).emit("getChat", 3);
                 setTimeout(() => {
-                    io.to(lobby.returnRoomFromSock(socket)).emit("getChat", 2);
+                    io.to(roomName).emit("getChat", 2);
                     setTimeout(() => {
-                        io.to(lobby.returnRoomFromSock(socket)).emit("getChat", 1);
-                        io.to(lobby.returnRoomFromSock(socket)).emit("redirect", "/play.html");
-                        let game = new Game(io);
+                        io.to(roomName).emit("getChat", 1);
+                        io.to(roomName).emit("redirect", "/play.html");
+
+                        let raum = lobby.returnRoomFromSock(socket);
+                        raum.member = lobby.getPlayersInRoom(roomName, users, false, true);
+
+                        let game = new Game(io, raum);
                         game.launch();
                     }, 1000);
                 }, 1000);
