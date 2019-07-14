@@ -1,4 +1,5 @@
 let Connection = (io) => {
+    const Game = require("./game/Game");
     let users = {};
     let chars = {
         c1: "none",
@@ -169,8 +170,8 @@ let Connection = (io) => {
                     setTimeout(() => {
                         io.to(lobby.returnRoomFromSock(socket)).emit("getChat", 1);
                         io.to(lobby.returnRoomFromSock(socket)).emit("redirect", "/play.html");
-                        let Game = require("./game/Game");
-                        Game.launch();
+                        let game = new Game(io);
+                        game.launch();
                     }, 1000);
                 }, 1000);
             }, 1000);
@@ -203,8 +204,7 @@ let Connection = (io) => {
                     "max_players": lobby.rooms[i].max_players,
                     "leader": lobby.rooms[i].leader,
                     "canIJoin": canIJoin
-                })
-
+                });
             } catch (error) {
                 lobby.removeRoom(i);
                 continue

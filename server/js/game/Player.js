@@ -97,7 +97,7 @@ class Player {
 
 
     // returns true if actions left
-    canIAct = () => {
+    canIAct() {
         if (this.isTurn && this.actions < this.maxActions) {
             return true;
         }
@@ -105,7 +105,7 @@ class Player {
 
     // checks if self already started moving
     // if so set steps to zero && actions+1
-    canIAbortMovementAndDoAnotherAction = () => {
+    canIAbortMovementAndDoAnotherAction() {
         if (this.stepsRemaining !== this.maxMove && this.moveCounter > 0) {
             console.log("canIAbortMovementAndDoAnotherAction\ncan't act cause " + this.id + "already started movement.");
             return false;
@@ -114,7 +114,7 @@ class Player {
             return true;
         }
     }
-    abortMovement = () => {
+    abortMovement() {
         if (this.stepsRemaining !== this.maxMove && this.stepsRemaining !== 0) {
             this.stepsRemaining = 0;
             this.actions++;
@@ -124,7 +124,7 @@ class Player {
     }
 
     // validates Key Presses from Client
-    validateUserInput = (data) => {
+    validateUserInput(data) {
         // continues if Player can interact
         if (this.isTurn) {
             let physics = Physics(self, data);
@@ -133,17 +133,17 @@ class Player {
                 // checks if move is possible
                 if (physics.controlMove()) {
                     // moves player
-                    move(data);
+                    this.move(data);
                 }
             } else if (data.actionType === "open") {
                 // returns chest if opened
-                openChest(physics.getChests());
+                this.openChest(physics.getChests());
 
             }
         }
     }
     // updates Player Position
-    updateStats = () => {
+    updateStats() {
         if (this.pressUp) {
             this.y--;
             this.pressUp = false;
@@ -161,7 +161,7 @@ class Player {
     }
 
     // moves Player
-    move = (data) => {
+    move(data) {
         if (canIAct()) {
             // checks if steps are left && if u walked once
             if (this.stepsRemaining > 0 && this.moveCounter <= 1) {
@@ -193,17 +193,21 @@ class Player {
                 }
             }
         }
-        log();
+        this.log();
     }
 
     // print player details
-    log = () => console.log(this.id + ", steps left: " + this.stepsRemaining +
-        ", max steps: " + this.maxMove + ", actions done: " + this.actions + ", moveCounter: " + this.moveCounter);
+    log() {
+        console.log(this.id + ", steps left: " + this.stepsRemaining +
+            ", max steps: " + this.maxMove + ", actions done: " + this.actions + ", moveCounter: " + this.moveCounter);
+    }
 
-    logStats = () => console.log(this.id + " has " + this.hp + " and " + this.mp + ".");
+    logStats() {
+        console.log(this.id + " has " + this.hp + " and " + this.mp + ".");
+    }
 
     // resets Player Round stats
-    resetPlayer = () => {
+    resetPlayer() {
         this.stepsRemaining = this.maxMove;
         this.actions = 0;
         this.moveCounter = 0;
@@ -211,39 +215,41 @@ class Player {
     }
 
     // adds 1 to actions and deletes remaining Steps
-    didAction = () => {
-        deleteRemainingSteps();
+    didAction() {
+        this.deleteRemainingSteps();
     }
 
     // returns true if actions is below maxActions
-    areActionsLeft = () => {
+    areActionsLeft() {
         if (this.actions < this.maxActions) {
             return true;
         }
     }
 
     // deletes Remaining Steps
-    deleteRemainingSteps = () => {
+    deleteRemainingSteps() {
         if (this.stepsRemaining != this.maxMove) {
-            skipAction()
+            this.skipAction()
             this.stepsRemaining = 0;
         }
     }
 
     // skips Round
-    skipAction = () => this.actions++;
+    skipAction() {
+        this.actions++;
+    }
 
 
 
     // returns true if it is still players turn
-    isItMyTurn = () => {
+    isItMyTurn() {
         let bool = areActionsLeft(this.maxActions);
         this.sock.emit("myTurn", bool)
         return this.isTurn = bool;
     }
 
     // opens Chest if possible
-    openChest = (chests) => {
+    openChest(chests) {
         if (this.actions > 1 && this.stepsRemaining <= this.maxMove) {
             console.log(this.id + " can't do more actions.")
         } else {
@@ -254,7 +260,7 @@ class Player {
                         (this.y + 1 == chests[i].y && this.x == chests[i].x) ||
                         (this.x == chests[i].x && this.y == chests[i].y))) {
                     if (loot(chests[i]) == true) {
-                        log();
+                        this.log();
                     }
                 }
             }
@@ -262,7 +268,7 @@ class Player {
     }
 
     // returns item from chest to inventory
-    loot = (chest) => {
+    loot(chest) {
         // console.log(droppedItems);
         if (chest.opened) {
             console.log("Chest is already opened");
@@ -274,8 +280,8 @@ class Player {
                     return false;
                 }
                 console.log("looting " + item.name);
-                didAction();
-                skipAction();
+                this.didAction();
+                this.skipAction();
                 this.inventory.addItem(item);
                 return true;
             }
@@ -284,7 +290,7 @@ class Player {
     }
 
     // applies damage to player
-    setDamage = (dmg) => {
+    setDamage(dmg) {
         let trueDmg = dmg - this.armor;
         if (trueDmg > 0) {
             this.hpChanged = true;
@@ -297,7 +303,7 @@ class Player {
     }
 
     // applies health to player
-    setHeal = (heal) => {
+    setHeal(heal) {
         this.hpChanged = true;
         this.hp = this.hp + heal;
         if (this.hp > this.maxHp) {
@@ -306,7 +312,7 @@ class Player {
     }
 
     // returns melee or ranged
-    getDistance = (enemy) => {
+    getDistance(enemy) {
         if (((this.x + 1 == enemy.x && this.y == enemy.y) ||
                 (this.x - 1 == enemy.x && this.y == enemy.y) ||
                 (this.y - 1 == enemy.y && this.x == enemy.x) ||
@@ -319,7 +325,7 @@ class Player {
     }
 
 
-    getPlayerData = () => {
+    getPlayerData() {
         let data = {
             name: this.name,
             race: this.race,

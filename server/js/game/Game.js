@@ -1,3 +1,4 @@
+"use strict";
 class Game {
     constructor(io) {
         this.fs = require("fs");
@@ -11,7 +12,7 @@ class Game {
         // connnected users list
         this.users = {};
         // connected players list
-        Player.list = {};
+        this.Player.list = {};
 
         // //
         // limit for maxPlayers
@@ -33,22 +34,22 @@ class Game {
         this.io = io;
     }
     preloader() {
-        preLoadLoop = setInterval(() => {
+        let preLoadLoop = setInterval(() => {
             console.log("didn't start yet")
-            let size = Object.objsize(Player.list);
-            if (size === maxPlayers && loadMapTrigger) {
-                sendInitToAllClients();
-                createTurn();
+            let size = Object.objsize(this.Player.list);
+            if (size === this.maxPlayers && lthis.oadMapTrigger) {
+                this.sendInitToAllClients();
+                this.createTurn();
                 size++;
-                loadMapTrigger = false;
-                gameReady = true;
+                this.this.loadMapTrigger = false;
+                this.gameReady = true;
             }
         }, 2000);
     }
     launch() {
-        preloader();
-        if (gameReady) {
-            clearInterval(preLoadLoop());
+        this.preloader();
+        if (this.gameReady) {
+            clearInterval(this.preLoadLoop());
             // clearTimeout(preLoadLoop)
             // GAME LOOP
             // TODO: need game loop
@@ -59,12 +60,12 @@ class Game {
                     // checks if player's turn
                     if (order.length === 0) {
                         // if round haven't started, start it
-                        startNewRound();
+                        this.startNewRound();
                     } else {
                         // checks if it's the players turn
                         if (player == order[0]) {
                             if (player.dead) {
-                                nextPlayersTurn();
+                                this.nextPlayersTurn();
                             } else {
                                 // checks if players max Actions reached
                                 if (player.isItMyTurn(maxActions)) {
@@ -74,7 +75,7 @@ class Game {
                                     // reset moves
                                     player.resetPlayer();
                                     // let the next players turn begin
-                                    nextPlayersTurn();
+                                    this.nextPlayersTurn();
                                 }
                             }
                         }
