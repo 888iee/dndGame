@@ -150,7 +150,14 @@ sock.on("draw", (data) => {
     save.push(data);
 
 });
+let cookie = getCookie("auth");
+if (cookie === "") {
+    sock.emit("authenticate", "no_cookie");
+} else {
+    sock.emit("authenticate", cookie);
+}
 
+sock.on("redirect", url => window.location.href = url);
 // GAME LOOP CLIENT SIDE
 setInterval(() => {
     if (typeof map == "undefined") {} else {

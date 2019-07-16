@@ -33,6 +33,7 @@ class Game {
         this.preLoadLoop;
         this.io = io;
         this.room = room;
+
     }
     preloader() {
         let preLoadLoop = setInterval(() => {
@@ -47,7 +48,23 @@ class Game {
             }
         }, 2000);
     }
+    waitForPlayers() {
+        this.io.on("connection", socket => {
+            socket.on("authenticate", (data) => {
+                socket.emit("getList", getRoomList());
+                let arr = splitPassedCookiesData(data);
+                users[socket] = socket;
+                users[socket].clientID = socket.id;
+                users[socket].username = arr[1];
+                users[socket].originID = arr[0];
+                console.log(`${socket.username} [id=${socket.id}] has been authenticated`);
+            });
+        });
+
+    }
     launch() {
+        this.waitForPlayers();
+
         this.preloader();
         if (this.gameReady) {
             clearInterval(this.preLoadLoop());

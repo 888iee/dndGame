@@ -20,6 +20,9 @@
   color: #fbae17;
   display: inline-block;
   margin-left: 5px;
+  font-size: 2em;
+  font-weight: bold;
+  font-family: "DevinneSwash";
 }
 
 .bounceball {
