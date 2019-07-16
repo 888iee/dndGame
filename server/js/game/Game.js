@@ -48,21 +48,41 @@ class Game {
             }
         }, 2000);
     }
-    waitForPlayers() {
+    waitForPlayers() {}
+
+    checkIfPlayersIsMember(arr) {
+        let members = this.room.members;
+        members.find(x => x.originID === arr[0])
+    };
+
+
+
+    launch() {
         this.io.on("connection", socket => {
             socket.on("authenticate", (data) => {
-                socket.emit("getList", getRoomList());
-                let arr = splitPassedCookiesData(data);
-                users[socket] = socket;
-                users[socket].clientID = socket.id;
-                users[socket].username = arr[1];
-                users[socket].originID = arr[0];
-                console.log(`${socket.username} [id=${socket.id}] has been authenticated`);
+                let regexCookie = "^[a-zA-Z0-9-]{20}&&.+$";
+                // check if cookie matches syntax
+                if (data.match(regexCookie)) {
+                    let arr = data.split("&&");
+                    // check if user is member of room
+                    if (this.checkIfPlayersIsMember(arr)) {
+                        users[socket] = socket;
+                        users[socket].clientID = socket.id;
+                        users[socket].username = arr[1];
+                        users[socket].originID = arr[0];
+                        console.log(`${socket.username} [id=${socket.id}] has been authenticated`);
+                    } else {
+                        redirect("/");
+                    }
+                } else {
+                    redirect("/");
+                }
             });
-        });
 
-    }
-    launch() {
+            let redirect = (url) => {
+                socket.emit("redirect", url);
+            }
+        });
         this.waitForPlayers();
 
         this.preloader();
