@@ -1,0 +1,151 @@
+[{
+        "name": "Regdar",
+        "race": "Mensch",
+        "class": "Kämpfer",
+        "actual_lvl": 1,
+        "lvl1": {
+            "maxHp": 8,
+            "maxMana": 0
+        },
+        "lvl2": {
+            "maxHp": 12,
+            "maxMana": 0
+        },
+        "lvl3": {
+            "maxHp": 15,
+            "maxMana": 0
+        },
+        "maxMove": 4,
+        "stepsRemaining": 4,
+        "moveCounter": 0,
+        "bagSize": 4,
+        "activeItemSlots": {
+            "weapon": 0,
+            "item": 1
+        },
+        "activeSlots": 3,
+        "maxHp": 8,
+        "hp": 8,
+        "maxMana": 0,
+        "mp": 0,
+        "armor": 2,
+        "actions": 0,
+        "imgFocused": "imgFocused",
+        "img": "img",
+        "deadImg": "deadImg",
+        "dead": false
+    },
+    {
+        "name": "Mialee",
+        "race": "Elfin",
+        "class": "Magierin",
+        "actual_lvl": 1,
+        "lvl1": {
+            "maxHp": 5,
+            "maxMana": 5
+        },
+        "lvl2": {
+            "maxHp": 7,
+            "maxMana": 7
+        },
+        "lvl3": {
+            "maxHp": 9,
+            "maxMana": 9
+        },
+        "maxMove": 5,
+        "stepsRemaining": 5,
+        "moveCounter": 0,
+        "bagSize": 5,
+        "activeItemSlots": {
+            "weapon": 1,
+            "item": 1,
+            "spell": 1
+        },
+        "activeSlots": 3,
+        "maxHp": 5,
+        "hp": 5,
+        "maxMana": 5,
+        "mp": 5,
+        "armor": 5,
+        "actions": 0,
+        "imgFocused": "imgFocused",
+        "img": "img",
+        "deadImg": "deadImg",
+        "dead": false
+    },
+    {
+        "name": "Jozan",
+        "race": "Mensch",
+        "class": "Kleriker",
+        "actual_lvl": 1,
+        "lvl1": {
+            "maxHp": 5,
+            "maxMana": 5
+        },
+        "lvl2": {
+            "maxHp": 7,
+            "maxMana": 7
+        },
+        "lvl3": {
+            "maxHp": 9,
+            "maxMana": 9
+        },
+        "maxMove": 5,
+        "stepsRemaining": 5,
+        "moveCounter": 0,
+        "bagSize": 5,
+        "activeItemSlots": {
+            "weapon": 1,
+            "item": 1,
+            "spell": 1
+        },
+        "activeSlots": 3,
+        "maxHp": 5,
+        "hp": 5,
+        "maxMana": 5,
+        "mp": 5,
+        "armor": 2,
+        "actions": 0,
+        "imgFocused": "imgFocused",
+        "img": "img",
+        "deadImg": "deadImg",
+        "dead": false
+    },
+    {
+        "name": "Lidda",
+        "race": "Halbling",
+        "class": "Schurkin",
+        "actual_lvl": 1,
+        "lvl1": {
+            "maxHp": 5,
+            "maxMana": 0
+        },
+        "lvl2": {
+            "maxHp": 7,
+            "maxMana": 0
+        },
+        "lvl3": {
+            "maxHp": 9,
+            "maxMana": 0
+        },
+        "maxMove": 6,
+        "stepsRemaining": 6,
+        "moveCounter": 0,
+        "bagSize": 4,
+        "activeItemSlots": {
+            "weapon": 1,
+            "item": 2
+        },
+        "activeSlots": 3,
+        "maxHp": 5,
+        "hp": 5,
+        "maxMana": 0,
+        "mp": 0,
+        "armor": 2,
+        "actions": 0,
+        "imgFocused": "imgFocused",
+        "img": "img",
+        "deadImg": "deadImg",
+        "dead": false
+    }
+]
