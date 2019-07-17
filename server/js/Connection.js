@@ -176,7 +176,6 @@ let Connection = (io) => {
                         raum.member = lobby.getPlayersInRoom(roomName, users, false, true);
 
                         let game = new Game(io, raum);
-                        console.log(raum);
                         game.launch();
                     }, 1000);
                 }, 1000);

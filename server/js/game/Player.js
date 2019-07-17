@@ -1,17 +1,19 @@
 class Player {
     constructor(stats) {
-        this.name = stats.name;
-        this.race = stats.race;
-        this.class = stats.class;
         this.id = stats.id;
-        this.lvl = stats.lvl;
+        this.sock = stats.sock;
         this.isOnMap = stats.mapNumber;
         this.x = stats.entry[0];
         this.y = stats.entry[1];
+        this.maxActions = stats.maxActions;
+
+        this.name = stats.name;
+        this.race = stats.race;
+        this.class = stats.class;
+        this.lvl = stats.lvl;
         this.maxMove = stats.maxMove;
         this.stepsRemaining = stats.maxMove;
         this.moveCounter = 0;
-        this.maxActions = stats.maxActions;
         this.bagSize = stats.bagSize;
         this.activeItemSlots = stats.activeItemSlots;
         this.activeSlots = stats.activeSlots;
@@ -22,24 +24,24 @@ class Player {
         this.armor = stats.armor;
         this.lvl2 = stats.lvl2;
         this.lvl3 = stats.lvl3;
-        this.sock = stats.sock;
-        this.isTurn = false;
         this.actions = 0;
+        this.imgFocused = stats.imgFocused;
+        this.img = stats.img;
+        this.deadImg = stats.deadImg;
+        this.dead = false;
+
+        this.isTurn = false;
         this.pressRight = false;
         this.pressLeft = false;
         this.pressUp = false;
         this.pressDown = false;
-        this.dead = false;
-        this.imgFocused = stats.imgFocused;
-        this.img = stats.img;
-        this.deadImg = stats.deadImg;
         this.hpChanged = false;
         this.inventory = Inventory(this.activeItemSlots, this.bagSize, true, this.sock);
         this.Physics = require("./Physics");
         this.Interact = require("./Interact");
         this.interact = Interact(self);
 
-        Player.list[this.id] = self;
+        // Player.list[this.id] = self;
 
         // receives attack command from client
         this.sock.on("attack", (data) => {

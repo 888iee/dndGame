@@ -6,13 +6,11 @@ class Game {
 
         require("../../../client/js/Inventory");
 
-        // //
-        this.Player = require("./Player");
-
         // connnected users list
         this.users = {};
         // connected players list
-        this.Player.list = {};
+        // this.Player.list = {};
+        this.players = [];
 
         // //
         // limit for maxPlayers
@@ -67,6 +65,7 @@ class Game {
 
 
     launch() {
+        const Player = require("./Player");
         // assign maxPlayers to variable
         this.maxPlayers = this.room.max_players;
         this.io.on("connection", socket => {
@@ -84,6 +83,10 @@ class Game {
                         this.users[socket].originID = arr[0];
                         this.users[socket].character = this.getCharacterSelection(arr[0]);
                         console.log(`${socket.username} [id=${socket.id}] has been verified to be a Member if this session`);
+                        this.players.push(new Player({
+                            "name": this.users[socket].character
+                        }));
+                        console.log(this.players[0].name)
                     } else {
                         console.log(`${socket.id} is not a Member of Room`);
                         redirect("/");
@@ -93,6 +96,10 @@ class Game {
                     redirect("/");
                 }
             });
+
+            let showMap = () => {
+                socket.emit();
+            }
 
             let redirect = (url) => {
                 socket.emit("redirect", url);
