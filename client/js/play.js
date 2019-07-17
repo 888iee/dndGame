@@ -11,6 +11,13 @@ let focused;
 let stop = false;
 let save = [];
 
+let cookie = getCookie("auth");
+if (cookie === "") {
+    sock.emit("auth", "no_cookie");
+} else {
+    sock.emit("auth", cookie);
+}
+
 sock.on("getPlayer", (data) => {
     // assigns clients player id to myID
     myID = data.id;
@@ -150,12 +157,7 @@ sock.on("draw", (data) => {
     save.push(data);
 
 });
-let cookie = getCookie("auth");
-if (cookie === "") {
-    sock.emit("authenticate", "no_cookie");
-} else {
-    sock.emit("authenticate", cookie);
-}
+
 
 sock.on("redirect", url => window.location.href = url);
 // GAME LOOP CLIENT SIDE

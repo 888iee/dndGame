@@ -35,46 +35,61 @@ class Game {
         this.room = room;
 
     }
-    preloader() {
-        let preLoadLoop = setInterval(() => {
-            console.log("didn't start yet")
-            let size = Object.objsize(this.Player.list);
-            if (size === this.maxPlayers && lthis.oadMapTrigger) {
+
+    waitForPlayers() {
+        setInterval(() => {
+
+            let size = Object.keys(this.users).length;
+
+            if (size === this.maxPlayers && this.loadMapTrigger) {
+                console.log("size accepted")
                 this.sendInitToAllClients();
                 this.createTurn();
                 size++;
                 this.this.loadMapTrigger = false;
                 this.gameReady = true;
+                console.log("loaded")
             }
         }, 2000);
     }
-    waitForPlayers() {}
 
+    // checks if id matches with originID of any member
     checkIfPlayersIsMember(arr) {
-        let members = this.room.members;
-        members.find(x => x.originID === arr[0])
+        let members = this.room.member;
+        return members.find(x => x.originID === arr[0]);
     };
 
+    // returns character from member
+    getCharacterSelection(id) {
+        let members = this.room.member;
+        return members[members.findIndex(x => x.originID == id)].character;
+    }
 
 
     launch() {
+        // assign maxPlayers to variable
+        this.maxPlayers = this.room.max_players;
         this.io.on("connection", socket => {
-            socket.on("authenticate", (data) => {
-                let regexCookie = "^[a-zA-Z0-9-]{20}&&.+$";
+            socket.on("auth", (data) => {
+                let regexCookie = "^[a-zA-Z0-9-_]{20}&&.+$";
                 // check if cookie matches syntax
                 if (data.match(regexCookie)) {
+                    console.log("got auth")
                     let arr = data.split("&&");
                     // check if user is member of room
                     if (this.checkIfPlayersIsMember(arr)) {
-                        users[socket] = socket;
-                        users[socket].clientID = socket.id;
-                        users[socket].username = arr[1];
-                        users[socket].originID = arr[0];
-                        console.log(`${socket.username} [id=${socket.id}] has been authenticated`);
+                        this.users[socket] = socket;
+                        this.users[socket].clientID = socket.id;
+                        this.users[socket].username = arr[1];
+                        this.users[socket].originID = arr[0];
+                        this.users[socket].character = this.getCharacterSelection(arr[0]);
+                        console.log(`${socket.username} [id=${socket.id}] has been verified to be a Member if this session`);
                     } else {
+                        console.log(`${socket.id} is not a Member of Room`);
                         redirect("/");
                     }
                 } else {
+                    console.log(`${socket.id} has no matching cookie`);
                     redirect("/");
                 }
             });
@@ -85,10 +100,7 @@ class Game {
         });
         this.waitForPlayers();
 
-        this.preloader();
         if (this.gameReady) {
-            clearInterval(this.preLoadLoop());
-            // clearTimeout(preLoadLoop)
             // GAME LOOP
             // TODO: need game loop
             setInterval(function () {
@@ -208,13 +220,3 @@ class Game {
 
 }
 module.exports = Game;
-// returns size of object
-// !!ERROR?
-Object.objsize = function (Myobj) {
-    var osize = 0,
-        key;
-    for (key in Myobj) {
-        if (Myobj.hasOwnProperty(key)) osize++;
-    }
-    return osize;
-};
