@@ -2,7 +2,6 @@ class Player {
     constructor(stats) {
         this.id = stats.id;
         this.sock = stats.sock;
-        this.isOnMap = stats.mapNumber;
         this.x = stats.entry[0];
         this.y = stats.entry[1];
         this.maxActions = stats.maxActions;
@@ -10,6 +9,7 @@ class Player {
         this.name = stats.name;
         this.race = stats.race;
         this.class = stats.class;
+        this.isOnMap = stats.mapNumber;
         this.lvl = stats.lvl;
         this.maxMove = stats.maxMove;
         this.stepsRemaining = stats.maxMove;

@@ -65,7 +65,6 @@ class Game {
 
 
     launch() {
-        const Player = require("./Player");
         // assign maxPlayers to variable
         this.maxPlayers = this.room.max_players;
         this.io.on("connection", socket => {
@@ -73,20 +72,10 @@ class Game {
                 let regexCookie = "^[a-zA-Z0-9-_]{20}&&.+$";
                 // check if cookie matches syntax
                 if (data.match(regexCookie)) {
-                    console.log("got auth")
                     let arr = data.split("&&");
                     // check if user is member of room
                     if (this.checkIfPlayersIsMember(arr)) {
-                        this.users[socket] = socket;
-                        this.users[socket].clientID = socket.id;
-                        this.users[socket].username = arr[1];
-                        this.users[socket].originID = arr[0];
-                        this.users[socket].character = this.getCharacterSelection(arr[0]);
-                        console.log(`${socket.username} [id=${socket.id}] has been verified to be a Member if this session`);
-                        this.players.push(new Player({
-                            "name": this.users[socket].character
-                        }));
-                        console.log(this.players[0].name)
+                        this.createUser(socket, arr);
                     } else {
                         console.log(`${socket.id} is not a Member of Room`);
                         redirect("/");
@@ -149,9 +138,45 @@ class Game {
         }
     }
 
+    createUser(socket, arr) {
+        this.users[socket] = socket;
+        this.users[socket].clientID = socket.id;
+        this.users[socket].username = arr[1];
+        this.users[socket].originID = arr[0];
+        this.users[socket].character = this.getCharacterSelection(arr[0]);
+        console.log(`${socket.username} [id=${socket.id}] added to users.list`);
+        this.createPlayer(socket);
+    }
+
+    createPlayer(socket) {
+        const Player = require("./Player");
+        let name = this.users[socket].character;
+        let char = this.getCharacterStats(name);
+        char.id = this.users[socket].originID;
+        char.sock = socket;
+        char.maxActions = this.maxActions;
+        char.entry = [0, 0];
+        // adding new Player to players array
+        this.players.push(new Player(char));
+    }
+
+    getCharacterStats(name) {
+        let ar = [];
+        // tries to get json File if exists
+        try {
+            let json = this.fs.readFileSync("./server/lib/stats_chars.json", "utf8");
+            if (json.length < 0) {
+                console.log("Error: stats_char.json empty");
+            }
+            ar = JSON.parse(json);
+        } catch (error) {
+            throw error;
+        }
+        return ar.find(x => x.name === name);
+    }
 
     deleteDroppedItemsList() {
-        fs.writeFile("./server/lib/openedChestsAndDroppedItems.json", "[]", "utf8", (e) => {
+        this.fs.writeFile("./server/lib/openedChestsAndDroppedItems.json", "[]", "utf8", (e) => {
             if (e) {
                 throw e;
             }
@@ -207,9 +232,9 @@ class Game {
 
     // returns startPos on specific map
     findPlayerPosOnMap(mapNumber) {
-        for (let i in mapData) {
-            if (mapNumber == mapData[i].mapNumber) {
-                return mapData[i].entry;
+        for (let i in this.mapData) {
+            if (mapNumber == this.mapData[i].mapNumber) {
+                return this.mapData[i].entry;
             }
         }
     }

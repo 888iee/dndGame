@@ -1,6 +1,7 @@
 [{
         "name": "Regdar",
         "race": "Mensch",
+        "isOnMap": 0,
         "class": "Kämpfer",
         "actual_lvl": 1,
         "lvl1": {
@@ -20,7 +21,7 @@
         "moveCounter": 0,
         "bagSize": 4,
         "activeItemSlots": {
-            "weapon": 0,
+            "weapon": 2,
             "item": 1
         },
         "activeSlots": 3,
@@ -38,6 +39,7 @@
     {
         "name": "Mialee",
         "race": "Elfin",
+        "isOnMap": 0,
         "class": "Magierin",
         "actual_lvl": 1,
         "lvl1": {
@@ -76,6 +78,7 @@
     {
         "name": "Jozan",
         "race": "Mensch",
+        "isOnMap": 0,
         "class": "Kleriker",
         "actual_lvl": 1,
         "lvl1": {
@@ -114,6 +117,7 @@
     {
         "name": "Lidda",
         "race": "Halbling",
+        "isOnMap": 0,
         "class": "Schurkin",
         "actual_lvl": 1,
         "lvl1": {
