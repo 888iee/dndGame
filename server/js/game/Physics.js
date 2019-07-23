@@ -6,8 +6,11 @@ class Physics {
             y: player.y,
         }
         this.data = data;
+
+
+        this.mapData();
     }
-    mapData = () => {
+    mapData() {
         let fs = require("fs");
         let mapJSON = fs.readFileSync("./server/lib/map.json", {
             encoding: "utf8"
@@ -17,20 +20,20 @@ class Physics {
         this.exit = map[player.isOnMap].exit;
     }
     // gets Coordinates
-    getControls = () => {
-        this.coords = getCoords(data);
+    getControls() {
+        this.coords = this.getCoords(data);
         this.distance = this.coords.distance;
         this.axis = this.coords.axis;
 
     }
     // passes Coords to runVsObjects()
-    controlMove = () => {
-        getControls();
-        return runVsObjects();
+    controlMove() {
+        this.getControls();
+        return this.runVsObjects();
     }
 
     // returns true if chest is opened
-    isChestOpened = (chestId) => {
+    isChestOpened(chestId) {
         let fs = require("fs");
         let json = fs.readFileSync("./server/lib/openedChestsAndDroppedItems.json", {
             encoding: "utf8"
@@ -45,24 +48,24 @@ class Physics {
         return false;
     }
     // returns chests of map
-    getChests = () => {
+    getChests() {
         let chests = [];
         for (let i in this.obstacles) {
             if (this.obstacles[i].type == "chest") {
-                addToList(this.obstacles[i], isChestOpened(this.obstacles[i].id), chests);
+                this.addToList(this.obstacles[i], isChestOpened(this.obstacles[i].id), chests);
             }
         }
         return chests;
     }
 
     // makes chest array to Chest()
-    addToList = (chest, status, chests) => {
+    addToList(chest, status, chests) {
         return chests.push(
             Chest(chest, status));
     }
 
     // determines if player runs against objects
-    runVsObjects = () => {
+    runVsObjects() {
         if (this.axis === "x") {
             for (let i in this.obstacles) {
                 if (this.x + this.distance == this.obstacles[i].x) {
@@ -80,10 +83,10 @@ class Physics {
                 }
             }
         }
-        return borderControl();
+        return this.borderControl();
     }
     // keeps player inside the map
-    borderControl = () => {
+    borderControl() {
         let destY = this.y + this.distance;
         let destX = this.x + this.distance;
         if (this.axis === "x") {
@@ -99,7 +102,7 @@ class Physics {
     }
 
     // helper Function to determine axis and direction
-    getCoords = (data) => {
+    getCoords(data) {
         switch (data.inputId) {
             case "right":
                 return {
@@ -125,8 +128,6 @@ class Physics {
 
     }
 
-
-    mapData();
 
 }
 

@@ -1,3 +1,7 @@
+const Inventory = require("../../../client/js/Inventory");
+const Physics = require("./Physics");
+const Interact = require("./Interact");
+
 class Player {
     constructor(stats) {
         this.id = stats.id;
@@ -36,16 +40,15 @@ class Player {
         this.pressUp = false;
         this.pressDown = false;
         this.hpChanged = false;
-        this.inventory = Inventory(this.activeItemSlots, this.bagSize, true, this.sock);
-        this.Physics = require("./Physics");
-        this.Interact = require("./Interact");
-        this.interact = Interact(self);
+        this.inventory = new Inventory(this.activeItemSlots, this.bagSize, true, this.sock);
+
+        this.interact = new Interact(Player);
 
         // Player.list[this.id] = self;
 
         // receives attack command from client
         this.sock.on("attack", (data) => {
-            if (canIAct() && canIAbortMovementAndDoAnotherAction()) {
+            if (this.canIAct() && this.canIAbortMovementAndDoAnotherAction()) {
                 console.log(this.id + " can act and move");
                 if (this.actions <= this.maxActions - 1) {
                     console.log(data.idOfAttacker + " wants to attack " + data.idOfAttacked + " with " + data.item + ".");
@@ -53,12 +56,12 @@ class Player {
                     if (data.item === "deinen Händen") {
                         // if not attack with bare hands
                         if (interact.attack(Player.list[data.idOfAttacked])) {
-                            abortMovement();
+                            this.abortMovement();
                         }
                         // Interact(self, Player.list[data.idOfAttacked], "attack");
                     } else {
                         if (interact.attack(Player.list[data.idOfAttacked], this.inventory.getItem(data.item))) {
-                            abortMovement();
+                            this.abortMovement();
                         }
                         // Interact(self, Player.list[data.idOfAttacked], this.inventory.getItem(data.item));
                     }
@@ -69,8 +72,8 @@ class Player {
 
         // receives heal command from client
         this.sock.on("heal", (data) => {
-            if (canIAct()) {
-                canIAbortMovementAndDoAnotherAction();
+            if (this.canIAct()) {
+                this.canIAbortMovementAndDoAnotherAction();
                 let healed;
                 // checks who should be healed
                 if (data.idOfHealed == this.id || data.idOfHealed == []._) {
@@ -90,13 +93,17 @@ class Player {
         });
         // listens to clients skipActionBtn
         this.sock.on("skipAction", () => {
-            skipAction();
-            log();
+            this.skipAction();
+            this.log();
         });
         // sends player data to its client
         this.sock.emit("getPlayer", getPlayerData());
     }
 
+    // setInventory() {
+    //     let inv =
+    //         return inv;
+    // }
 
     // returns true if actions left
     canIAct() {
@@ -164,7 +171,7 @@ class Player {
 
     // moves Player
     move(data) {
-        if (canIAct()) {
+        if (this.canIAct()) {
             // checks if steps are left && if u walked once
             if (this.stepsRemaining > 0 && this.moveCounter <= 1) {
                 if (data.inputId === "right") {

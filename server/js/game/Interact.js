@@ -1,6 +1,8 @@
+fs = require("fs");
+
 class Interact {
     constructor(player1) {
-        this.fs = require("fs");
+
         this.mapJSON = fs.readFileSync("./server/lib/map.json", {
             encoding: "utf8"
         });
