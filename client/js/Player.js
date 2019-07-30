@@ -157,6 +157,7 @@ class Player {
         this.invent = Inventory(this.activeItemSlots, this.bagSize, false);
 
         this.showActiveItemsInPartyFrame();
+        this.updateStats(init);
     }
 
 

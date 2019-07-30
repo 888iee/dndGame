@@ -7,7 +7,7 @@ class Obstacle {
 
     getObstacleImg() {
         let img = document.createElement("img");
-        img.src = "res/" + this.type + ".png";
+        img.src = `res/${this.type}.png`;
         return img;
     }
 
