@@ -4,7 +4,7 @@ class MapGen {
         this.outside = data.outside;
 
         this.canvas = document.getElementById("cnvs");
-        this.ctx = canvas.getContext("2d");
+        this.ctx = this.canvas.getContext("2d");
 
         this.chestCounter = 0;
         this.chests = [];
@@ -39,10 +39,10 @@ class MapGen {
             if (this.obstacles[i].type !== "chest") {
                 // if not 
                 let obstac = new Obstacle(this.obstacles[i]);
-                ctx.drawImage(obstac.getObstacleImg(), obstac.x * this.squareSize, obstac.y * this.squareSize, this.squareSize, this.squareSize);
+                this.ctx.drawImage(obstac.getObstacleImg(), obstac.x * this.squareSize, obstac.y * this.squareSize, this.squareSize, this.squareSize);
             } else {
                 let chest = new Chest(this.obstacles[i]);
-                ctx.drawImage(chest.getChestImg(), chest.x * this.squareSize, chest.y * this.squareSize, this.squareSize, this.squareSize);
+                this.ctx.drawImage(chest.getChestImg(), chest.x * this.squareSize, chest.y * this.squareSize, this.squareSize, this.squareSize);
             }
         }
     }
@@ -58,16 +58,16 @@ class MapGen {
     getStartEnd() {
         let startIMG = new Image();
         startIMG.src = "res/start.png";
-        ctx.drawImage(startIMG, this.entry[0] * this.squareSize, this.entry[1] * this.squareSize, this.squareSize, this.squareSize);
+        this.ctx.drawImage(startIMG, this.entry[0] * this.squareSize, this.entry[1] * this.squareSize, this.squareSize, this.squareSize);
         let doorIMG = new Image();
         doorIMG.src = "res/door.png";
-        ctx.drawImage(doorIMG, this.exit[0] * this.squareSize, this.exit[1] * this.squareSize, this.squareSize, this.squareSize);
+        this.ctx.drawImage(doorIMG, this.exit[0] * this.squareSize, this.exit[1] * this.squareSize, this.squareSize, this.squareSize);
     }
 
     openDoor() {
         // console.log("You open the door!");
-        mapCounter++;
-        swapRoom = true;
+        this.mapCounter++;
+        this.swapRoom = true;
         this.loadRoom();
     }
 
@@ -85,7 +85,7 @@ class MapGen {
                 let x = i * this.squareSize;
                 let y = j * this.squareSize;
 
-                ctx.strokeRect(x, y, this.squareSize, this.squareSize);
+                this.ctx.strokeRect(x, y, this.squareSize, this.squareSize);
                 // ctx.strokeRect(squareSize, y, this.squareSize, this.squareSize);
             }
         }
@@ -105,7 +105,7 @@ class MapGen {
                 let x = i * this.squareSize;
                 let y = j * this.squareSize;
 
-                ctx.drawImage(background, x, y, this.squareSize - 0.5, this.squareSize - 0.8);
+                this.ctx.drawImage(background, x, y, this.squareSize - 0.5, this.squareSize - 0.8);
             }
         }
     }

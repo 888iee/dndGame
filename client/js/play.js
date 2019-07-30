@@ -21,7 +21,6 @@ if (cookie === "") {
 sock.on("getPlayer", (data) => {
     // assigns clients player id to myID
     myID = data.id;
-    console.table(data);
     inventory = new Inventory(data.activeItemSlots, data.bagSize, false, sock);
     inventory.createInventory();
 });
@@ -38,6 +37,12 @@ sock.on("debug", (data) => {
 let startGame = function () {
     sock.emit("startGame");
 }
+
+// loads specific map
+let loadMap = (data) => {
+    map = new MapGen(data, cols, rows, squareSize);
+    map.generateRoom(false);
+}
 $("#startBtn").click(() => startGame());
 // receives load map to server
 sock.on("loadMap", (mapNumber) => {
@@ -46,9 +51,8 @@ sock.on("loadMap", (mapNumber) => {
             url: "http://localhost:5000/map",
             dataType: "json",
             success: (data) => {
-                // console.log(data);
                 for (let i = 0; i < data.length; i++) {
-                    if (mapNumber == data[i].mapNumber) {
+                    if (mapNumber === data[i].mapNumber) {
                         loadMap(data[mapNumber]);
                     }
                 }
@@ -236,11 +240,4 @@ document.onkeydown = (event) => {
             actionType: "open"
         });
     }
-}
-
-// loads specific map
-let loadMap = (data) => {
-    console.log(data);
-    map = new MapGen(data, cols, rows, squareSize);
-    map.generateRoom(false);
 }

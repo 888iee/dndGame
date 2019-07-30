@@ -11,9 +11,9 @@ module.exports = (app, path, express) => {
     // ajax Map Request for Client
     app.get("/map", (req, res) => {
         let json = require("./lib/map");
-        let mapData = JSON.stringify(json)
+        // let mapData = JSON.stringify(json)
         // console.log(mapData);
-        res.json(mapData);
+        res.json(json);
     });
     // ajax character Request for Client
     app.get("/chars", (req, res) => {

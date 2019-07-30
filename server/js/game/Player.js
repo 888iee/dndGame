@@ -1,4 +1,4 @@
-const Inventory = require("../../../client/js/Inventory");
+const Inventory = require("./Inventory");
 const Physics = require("./Physics");
 const Interact = require("./Interact");
 
