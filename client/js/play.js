@@ -240,7 +240,7 @@ document.onkeydown = (event) => {
 
 // loads specific map
 let loadMap = (data) => {
-    // console.log(data);
+    console.log(data);
     map = new MapGen(data, cols, rows, squareSize);
     map.generateRoom(false);
 }

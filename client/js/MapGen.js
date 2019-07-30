@@ -6,9 +6,6 @@ class MapGen {
         this.canvas = document.getElementById("cnvs");
         this.ctx = canvas.getContext("2d");
 
-        /*     this.rows = rows;
-            this.cols = cols; */
-
         this.chestCounter = 0;
         this.chests = [];
 
@@ -22,6 +19,9 @@ class MapGen {
         this.entry = data.entry;
         this.exit = data.exit;
 
+        this.cols = cols;
+        this.rows = rows;
+        this.squareSize = squareSize;
     }
 
     getNumber() {
@@ -39,10 +39,10 @@ class MapGen {
             if (this.obstacles[i].type !== "chest") {
                 // if not 
                 let obstac = new Obstacle(this.obstacles[i]);
-                ctx.drawImage(obstac.getObstacleImg(), obstac.x * squareSize, obstac.y * squareSize, squareSize, squareSize);
+                ctx.drawImage(obstac.getObstacleImg(), obstac.x * this.squareSize, obstac.y * this.squareSize, this.squareSize, this.squareSize);
             } else {
                 let chest = new Chest(this.obstacles[i]);
-                ctx.drawImage(chest.getChestImg(), chest.x * squareSize, chest.y * squareSize, squareSize, squareSize);
+                ctx.drawImage(chest.getChestImg(), chest.x * this.squareSize, chest.y * this.squareSize, this.squareSize, this.squareSize);
             }
         }
     }
@@ -58,35 +58,35 @@ class MapGen {
     getStartEnd() {
         let startIMG = new Image();
         startIMG.src = "res/start.png";
-        ctx.drawImage(startIMG, this.entry[0] * squareSize, this.entry[1] * squareSize, squareSize, squareSize);
+        ctx.drawImage(startIMG, this.entry[0] * this.squareSize, this.entry[1] * this.squareSize, this.squareSize, this.squareSize);
         let doorIMG = new Image();
         doorIMG.src = "res/door.png";
-        ctx.drawImage(doorIMG, this.exit[0] * squareSize, this.exit[1] * squareSize, squareSize, squareSize);
+        ctx.drawImage(doorIMG, this.exit[0] * this.squareSize, this.exit[1] * this.squareSize, this.squareSize, this.squareSize);
     }
 
     openDoor() {
         // console.log("You open the door!");
         mapCounter++;
         swapRoom = true;
-        loadRoom();
+        this.loadRoom();
     }
 
     /* creates every object in the room */
     generateRoom(bool) {
-        drawBoard();
-        showBackground();
-        getStartEnd();
-        generateObstacles(bool);
+        this.drawBoard();
+        this.showBackground();
+        this.getStartEnd();
+        this.generateObstacles(bool);
     }
 
     drawBoard() {
-        for (let i = 0; i < cols; i++) {
-            for (let j = 0; j < rows; j++) {
-                let x = i * squareSize;
-                let y = j * squareSize;
+        for (let i = 0; i < this.cols; i++) {
+            for (let j = 0; j < this.rows; j++) {
+                let x = i * this.squareSize;
+                let y = j * this.squareSize;
 
-                ctx.strokeRect(x, y, squareSize, squareSize);
-                // ctx.strokeRect(squareSize, y, squareSize, squareSize);
+                ctx.strokeRect(x, y, this.squareSize, this.squareSize);
+                // ctx.strokeRect(squareSize, y, this.squareSize, this.squareSize);
             }
         }
 
@@ -100,12 +100,12 @@ class MapGen {
             background.src = "res/grass.png";
         }
 
-        for (let i = 0; i < cols; i++) {
-            for (let j = 0; j < rows; j++) {
-                let x = i * squareSize;
-                let y = j * squareSize;
+        for (let i = 0; i < this.cols; i++) {
+            for (let j = 0; j < this.rows; j++) {
+                let x = i * this.squareSize;
+                let y = j * this.squareSize;
 
-                ctx.drawImage(background, x, y, squareSize - 0.5, squareSize - 0.8);
+                ctx.drawImage(background, x, y, this.squareSize - 0.5, this.squareSize - 0.8);
             }
         }
     }
