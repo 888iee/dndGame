@@ -47,6 +47,46 @@ class Game {
                 this.loadMapTrigger = false;
                 this.gameReady = true;
                 console.log("loaded")
+
+                if (this.gameReady) {
+                    let pack;
+                    // GAME LOOP
+                    // TODO: need game loop
+                    setInterval(function () {
+                        // iterates through all players
+                        for (let i in this.players) {
+                            let player = this.players[i];
+                            // checks if player's turn
+                            if (order.length === 0) {
+                                // if round haven't started, start it
+                                this.startNewRound();
+                            } else {
+                                // checks if it's the players turn
+                                if (player == order[0]) {
+                                    if (player.dead) {
+                                        this.nextPlayersTurn();
+                                    } else {
+                                        // checks if players max Actions reached
+                                        if (player.isItMyTurn(maxActions)) {
+
+                                        } else {
+                                            // if player reached max Actions 
+                                            // reset moves
+                                            player.resetPlayer();
+                                            // let the next players turn begin
+                                            this.nextPlayersTurn();
+                                        }
+                                    }
+                                }
+                            }
+                            player.updateStats();
+                            pack = player.update();
+                        }
+                        for (let i in this.users) {
+                            this.users[i].emit("update", pack);
+                        }
+                    }, 1000 / 80);
+                }
             }
         }, 2000);
     }
@@ -102,46 +142,7 @@ class Game {
         });
         this.waitForPlayers();
 
-        if (this.gameReady) {
-            // GAME LOOP
-            // TODO: need game loop
-            setInterval(function () {
-                // iterates through all players
-                for (let i in Player.list) {
-                    let player = Player.list[i];
-                    // checks if player's turn
-                    if (order.length === 0) {
-                        // if round haven't started, start it
-                        this.startNewRound();
-                    } else {
-                        // checks if it's the players turn
-                        if (player == order[0]) {
-                            if (player.dead) {
-                                this.nextPlayersTurn();
-                            } else {
-                                // checks if players max Actions reached
-                                if (player.isItMyTurn(maxActions)) {
 
-                                } else {
-                                    // if player reached max Actions 
-                                    // reset moves
-                                    player.resetPlayer();
-                                    // let the next players turn begin
-                                    this.nextPlayersTurn();
-                                }
-                            }
-                        }
-                    }
-                    player.updateStats();
-                }
-                pack = Player.update();
-                for (let i in users) {
-                    // users[i].emit("newPos", (package));
-                    users[i].emit("update", pack);
-                    // user.emit("remove", removePackage);
-                }
-            }, 1000 / 80);
-        }
     }
 
     createUser(socket, arr) {

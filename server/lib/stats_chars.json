@@ -31,9 +31,9 @@
         "mp": 0,
         "armor": 2,
         "actions": 0,
-        "imgFocused": "imgFocused",
+        "imgFocused": "../res/char_focus.png",
         "img": "../res/char.png",
-        "deadImg": "deadImg",
+        "deadImg": "../res/dead.png",
         "dead": false
     },
     {
@@ -70,9 +70,9 @@
         "mp": 5,
         "armor": 5,
         "actions": 0,
-        "imgFocused": "imgFocused",
-        "img": "img",
-        "deadImg": "deadImg",
+        "imgFocused": "../res/char_focus.png",
+        "img": "../res/char.png",
+        "deadImg": "../res/dead.png",
         "dead": false
     },
     {
@@ -109,9 +109,9 @@
         "mp": 5,
         "armor": 2,
         "actions": 0,
-        "imgFocused": "imgFocused",
-        "img": "img",
-        "deadImg": "deadImg",
+        "imgFocused": "../res/char_focus.png",
+        "img": "../res/char.png",
+        "deadImg": "../res/dead.png",
         "dead": false
     },
     {
@@ -147,9 +147,9 @@
         "mp": 0,
         "armor": 2,
         "actions": 0,
-        "imgFocused": "imgFocused",
-        "img": "img",
-        "deadImg": "deadImg",
+        "imgFocused": "../res/char_focus.png",
+        "img": "../res/char.png",
+        "deadImg": "../res/dead.png",
         "dead": false
     }
 ]
