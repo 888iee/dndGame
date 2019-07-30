@@ -119,7 +119,6 @@ sock.on("init", (players) => {
     let playerNum = 1;
     for (let i in players) {
         if (players[i].id === myID) {
-            console.log(`mp is ${players[i].mp}`)
             playerList[players[i].id] = new Player(players[i], 0, squareSize);
             playerList[players[i].id].updateStats(true);
         } else {
