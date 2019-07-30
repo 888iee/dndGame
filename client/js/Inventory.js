@@ -157,10 +157,10 @@ class Inventory {
             // choose image by item type
             switch (item.type) {
                 case "weapon":
-                    image.src = "res/items/" + item.type + "_" + item.range + ".png";
+                    image.src = `res/items/${item.type}_${item.range}.png`;
                     break;
                 default:
-                    image.src = "res/items/" + item.type + ".png";
+                    image.src = `res/items/${item.type}.png`;
                     break;
             }
             itemSlot.style.backgroundColor = "black";
