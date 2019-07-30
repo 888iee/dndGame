@@ -22,7 +22,7 @@ sock.on("getPlayer", (data) => {
     // assigns clients player id to myID
     myID = data.id;
     console.table(data);
-    inventory = Inventory(data.activeItemSlots, data.bagSize, false, sock);
+    inventory = new Inventory(data.activeItemSlots, data.bagSize, false, sock);
     inventory.createInventory();
 });
 // updates Client's inventory
@@ -85,11 +85,16 @@ sock.on("myTurn", (data) => {
 
 // receives canvas
 sock.on("showCanvas", () => {
+    let loadingScreen = document.getElementById("loadingScreen");
+    loadingScreen.style.display = "none";
+
+    let game = document.getElementById("game");
+    game.style.display = "block";
     let canvas = document.getElementById("cnvs");
     canvas.style.display = "block";
 
-    let startBtn = document.getElementById("startGame");
-    startBtn.style.display = "none";
+    // let startBtn = document.getElementById("startGame");
+    // startBtn.style.display = "none";
 
     let playerStats = document.getElementById("player");
     playerStats.style.display = "inline-block";

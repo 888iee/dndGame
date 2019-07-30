@@ -13,18 +13,18 @@ class Inventory {
     // creates Inventory UI
     createInventory() {
         let itemCount = 0;
-        let inventory = getInventory();
+        let inventory = this.getInventory();
         for (let i = 0; i < inventory.length; i++) {
             let inventoryDiv;
             if (i === 0) {
                 inventoryDiv = document.getElementById("active-items");
-                itemCount = createSlots(this.activeItemSize, itemCount, inventoryDiv, true);
+                itemCount = this.createSlots(this.activeItemSize, itemCount, inventoryDiv, true);
             } else {
                 inventoryDiv = document.getElementById("bag-items");
-                itemCount = createSlots(this.bagSize, itemCount, inventoryDiv, false);
+                itemCount = this.createSlots(this.bagSize, itemCount, inventoryDiv, false);
             }
         }
-        createItems(getInventory());
+        this.createItems(this.getInventory());
     }
 
     // creates Slots for each Bag
@@ -57,12 +57,12 @@ class Inventory {
         for (let i = 0; i < inventory.length; i++) {
             if (i === 0) {
                 for (let j = 0; j < this.activeItemSize; j++) {
-                    createItemUI(inventory[i][j], itemID);
+                    this.createItemUI(inventory[i][j], itemID);
                     itemID++;
                 }
             } else {
                 for (let j = 0; j < this.bagSize; j++) {
-                    createItemUI(inventory[i][j], itemID);
+                    this.createItemUI(inventory[i][j], itemID);
                     itemID++;
                 }
             }
@@ -121,7 +121,7 @@ class Inventory {
                     // $(item).removeClass("item");
                     $(itemPos).addClass("item-clicked");
                     this.focusedItem = item.name;
-                    addToLog(item);
+                    this.addToLog(item);
 
                 });
                 // deletes item to attack log
@@ -129,14 +129,14 @@ class Inventory {
                     $(itemPos).removeClass("item-clicked");
                     // if innerText isn't anymore the clicked item
                     if (this.focusedItem != item.name) {
-                        deleteFromLog(item);
+                        this.deleteFromLog(item);
                     }
                 });
             }
 
             itemSlot.addEventListener("mouseover", (e) => {
                 let toolTip = document.getElementById("tooltip");
-                fillDivWithItemData(id);
+                this.fillDivWithItemData(id);
                 // sets position of tooltip to mouse coords
                 $('#tooltip').css({
                     'top': e.pageY + 10,
@@ -285,7 +285,7 @@ class Inventory {
 
     // Drops Item into the Void
     dropItem(item) {
-        let whichAr = findItemInInventory(item);
+        let whichAr = this.findItemInInventory(item);
         if (whichAr === "active") {
             this.activeItems.splice(this.activeItems.indexOf(item), 1);
         } else {

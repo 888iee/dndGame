@@ -76,6 +76,8 @@ class Game {
                     // check if user is member of room
                     if (this.checkIfPlayersIsMember(arr)) {
                         this.createUser(socket, arr);
+                        showMap();
+                        showCanvas();
                     } else {
                         console.log(`${socket.id} is not a Member of Room`);
                         redirect("/");
@@ -87,7 +89,11 @@ class Game {
             });
 
             let showMap = () => {
-                socket.emit();
+                socket.emit("loadMap", 0);
+            }
+
+            let showCanvas = () => {
+                socket.emit("showCanvas");
             }
 
             let redirect = (url) => {
@@ -155,9 +161,11 @@ class Game {
         char.id = this.users[socket].originID;
         char.sock = socket;
         char.maxActions = this.maxActions;
+        char.mapNumber = 0;
         char.entry = [0, 0];
         // adding new Player to players array
         this.players.push(new Player(char));
+
     }
 
     getCharacterStats(name) {

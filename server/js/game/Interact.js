@@ -2,48 +2,48 @@ fs = require("fs");
 
 class Interact {
     constructor(player1) {
-
+        this.player1 = player1;
         this.mapJSON = fs.readFileSync("./server/lib/map.json", {
             encoding: "utf8"
         });
-        this.map = JSON.parse(mapJSON);
-        this.obstacles = map[player1.isOnMap].obstacles;
+        this.map = JSON.parse(this.mapJSON);
+        this.obstacles = this.map[this.player1.isOnMap].obstacles;
     }
 
     // determines attack
     attack(player2, item) {
         console.log("im in attack");
-        if (player1.isOnMap === player2.isOnMap) {
+        if (this.player1.isOnMap === player2.isOnMap) {
             if (item) {
                 // 1. item.exist
-                if (player1.inventory.isItemActive(item)) {
+                if (this.player1.inventory.isItemActive(item)) {
                     // 1. in Range
-                    if (player1.getDistance(player2) === "melee") {
+                    if (this.player1.getDistance(player2) === "melee") {
                         // 3. damage-armor
                         player2.setDamage(item.dmg);
-                        player1.sock.emit("log", "Du hast " + player2.name + " " + item.dmg + " Schaden zugefügt.");
-                        player1.actions++;
+                        this.player1.sock.emit("log", "Du hast " + player2.name + " " + item.dmg + " Schaden zugefügt.");
+                        this.player1.actions++;
                         return true;
                     } else {
                         // 2. blocked by obstacles?
-                        // this.physics = Physics(player1);
-                        if (canAttackPass(player2)) {
+                        // this.physics = Physics(this.player1);
+                        if (this.canAttackPass(player2)) {
                             // 3. damage-armor
                             player2.setDamage(item.dmg);
-                            player1.sock.emit("log", "Du hast " + player2.name + " " + item.dmg + " Schaden zugefügt.");
-                            player1.actions++;
+                            this.player1.sock.emit("log", "Du hast " + player2.name + " " + item.dmg + " Schaden zugefügt.");
+                            this.player1.actions++;
                             return true;
                         } else {
-                            player1.sock.emit("log", "Du kannst nicht durch Objekte schießen.");
+                            this.player1.sock.emit("log", "Du kannst nicht durch Objekte schießen.");
                             return false;
                         }
                     }
                 }
             } else {
-                if (player1.getDistance(player2) === "melee") {
-                    player1.actions++;;
+                if (this.player1.getDistance(player2) === "melee") {
+                    this.player1.actions++;;
                     player2.setDamage(1);
-                    player1.sock.emit("log", "Du hast " + player2.name + " geohrfeigt.");
+                    this.player1.sock.emit("log", "Du hast " + player2.name + " geohrfeigt.");
                     return true;
                 }
             }
@@ -55,41 +55,41 @@ class Interact {
 
     // heals player
     heal(player2, item) {
-        if (player1.id !== player2.id) {
-            if (player1.isOnMap === player2.isOnMap) {
+        if (this.player1.id !== player2.id) {
+            if (this.player1.isOnMap === player2.isOnMap) {
                 if (item) {
-                    if (player1.inventory.isItemActive(item)) {
-                        if (player1.getDistance(player2) === "melee") {
+                    if (this.player1.inventory.isItemActive(item)) {
+                        if (this.player1.getDistance(player2) === "melee") {
                             player2.setHeal(item.heal);
-                            player1.sock.emit("log", "Du hast " + player2.name + " um " + item.heal + " geheilt.");
-                            player1.actions++;
+                            this.player1.sock.emit("log", "Du hast " + player2.name + " um " + item.heal + " geheilt.");
+                            this.player1.actions++;
                             return true;
                         }
                     }
                 } else {
-                    if (player1.getDistance(player2) === "melee") {
+                    if (this.player1.getDistance(player2) === "melee") {
 
                         // CLASS SPELL HEAL
-                        // player1.actions++;
+                        // this.player1.actions++;
                         // player2.setHeal();
-                        // player1.sock.emit("log", "Du hast " + player2.name + " um " + item.heal + " geheilt.");
+                        // this.player1.sock.emit("log", "Du hast " + player2.name + " um " + item.heal + " geheilt.");
                         // return true;
                     }
                 }
             }
         } else {
             if (item) {
-                if (player1.inventory.isItemActive(item)) {
-                    player1.actions++;
+                if (this.player1.inventory.isItemActive(item)) {
+                    this.player1.actions++;
                     player2.setHeal(item.heal);
-                    player1.sock.emit("log", "Du hast " + player2.name + " um " + item.heal + " geheilt.");
+                    this.player1.sock.emit("log", "Du hast " + player2.name + " um " + item.heal + " geheilt.");
                     return true;
                 }
             } else {
                 // CLASS SPELL HEAL
-                // player1.actions++;
+                // this.player1.actions++;
                 // player2.setHeal();
-                // player1.sock.emit("log", "Du hast " + player2.name + " um " + item.heal + " geheilt.");
+                // this.player1.sock.emit("log", "Du hast " + player2.name + " um " + item.heal + " geheilt.");
                 // return true;
             }
         }
@@ -107,10 +107,10 @@ class Interact {
                     y: obstacles[i][j][2]
                 };
                 // // check if attack will intersect with r
-                if (intersects(player1.x, player1.y, player2.x, player2.y, r.x, r.y, r.x, r.y + 1) ||
-                    intersects(player1.x, player1.y, player2.x, player2.y, r.x, r.y + 1, r.x + 1, r.y + 1) ||
-                    intersects(player1.x, player1.y, player2.x, player2.y, r.x + 1, r.y + 1, r.x + 1, r.y) ||
-                    intersects(player1.x, player1.y, player2.x, player2.y, r.x + 1, r.y, r.x, r.y)) {
+                if (this.intersects(this.player1.x, this.player1.y, player2.x, player2.y, r.x, r.y, r.x, r.y + 1) ||
+                    this.intersects(this.player1.x, this.player1.y, player2.x, player2.y, r.x, r.y + 1, r.x + 1, r.y + 1) ||
+                    this.intersects(this.player1.x, this.player1.y, player2.x, player2.y, r.x + 1, r.y + 1, r.x + 1, r.y) ||
+                    this.intersects(this.player1.x, this.player1.y, player2.x, player2.y, r.x + 1, r.y, r.x, r.y)) {
                     return false;
                 }
             }

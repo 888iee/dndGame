@@ -42,7 +42,7 @@ class Player {
         this.hpChanged = false;
         this.inventory = new Inventory(this.activeItemSlots, this.bagSize, true, this.sock);
 
-        this.interact = new Interact(Player);
+        this.interact = new Interact(this);
 
         // Player.list[this.id] = self;
 
@@ -97,7 +97,7 @@ class Player {
             this.log();
         });
         // sends player data to its client
-        this.sock.emit("getPlayer", getPlayerData());
+        this.sock.emit("getPlayer", this.getPlayerData());
     }
 
     // setInventory() {

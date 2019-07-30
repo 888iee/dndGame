@@ -58,7 +58,7 @@ class Player {
                 // display attack log
                 $("#attack-log").show();
             }
-    
+
         }
         this.healBtn = document.getElementById("healBtn");
         this.healBtn.onclick = () => {
@@ -96,7 +96,7 @@ class Player {
             if ($("#trade-swap-log").is(":visible")) {
                 // if so send data to server
                 let data = {
-    
+
                 }
                 $(this).data('clicked', false);
             } else {
@@ -124,7 +124,7 @@ class Player {
             actionBtnText.innerText = "Tauschen";
             if ($("#trade-swap-log").is(":visible")) {
                 let data = {
-                    
+
                 }
             } else {
                 resetLogs();
@@ -141,7 +141,7 @@ class Player {
             actionBtnText.innerText = "Fallen lassen";
             if ($("#drop-log").is(":visible")) {
                 let data = {
-                    
+
                 }
             } else {
                 resetLogs();
@@ -155,9 +155,11 @@ class Player {
         }
         // inventory
         this.invent = Inventory(this.activeItemSlots, this.bagSize, false);
+
+        this.showActiveItemsInPartyFrame();
     }
-    
-    
+
+
     setImage() {
         if (this.focused > 0 && !this.dead) {
             // changes pic if player is clicked
@@ -187,7 +189,8 @@ class Player {
     showActiveItemsInPartyFrame() {
         // check if player isn't himself
         if (this.playerNum > 0) {
-            let divName = "player-", actives = "-actives";
+            let divName = "player-",
+                actives = "-actives";
             let partyFrameInventory = document.getElementById(divName + this.playerNum + actives);
             // check if active items exist
             if (this.invent.activeItems.length > 0) {
@@ -202,7 +205,7 @@ class Player {
     }
 
     // updates stats of players
-    updateStats = (init) => {
+    updateStats(init) {
         if (this.playerNum === 0) {
             // displays name, img, race, class
             if (init) {
@@ -218,7 +221,12 @@ class Player {
             document.querySelector("#player-stats-actions p").textContent = this.actions;
 
         } else {
-            let player = "#player-", name = "-name", hp = "-hp", mp = "-mp", moves = "-moves", actives = "-actives";
+            let player = "#player-",
+                name = "-name",
+                hp = "-hp",
+                mp = "-mp",
+                moves = "-moves",
+                actives = "-actives";
             let elementId = "party-player-" + this.playerNum;
             if (init) {
                 let tdx = document.getElementById(elementId);
@@ -269,7 +277,6 @@ class Player {
         }
     }
 
-    showActiveItemsInPartyFrame();
 
     resetLogs() {
         playerToBeAttacked.innerText = "Spieler";
