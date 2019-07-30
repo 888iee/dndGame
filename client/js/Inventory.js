@@ -239,11 +239,11 @@ class Inventory {
     // displays Inventory Clientside
     showInventory() {
         if (this.onServer) {
-            this.socket.emit("updateInventory", getInventory());
+            this.socket.emit("updateInventory", this.getInventory());
             return;
         }
-        removeAllItems();
-        createInventory();
+        this.removeAllItems();
+        this.createInventory();
     }
 
     // removes Items from UI
@@ -280,7 +280,7 @@ class Inventory {
             changedFlag = 1;
             console.log(this.bag);
         }
-        showInventory();
+        this.showInventory();
     }
 
     // Drops Item into the Void
@@ -292,7 +292,7 @@ class Inventory {
             this.bag.splice(this.bag.indexOf(item), 1);
         }
         changedFlag = 1;
-        showInventory();
+        this.showInventory();
     }
 
     // helper function to find Item in inventory

@@ -8,8 +8,9 @@ class Game {
 
         // connnected users list
         this.users = {};
+
         // connected players list
-        // this.Player.list = {};
+        // Player.list changed to this.players
         this.players = [];
 
         // //
@@ -35,16 +36,15 @@ class Game {
     }
 
     waitForPlayers() {
+        // !! Interval is still active
         setInterval(() => {
-
             let size = Object.keys(this.users).length;
-
-            if (size === this.maxPlayers && this.loadMapTrigger) {
+            if (size == this.maxPlayers && this.loadMapTrigger) {
                 console.log("size accepted")
                 this.sendInitToAllClients();
                 this.createTurn();
                 size++;
-                this.this.loadMapTrigger = false;
+                this.loadMapTrigger = false;
                 this.gameReady = true;
                 console.log("loaded")
             }
@@ -66,7 +66,7 @@ class Game {
 
     launch() {
         // assign maxPlayers to variable
-        this.maxPlayers = this.room.max_players;
+        // this.maxPlayers = this.room.max_players;
         this.io.on("connection", socket => {
             socket.on("auth", (data) => {
                 let regexCookie = "^[a-zA-Z0-9-_]{20}&&.+$";
@@ -196,42 +196,42 @@ class Game {
     // 
     // fills order array
     createTurn() {
-        for (let i in Player.list) {
-            order.push(Player.list[i]);
+        for (let i in this.players) {
+            this.order.push(this.players[i]);
         }
-        shuffleOrder();
+        this.shuffleOrder();
         /* for(let i in order){
             roundReset.push(order[i].id);
         } */
-        roundReset = order.slice(0);
+        this.roundReset = this.order.slice(0);
         // console.log("tester" + roundReset);
 
     }
     // randomizes turn order
     // TODO: shuffle player order randomly
     shuffleOrder() {
-        let curr = order.length,
+        let curr = this.order.length,
             temp, rnd;
         while (0 !== curr) {
             rnd = Math.floor(Math.random() * curr);
             curr--;
 
-            temp = order[curr];
-            order[curr] = order[rnd];
-            order[rnd] = temp;
+            temp = this.order[curr];
+            this.order[curr] = this.order[rnd];
+            this.order[rnd] = temp;
         }
     }
 
     // let the next Players Turn begin
     // TODO: let next players turn begin
     nextPlayersTurn() {
-        order.splice(0, 1);
+        this.order.splice(0, 1);
     }
 
     // TODO: start new Round
     // starts a new round with the same order as before
     startNewRound() {
-        order = roundReset.slice(0);
+        this.this.order = this.roundReset.slice(0);
     }
     //
     // TODO: restart Round 
@@ -249,12 +249,12 @@ class Game {
 
     sendInitToAllClients() {
         let initPackage = [];
-        for (let i in Player.list) {
-            let player = Player.list[i];
+        for (let i in this.players) {
+            let player = this.players[i];
             initPackage.push(player.getPlayerData());
         }
-        for (let i in users) {
-            users[i].emit("init", initPackage);
+        for (let i in this.users) {
+            this.users[i].emit("init", initPackage);
         }
     }
 
