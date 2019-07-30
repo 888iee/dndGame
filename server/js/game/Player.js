@@ -16,7 +16,7 @@ class Player {
         this.isOnMap = stats.mapNumber;
         this.lvl = stats.lvl;
         this.maxMove = stats.maxMove;
-        this.stepsRemaining = stats.maxMove;
+        this.stepsRemaining = stats.stepsRemaining;
         this.moveCounter = 0;
         this.bagSize = stats.bagSize;
         this.activeItemSlots = stats.activeItemSlots;
@@ -24,7 +24,7 @@ class Player {
         this.maxHp = stats.maxHp;
         this.hp = stats.hp;
         this.maxMana = stats.maxMana;
-        this.mp = stats.mana;
+        this.mp = stats.mp;
         this.armor = stats.armor;
         this.lvl2 = stats.lvl2;
         this.lvl3 = stats.lvl3;
