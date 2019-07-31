@@ -1,4 +1,6 @@
 "use strict";
+
+const Player = require("./Player");
 class Game {
     constructor(io, room) {
         this.fs = require("fs");
@@ -7,11 +9,11 @@ class Game {
         require("../../../client/js/Inventory");
 
         // connnected users list
-        this.users = {};
+        this.users = [];
 
         // connected players list
-        // Player.list changed to this.players
-        this.players = [];
+        // this.playerList changed to this.playerList
+        this.playerList = [];
 
         // //
         // limit for maxPlayers
@@ -25,72 +27,82 @@ class Game {
         // limit for actions
         this.maxActions = 2;
         // bool for starting the game
-        this.gameReady = false;
+        this.gameReady = true;
 
         // TODO: create Phases for looting, battle, etc
         // TODO: 
         this.preLoadLoop;
         this.io = io;
         this.room = room;
-
     }
 
     waitForPlayers() {
         // !! Interval is still active
-        setInterval(() => {
+        let x = setInterval(() => {
             let size = Object.keys(this.users).length;
             if (size == this.maxPlayers && this.loadMapTrigger) {
-                console.log("size accepted")
+                clearInterval(x);
+                console.log("Player Data has been loaded.")
                 this.sendInitToAllClients();
+                console.log("Players were initiated.")
                 this.createTurn();
+                console.log("Round created.")
                 size++;
                 this.loadMapTrigger = false;
-                this.gameReady = true;
-                console.log("loaded")
-
-                if (this.gameReady) {
-                    let pack;
-                    // GAME LOOP
-                    // TODO: need game loop
-                    setInterval(function () {
-                        // iterates through all players
-                        for (let i in this.players) {
-                            let player = this.players[i];
-                            // checks if player's turn
-                            if (order.length === 0) {
-                                // if round haven't started, start it
-                                this.startNewRound();
-                            } else {
-                                // checks if it's the players turn
-                                if (player == order[0]) {
-                                    if (player.dead) {
-                                        this.nextPlayersTurn();
-                                    } else {
-                                        // checks if players max Actions reached
-                                        if (player.isItMyTurn(maxActions)) {
-
-                                        } else {
-                                            // if player reached max Actions 
-                                            // reset moves
-                                            player.resetPlayer();
-                                            // let the next players turn begin
-                                            this.nextPlayersTurn();
-                                        }
-                                    }
-                                }
-                            }
-                            player.updateStats();
-                            pack = player.update();
-                        }
-                        for (let i in this.users) {
-                            this.users[i].emit("update", pack);
-                        }
-                    }, 1000 / 80);
-                }
+                // process.nextTick(() => )
+                this.gameloop()
             }
         }, 2000);
+
     }
 
+    gameloop() {
+        if (this.gameReady && !this.loadMapTrigger) {
+            this.gameReady = false;
+            let pack;
+            // GAME LOOP
+            // TODO: need game loop
+            console.log("Game Loop Starting")
+            setInterval(function () {
+                // iterates through all players
+                for (var i in this.playerList) {
+                    console.log("intervall")
+                    // console.log(`Players name is ${this.playerList[i].name}`)
+                    let player = this.playerList[i];
+                    // checks if player's turn
+                    if (order.length === 0) {
+                        // if round haven't started, start it
+                        this.startNewRound();
+                    } else {
+                        // checks if it's the players turn
+                        if (player == order[0]) {
+                            if (player.dead) {
+                                this.nextPlayersTurn();
+                            } else {
+                                // checks if players max Actions reached
+                                if (player.isItMyTurn(maxActions)) {
+
+                                } else {
+                                    // if player reached max Actions 
+                                    // reset moves
+                                    player.resetPlayer();
+                                    // let the next players turn begin
+                                    this.nextPlayersTurn();
+                                }
+                            }
+                        }
+                    }
+                    player.updateStats();
+                    pack = player.update();
+                }
+                for (let i in this.users) {
+                    this.users[sock].emit("update", pack);
+                    console.log("sent")
+                }
+            }, 1000 / 80);
+        }
+
+    }
     // checks if id matches with originID of any member
     checkIfPlayersIsMember(arr) {
         let members = this.room.member;
@@ -143,29 +155,30 @@ class Game {
         this.waitForPlayers();
 
 
+
     }
 
     createUser(socket, arr) {
-        this.users[socket] = socket;
-        this.users[socket].clientID = socket.id;
-        this.users[socket].username = arr[1];
-        this.users[socket].originID = arr[0];
-        this.users[socket].character = this.getCharacterSelection(arr[0]);
+        this.users[socket.id] = socket;
+        this.users[socket.id].clientID = socket.id;
+        this.users[socket.id].username = arr[1];
+        this.users[socket.id].originID = arr[0];
+        this.users[socket.id].character = this.getCharacterSelection(arr[0]);
         console.log(`${socket.username} [id=${socket.id}] added to users.list`);
         this.createPlayer(socket);
     }
 
     createPlayer(socket) {
-        const Player = require("./Player");
-        let name = this.users[socket].character;
+        let name = this.users[socket.id].character;
         let char = this.getCharacterStats(name);
-        char.id = this.users[socket].originID;
+        char.id = this.users[socket.id].originID;
         char.sock = socket;
         char.maxActions = this.maxActions;
         char.mapNumber = 0;
         char.entry = [0, 0];
         // adding new Player to players array
-        this.players.push(new Player(char));
+        let player = new Player(char);
+        this.playerList[socket.id] = player;
 
     }
 
@@ -197,8 +210,9 @@ class Game {
     // 
     // fills order array
     createTurn() {
-        for (let i in this.players) {
-            this.order.push(this.players[i]);
+        for (let i in this.playerList) {
+            console.log("Im here")
+            this.order.push(this.playerList[i]);
         }
         this.shuffleOrder();
         /* for(let i in order){
@@ -213,6 +227,7 @@ class Game {
     shuffleOrder() {
         let curr = this.order.length,
             temp, rnd;
+        console.log("Im here2222")
         while (0 !== curr) {
             rnd = Math.floor(Math.random() * curr);
             curr--;
@@ -250,8 +265,8 @@ class Game {
 
     sendInitToAllClients() {
         let initPackage = [];
-        for (let i in this.players) {
-            let player = this.players[i];
+        for (let i in this.playerList) {
+            let player = this.playerList[i];
             initPackage.push(player.getPlayerData());
         }
         for (let i in this.users) {

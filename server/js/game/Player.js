@@ -43,8 +43,8 @@ class Player {
         this.inventory = new Inventory(this.activeItemSlots, this.bagSize, true, this.sock);
 
         this.interact = new Interact(this);
-
-        // Player.list[this.id] = self;
+        // Player.list = {};
+        // Player.list[this.id] = this;
 
         // receives attack command from client
         this.sock.on("attack", (data) => {

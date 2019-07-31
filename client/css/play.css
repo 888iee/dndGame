@@ -176,7 +176,7 @@
   border-radius: 10px;
   overflow: hidden;
   float: left;
-  background-image: url(res/avatar.png);
+  background-image: url(../res/avatar.png);
   background-size: 30px 30px;
 }
 
@@ -188,7 +188,7 @@
   border-radius: 10px;
   overflow: hidden;
   float: left;
-  background-image: url(res/avatar.png);
+  background-image: url(../res/avatar.png);
   background-size: 30px 30px;
   border: 2px solid #fff;
 }
