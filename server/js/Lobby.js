@@ -75,18 +75,18 @@ class Lobby {
             console.log(`${socket.id} tried to create an already existing Room \n=> ${roomData.roomName}`)
             socket.emit("msg", "Room already exist!");
         } else {
-
+            roomData.chars = {
+                c1: "none",
+                c2: "none",
+                c3: "none",
+                c4: "none",
+                c5: "none",
+            };
             let data = {
                 create: true,
                 sock: socket,
                 roomData: roomData,
-                chars: {
-                    c1: "none",
-                    c2: "none",
-                    c3: "none",
-                    c4: "none",
-                    c5: "none",
-                }
+
             }
             this.joinToRoom(data, cb);
         }
@@ -121,8 +121,8 @@ class Lobby {
         this.rooms.splice(count, 1);
     }
 
-    selectCharacter(socket) {
-        let room = lobby.returnRoomFromSock(socket);
+    selectCharacter(socket, char) {
+        let room = this.returnRoomFromSock(socket);
         // check if char.id exist in chars 
         // if (char.id in chars) {
         // check if chars[char.id] is selected by none
