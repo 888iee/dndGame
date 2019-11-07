@@ -1,13 +1,7 @@
 let Connection = (io) => {
     const Game = require("./game/Game");
     let users = {};
-    let chars = {
-        c1: "none",
-        c2: "none",
-        c3: "none",
-        c4: "none",
-        c5: "none",
-    };
+
     const Lobby = require("./Lobby");
     let lobby = new Lobby(io);
 
@@ -20,10 +14,6 @@ let Connection = (io) => {
         }
     }
 
-    function getKeyByValue(object, value) {
-        return Object.keys(object).find(key => object[key] === value);
-    }
-
     // sends welcome msg to client and broadcast to 
     // all other members of client's room a notification
     let welcomeToRoomMsg = (sock) => {
@@ -34,11 +24,16 @@ let Connection = (io) => {
         });
     }
 
+    // io connection
     io.on("connection", (socket) => {
+        // initial SetParams
         users[socket.id] = socket;
         socket.char = "none";
         socket.rdy = false;
+        // send socket.id to client
         socket.emit("id", socket.id);
+
+        // create Room Event
         socket.on("createRoom", (roomData) => {
             try {
                 // assigns socket to leader 
@@ -58,6 +53,7 @@ let Connection = (io) => {
             }
         });
 
+        // Player joining Room Event
         socket.on("joinToRoom", data => {
             // try {
             data.socket = socket;
@@ -82,29 +78,7 @@ let Connection = (io) => {
         });
 
         socket.on("select", char => {
-            let room = lobby.returnRoomFromSock(socket);
-            // check if char.id exist in chars 
-            // if (char.id in chars) {
-            // check if chars[char.id] is selected by none
-            if (chars[char.id] === "none") {
-                // deselect previous char
-                if (chars[getKeyByValue(chars, socket.username)]) {
-                    chars[getKeyByValue(chars, socket.username)] = "none"
-                }
-                // select new char
-                chars[char.id] = socket.username;
-                socket.char = char.name;
-                socket.broadcast.to(room).emit("getChat", `${socket.username} hat ${char.name} ausgewählt.`)
-                io.in(room).emit("addPlayer", lobby.getPlayersInRoom(room, users));
-            } else {
-                // check if selected char should be unchecked
-                if (chars[char.id] === socket.username) {
-                    // deselect char
-                    chars[char.id] = "none";
-                    socket.char = "none";
-                }
-            }
-            console.log(chars)
+            lobby.selectCharacter(socket, char);
             // send to all clients in room 
             io.in(room).emit("addPlayer", lobby.getPlayersInRoom(room, users));
             io.to(room).emit("selection", chars);
@@ -186,6 +160,8 @@ let Connection = (io) => {
             if (typeof socket.raum !== undefined) {
                 console.log(socket.raum)
                 socket.broadcast.in(socket.raum).emit("getChat", `${socket.username} hat den Raum verlassen.`);
+                // lobby.removePlayerInRoom(data.roomName, users);
+                io.in(socket.raum).emit("addPlayer", lobby.getPlayersInRoom(socket.raum, users));
             }
             delete users[socket.id];
             console.log(`${socket.username} has been disconnected. [${socket.id}]`);
