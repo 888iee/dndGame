@@ -15,21 +15,26 @@ class Lobby {
     // get players in room
     getPlayersInRoom(name, users, bool, bool2) {
         let members = [];
-        Object.keys(this.io.sockets.adapter.rooms[name].sockets).forEach((id) => {
-            let obj = {
-                "name": users[id].username,
-                "character": users[id].char,
-            }
-            if (bool) {
-                obj["rdy"] = users[id].rdy;
-            }
-            if (bool2) {
-                obj["originID"] = users[id].originID;
-            }
-            members.push(obj);
+        try {
 
-        });
-        return members;
+            Object.keys(this.io.sockets.adapter.rooms[name].sockets).forEach((id) => {
+                let obj = {
+                    "name": users[id].username,
+                    "character": users[id].char,
+                }
+                if (bool) {
+                    obj["rdy"] = users[id].rdy;
+                }
+                if (bool2) {
+                    obj["originID"] = users[id].originID;
+                }
+                members.push(obj);
+
+            });
+            return members;
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     getIndexByName(name) {
@@ -49,6 +54,15 @@ class Lobby {
     //     return this.rooms.findIndex(room => room.players.find(player => player == id));
     // }
     returnRoomFromSock(sock) {
+        return this.rooms.find(room => room.users.find(usrname => usrname == sock.id));
+        // for (let r in this.rooms) {
+        //     for (let u in r.users) {
+        //         if (u == sock.id) {
+        //             return r;
+        //         }
+
+        //     }
+        // }
         return Object.keys(sock.rooms).filter(key => key !== sock.id);
     }
     getR(sock) {
@@ -58,6 +72,8 @@ class Lobby {
     joinToRoom(data, cb) {
         let sock = data.sock;
         let room = data.roomData;
+        room.users = [];
+        room.users.push(sock.id);
         if (data.create) {
             cb()
             // add room to global array
@@ -126,16 +142,16 @@ class Lobby {
         // check if char.id exist in chars 
         // if (char.id in chars) {
         // check if chars[char.id] is selected by none
-        if (room.chars[char.id] === "none") {
+        if (room.chars[char.id] === "none") { //funktionert wenn man this.rooms[0] nutzt statt room
             // deselect previous char
-            if (room.chars[getKeyByValue(room.chars, socket.username)]) {
-                room.chars[getKeyByValue(room.chars, socket.username)] = "none"
+            if (room.chars[this.getKeyByValue(room.chars, socket.username)]) {
+                room.chars[this.getKeyByValue(room.chars, socket.username)] = "none"
             }
             // select new char
             room.chars[char.id] = socket.username;
             socket.char = char.name;
             socket.broadcast.to(room).emit("getChat", `${socket.username} hat ${char.name} ausgewählt.`)
-            io.in(room).emit("addPlayer", lobby.getPlayersInRoom(room, users));
+            this.io.in(room).emit("addPlayer", this.getPlayersInRoom(room, room.users));
         } else {
             // check if selected char should be unchecked
             if (room.chars[char.id] === socket.username) {
@@ -144,7 +160,7 @@ class Lobby {
                 socket.char = "none";
             }
         }
-        console.log(chars)
+        console.log(room.chars)
     }
 }
 module.exports = Lobby;

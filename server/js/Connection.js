@@ -80,6 +80,7 @@ let Connection = (io) => {
         socket.on("select", char => {
             lobby.selectCharacter(socket, char);
             // send to all clients in room 
+            // todo: room nicht gefunden
             io.in(room).emit("addPlayer", lobby.getPlayersInRoom(room, users));
             io.to(room).emit("selection", chars);
         })
