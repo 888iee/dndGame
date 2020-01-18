@@ -4,6 +4,51 @@ class Lobby {
         this.rooms = [];
 
     }
+    checkIfChampSelectCanStart(roomName) {
+        if (this.didRoomReachMaxPlayers(roomName)) {
+            this.io.to(roomName).emit("startSelect", this.getRoomByName(roomName).chars);
+        }
+    }
+
+    creatingRoom(roomData, socket, cb) {
+        if (this.getRoomByName(roomData.roomName)) {
+            console.log(`${socket.id} tried to create an already existing Room \n=> ${roomData.roomName}`)
+            socket.emit("msg", "Room already exist!");
+        } else {
+            roomData.chars = {
+                c1: "none",
+                c2: "none",
+                c3: "none",
+                c4: "none",
+                c5: "none",
+            };
+            let data = {
+                create: true,
+                sock: socket,
+                roomData: roomData,
+
+            }
+            this.joinToRoom(data, cb);
+        }
+    }
+
+    didRoomReachMaxPlayers(roomName) {
+        let room = this.getRoomByName(roomName);
+
+        if (this.getPlayerCount(roomName) == room.max_players) {
+            return true;
+        }
+        // TODO: chars sich nicht auswählbar 
+    }
+
+    findRoomIndex(name) {
+        return this.rooms.findIndex(room => room.roomName === name);
+    }
+
+    getIndexByName(name) {
+        return this.rooms.findIndex(obj => obj.roomName === name);
+    }
+
     getKeyByValue(object, value) {
         return Object.keys(object).find(key => object[key] === value);
     }
@@ -16,7 +61,7 @@ class Lobby {
     getPlayersInRoom(name, users, bool, bool2) {
         let members = [];
         try {
-
+            // TODO: try catch because it can fail to find room when users disconnected
             Object.keys(this.io.sockets.adapter.rooms[name].sockets).forEach((id) => {
                 let obj = {
                     "name": users[id].username,
@@ -37,78 +82,24 @@ class Lobby {
         }
     }
 
-    getIndexByName(name) {
-        return this.rooms.findIndex(obj => obj.roomName === name);
-    }
+
     // returns room
-    findRoom(name) {
-        return this.rooms.find(room => room.roomName === name);
-    }
-
-    findRoomIndex(name) {
-        return this.rooms.findIndex(room => room.roomName === name);
-    }
-    // !! DEPRECRATED
-    // retuns index of room
-    // let getIndexByUsrId(id) {
-    //     return this.rooms.findIndex(room => room.players.find(player => player == id));
-    // }
-    returnRoomFromSock(sock) {
-        return this.rooms.find(room => room.users.find(usrname => usrname == sock.id));
-        // for (let r in this.rooms) {
-        //     for (let u in r.users) {
-        //         if (u == sock.id) {
-        //             return r;
-        //         }
-
-        //     }
-        // }
-        return Object.keys(sock.rooms).filter(key => key !== sock.id);
-    }
     getR(sock) {
         return users[sock.id].rooms.find(name => name !== sock.id);
     }
-    // let socket join specific room
-    joinToRoom(data, cb) {
-        let sock = data.sock;
-        let room = data.roomData;
-        room.users = [];
-        room.users.push(sock.id);
-        if (data.create) {
-            cb()
-            // add room to global array
-            this.rooms.push(room);
-            sock.raum = room.roomName;
-            console.log(`Room ${room.roomName} was created with pass:${room.password}`)
-        } else {
-            sock.raum = room.roomName;
-            cb()
-            console.log(`${sock.username} joined the room ${sock.raum}`);
-        }
-    }
-    creatingRoom(roomData, socket, cb) {
-        if (this.findRoom(roomData.roomName)) {
-            console.log(`${socket.id} tried to create an already existing Room \n=> ${roomData.roomName}`)
-            socket.emit("msg", "Room already exist!");
-        } else {
-            roomData.chars = {
-                c1: "none",
-                c2: "none",
-                c3: "none",
-                c4: "none",
-                c5: "none",
-            };
-            let data = {
-                create: true,
-                sock: socket,
-                roomData: roomData,
 
-            }
-            this.joinToRoom(data, cb);
-        }
+    // returns room
+    getRoomByName(name) {
+        return this.rooms.find(room => room.roomName === name);
     }
+
+    // Returns Room Object
+    getRoomBySock(sock) {
+        return this.rooms.find(room => room.roomName == sock.raum);
+    }
+
     joiningRoom(data, cb) {
-        let room = this.findRoom(data.roomName);
+        let room = this.getRoomByName(data.roomName);
         if (room) {
             if (this.getPlayerCount(room.roomName) < room.max_players) {
                 let pack = {
@@ -126,11 +117,38 @@ class Lobby {
             console.log(`ERROR\n${data.socket.username} tried to join not existing room.`)
         }
     }
+
+    // let socket join specific room
+    joinToRoom(data, cb) {
+        let sock = data.sock;
+        let room = data.roomData;
+        room.users = [];
+        room.users.push(sock.id);
+        if (data.create) {
+            cb()
+            // add room to global array
+            this.rooms.push(room);
+            sock.raum = room.roomName;
+            console.log(`Room ${room.roomName} was created with pass: ${room.password}`)
+        } else {
+            sock.raum = room.roomName;
+            cb()
+            console.log(`${sock.username} joined the room ${sock.raum}`);
+        }
+        this.checkIfChampSelectCanStart(room.roomName);
+    }
+
     // remove player from room
     removePlayerInRoom(roomName, username) {
-        this.rooms[roomName]
-        this.io.sockets.adapter.rooms[name].sockets
-        io.in(data.roomName).emit("addPlayer", lobby.getPlayersInRoom(data.roomName, users));
+        // TODO: User muss entfernt werden aus room und check if leader and choose new lead
+
+        // delete this.rooms[this.findRoomIndex(roomName)].users.find(usr => usr == username);
+        // this.io.sockets.adapter.rooms[name].sockets
+        try {
+            this.io.in(roomName).emit("addPlayer", this.getPlayersInRoom(roomName, users));
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     removeRoom(count) {
@@ -138,7 +156,7 @@ class Lobby {
     }
 
     selectCharacter(socket, char) {
-        let room = this.returnRoomFromSock(socket);
+        let room = this.getRoomBySock(socket);
         // check if char.id exist in chars 
         // if (char.id in chars) {
         // check if chars[char.id] is selected by none

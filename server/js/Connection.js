@@ -18,9 +18,11 @@ let Connection = (io) => {
     // all other members of client's room a notification
     let welcomeToRoomMsg = (sock) => {
         setTimeout(() => {
-            let room = lobby.returnRoomFromSock(sock);
-            sock.emit("getChat", `Wilkommen im Raum <br>${room}.`);
-            sock.broadcast.to(room).emit("getChat", `${sock.username} ist dem Raum beigetreten.`);
+            let room = lobby.getRoomBySock(sock);
+            // Welcome Message for Player
+            sock.emit("getChat", `Wilkommen im Raum <br>${room.roomName}.`);
+            // Notification in Chat for other Room Members
+            sock.broadcast.to(room.roomName).emit("getChat", `${sock.username} ist dem Raum beigetreten.`);
         });
     }
 
@@ -55,13 +57,11 @@ let Connection = (io) => {
 
         // Player joining Room Event
         socket.on("joinToRoom", data => {
-            // try {
             data.socket = socket;
             lobby.joiningRoom(data, () => {
 
                 // socket joins room
                 socket.join(data.roomName);
-                // try {
                 // emit room display to client
                 setTimeout(() => {
                     try {
@@ -79,19 +79,20 @@ let Connection = (io) => {
 
         socket.on("select", char => {
             lobby.selectCharacter(socket, char);
+            let room = lobby.getRoomBySock(socket);
             // send to all clients in room 
-            // todo: room nicht gefunden
-            io.in(room).emit("addPlayer", lobby.getPlayersInRoom(room, users));
-            io.to(room).emit("selection", chars);
+
+            io.in(room.roomName).emit("addPlayer", lobby.getPlayersInRoom(room.roomName, users));
+            io.to(room.roomName).emit("selection", room.chars);
         })
 
         socket.on("rdy", bool => {
             socket.rdy = bool;
-            checkReady(lobby.getPlayersInRoom(lobby.returnRoomFromSock(socket), users, true));
+            checkReady(lobby.getPlayersInRoom(lobby.getRoomBySock(socket), users, true));
         });
 
         socket.on("getChat", (data) => {
-            let roomName = lobby.returnRoomFromSock(socket);
+            let roomName = lobby.getRoomBySock(socket);
             io.to(roomName).emit("getChat", `${socket.username}: ${data}`);
         });
 
@@ -135,7 +136,7 @@ let Connection = (io) => {
             for (var i in arReadyCheck) {
                 if (!arReadyCheck[i].rdy) return console.log("Not all ready yet");
             }
-            let roomName = lobby.returnRoomFromSock(socket);
+            let roomName = lobby.getRoomBySock(socket).roomName;
             // TODO: start countdown and redirect all sockets.of(room) to game site
             console.log("Everyone is ready\nStarting Game in \n3 \n2 \n1");
             io.to(roomName).emit("getChat", "Spiel startet in..")
@@ -147,7 +148,7 @@ let Connection = (io) => {
                         io.to(roomName).emit("getChat", 1);
                         io.to(roomName).emit("redirect", "/play.html");
 
-                        let raum = lobby.returnRoomFromSock(socket);
+                        let raum = lobby.getRoomBySock(socket);
                         raum.member = lobby.getPlayersInRoom(roomName, users, false, true);
 
                         let game = new Game(io, raum);
@@ -158,14 +159,16 @@ let Connection = (io) => {
         }
 
         socket.on("disconnect", () => {
-            if (typeof socket.raum !== undefined) {
-                console.log(socket.raum)
-                socket.broadcast.in(socket.raum).emit("getChat", `${socket.username} hat den Raum verlassen.`);
+            let disconUser = socket;
+            if (typeof disconUser.raum !== undefined) {
+                // console.log(`${disconUser.username} wird Raum ${disconUser.raum} verlassen.`);
+                disconUser.broadcast.in(disconUser.raum).emit("getChat", `${disconUser.username} hat den Raum verlassen.`);
                 // lobby.removePlayerInRoom(data.roomName, users);
-                io.in(socket.raum).emit("addPlayer", lobby.getPlayersInRoom(socket.raum, users));
+                io.in(disconUser.raum).emit("addPlayer", lobby.getPlayersInRoom(disconUser.raum, this.users));
+                lobby.removePlayerInRoom(disconUser.raum, disconUser.username);
             }
-            delete users[socket.id];
-            console.log(`${socket.username} has been disconnected. [${socket.id}]`);
+            // delete this.users[disconUser.id];
+            console.log(`${disconUser.username} has been disconnected. [${disconUser.id}]`);
         })
     });
 

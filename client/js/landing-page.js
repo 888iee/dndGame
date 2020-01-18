@@ -1,5 +1,25 @@
 let myID;
 let ready = false;
+let addClassesToCharacters = (chars) => {
+    let ar = Object.keys(chars);
+    // iterate through received data and reassign css classes
+    for (let i = 0; i < ar.length; i++) {
+        // check if char was chosen by myself
+        if (chars[ar[i]] === $(".side-bar-user-name").text()) {
+            selected = true;
+            $(`#${ar[i]}`).addClass("selectedChamp");
+            $(`#${ar[i]}`).removeClass("notSelected someoneElseSelected");
+        } else if (chars[ar[i]] === "none") {
+            // check if char isn't selected
+            $(`#${ar[i]}`).addClass("notSelected");
+            $(`#${ar[i]}`).removeClass("selectedChamp someoneElseSelected");
+        } else {
+            // was selected by other players
+            $(`#${ar[i]}`).addClass("someoneElseSelected");
+            $(`#${ar[i]}`).removeClass("selectedChamp notSelected");
+        }
+    }
+}
 $(document).ready(function () {
 
     // click event to open popup
@@ -146,41 +166,18 @@ let initSockConnection = (pass) => {
         socket.on("selection", chars => {
             let selected = false;
             let children = $(".champion-select").children();
-            // removes all classes from characters
-            for (let i = 0; i < children.length; i++) {
-                if ($(`#${children[i].id}`).hasClass("someoneElseSelected") ||
-                    $(`#${children[i].id}`).hasClass("selectedChamp")) {
-                    try {
-
-                        $(`#${children[i].id}`).removeClass("someoneElseSelected notSelected selectedChamp");
-                    } catch (error) {}
-                }
-                $(`#${children[i].id}`).addClass("notSelected");
-            }
-            let ar = Object.keys(chars);
-            // iterate through received data and reassign css classes
-            for (let i = 0; i < ar.length; i++) {
-                // check if char was chosen by myself
-                if (chars[ar[i]] === $(".side-bar-user-name").text()) {
-                    selected = true;
-                    $(`#${ar[i]}`).addClass("selectedChamp");
-                    $(`#${ar[i]}`).removeClass("notSelected someoneElseSelected");
-                } else if (chars[ar[i]] === "none") {
-                    // check if char isn't selected
-                    $(`#${ar[i]}`).addClass("notSelected");
-                    $(`#${ar[i]}`).removeClass("selectedChamp someoneElseSelected");
-                } else {
-                    // was selected by other players
-                    $(`#${ar[i]}`).addClass("someoneElseSelected");
-                    $(`#${ar[i]}`).removeClass("selectedChamp notSelected");
-                }
-            }
+            removeAllClassesFromCharacters();
+            addClassesToCharacters(chars);
             if (selected) {
                 $("#readyBtn").attr("disabled", false);
             } else {
                 $("#readyBtn").attr("disabled", true);
             }
-        })
+        });
+        socket.on("startSelect", chars => {
+            removeAllClassesFromCharacters();
+            addClassesToCharacters(chars);
+        });
         // listen for roomlist 
         socket.on("getList", (data) => {
             insertList(data);
@@ -364,7 +361,19 @@ $(document).keydown((e) => {
     }
 });
 
+let removeAllClassesFromCharacters = () => {
+    // removes all classes from characters
+    for (let i = 0; i < children.length; i++) {
+        if ($(`#${children[i].id}`).hasClass("someoneElseSelected") ||
+            $(`#${children[i].id}`).hasClass("selectedChamp")) {
+            try {
 
+                $(`#${children[i].id}`).removeClass("someoneElseSelected notSelected selectedChamp");
+            } catch (error) {}
+        }
+        $(`#${children[i].id}`).addClass("notSelected");
+    }
+}
 
 let showLoginForm = () => {
     $("#login").show();
