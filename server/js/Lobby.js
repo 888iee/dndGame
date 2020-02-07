@@ -142,6 +142,7 @@ class Lobby {
         } else {
             sock.raum = room.roomName;
             cb()
+            this.io.to(sock).emit("addPlayer", this.getPlayersInRoom(room, room.users));
             console.log(`${sock.username} joined the room ${sock.raum}`);
         }
         this.checkIfChampSelectCanStart(room.roomName);
