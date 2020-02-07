@@ -141,7 +141,7 @@ class Lobby {
             console.log(`Room ${room.roomName} was created with pass: ${room.password}`)
         } else {
             sock.raum = room.roomName;
-            cb()
+            cb();
             this.io.to(sock).emit("addPlayer", this.getPlayersInRoom(room, room.users));
             console.log(`${sock.username} joined the room ${sock.raum}`);
         }
