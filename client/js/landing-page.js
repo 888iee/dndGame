@@ -177,6 +177,7 @@ let initSockConnection = (pass) => {
         socket.on("startSelect", chars => {
             removeAllClassesFromCharacters();
             addClassesToCharacters(chars);
+            // TODO: Add Notification for Champ Select
         });
         // listen for roomlist 
         socket.on("getList", (data) => {
