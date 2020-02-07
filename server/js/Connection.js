@@ -78,12 +78,14 @@ let Connection = (io) => {
         });
 
         socket.on("select", char => {
-            lobby.selectCharacter(socket, char);
-            let room = lobby.getRoomBySock(socket);
-            // send to all clients in room 
+            lobby.selectCharacter(socket, char, cb => {
 
-            io.in(room.roomName).emit("addPlayer", lobby.getPlayersInRoom(room.roomName, users));
-            io.to(room.roomName).emit("selection", room.chars);
+                let room = lobby.getRoomBySock(socket);
+                // send to all clients in room 
+    
+                io.in(room.roomName).emit("addPlayer", lobby.getPlayersInRoom(room.roomName, users));
+                io.to(room.roomName).emit("selection", room.chars);
+            });
         })
 
         socket.on("rdy", bool => {
