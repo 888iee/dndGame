@@ -98,6 +98,15 @@ class Lobby {
         return this.rooms.find(room => room.roomName == sock.raum);
     }
 
+    // returns true if player is in room
+    isPlayerInRoom(room, playerId) {
+        let isInside = room.users.find(usr => usr == playerId);
+        if(isInside == null) {
+            return false;
+        }
+        return true;
+    }
+
     joiningRoom(data, cb) {
         let room = this.getRoomByName(data.roomName);
         if (room) {
@@ -155,28 +164,32 @@ class Lobby {
         this.rooms.splice(count, 1);
     }
 
-    selectCharacter(socket, char) {
+    selectCharacter(socket, char, cb) {
         let room = this.getRoomBySock(socket);
-        // check if char.id exist in chars 
-        // if (char.id in chars) {
-        // check if chars[char.id] is selected by none
-        if (room.chars[char.id] === "none") { //funktionert wenn man this.rooms[0] nutzt statt room
-            // deselect previous char
-            if (room.chars[this.getKeyByValue(room.chars, socket.username)]) {
-                room.chars[this.getKeyByValue(room.chars, socket.username)] = "none"
+        // check if Player is in Room
+        if (this.isPlayerInRoom(room, socket.id)) {
+            // check if char.id exist in chars 
+            // if (char.id in chars) {
+                // check if chars[char.id] is selected by none
+            if (room.chars[char.id] === "none") { //funktionert wenn man this.rooms[0] nutzt statt room
+                // deselect previous char
+                if (room.chars[this.getKeyByValue(room.chars, socket.username)]) {
+                    room.chars[this.getKeyByValue(room.chars, socket.username)] = "none"
+                }
+                // select new char
+                room.chars[char.id] = socket.username;
+                socket.char = char.name;
+                socket.broadcast.to(room).emit("getChat", `${socket.username} hat ${char.name} ausgewählt.`)
+                this.io.in(room).emit("addPlayer", this.getPlayersInRoom(room, room.users));
+            } else {
+                // check if selected char should be unchecked
+                if (room.chars[char.id] === socket.username) {
+                    // deselect char
+                    room.chars[char.id] = "none";
+                    socket.char = "none";
+                }
             }
-            // select new char
-            room.chars[char.id] = socket.username;
-            socket.char = char.name;
-            socket.broadcast.to(room).emit("getChat", `${socket.username} hat ${char.name} ausgewählt.`)
-            this.io.in(room).emit("addPlayer", this.getPlayersInRoom(room, room.users));
         } else {
-            // check if selected char should be unchecked
-            if (room.chars[char.id] === socket.username) {
-                // deselect char
-                room.chars[char.id] = "none";
-                socket.char = "none";
-            }
         }
         console.log(room.chars)
     }
