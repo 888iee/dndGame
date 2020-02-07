@@ -166,7 +166,7 @@ let initSockConnection = (pass) => {
         socket.on("selection", chars => {
             let selected = false;
             let children = $(".champion-select").children();
-            removeAllClassesFromCharacters();
+            removeAllClassesFromCharacters(children);
             addClassesToCharacters(chars);
             if (selected) {
                 $("#readyBtn").attr("disabled", false);
@@ -359,7 +359,7 @@ $(document).keydown((e) => {
     }
 });
 
-let removeAllClassesFromCharacters = () => {
+let removeAllClassesFromCharacters = (children) => {
     // removes all classes from characters
     for (let i = 0; i < children.length; i++) {
         if ($(`#${children[i].id}`).hasClass("someoneElseSelected") ||
