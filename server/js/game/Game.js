@@ -30,7 +30,6 @@ class Game {
         this.gameReady = true;
 
         // TODO: create Phases for looting, battle, etc
-        // TODO: 
         this.preLoadLoop;
         this.io = io;
         this.room = room;
@@ -61,7 +60,6 @@ class Game {
             this.gameReady = false;
             let pack;
             // GAME LOOP
-            // TODO: need game loop
             console.log("Game Loop Starting")
             setInterval(function () {
                 // iterates through all players
@@ -223,7 +221,6 @@ class Game {
 
     }
     // randomizes turn order
-    // TODO: shuffle player order randomly
     shuffleOrder() {
         let curr = this.order.length,
             temp, rnd;
@@ -239,12 +236,10 @@ class Game {
     }
 
     // let the next Players Turn begin
-    // TODO: let next players turn begin
     nextPlayersTurn() {
         this.order.splice(0, 1);
     }
 
-    // TODO: start new Round
     // starts a new round with the same order as before
     startNewRound() {
         this.this.order = this.roundReset.slice(0);

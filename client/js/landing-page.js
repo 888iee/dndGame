@@ -198,11 +198,9 @@ let initSockConnection = (pass) => {
             $("#roomList").css("display", "none");
             $("#roomName").text(data.roomName);
 
-            // TODO: load champion info 
             updateChampSelect()
             // TODO: enable champion select 
 
-            // TODO: show lobby
             $(".lobby-room").css("display", "block");
             hidePopUp();
         });

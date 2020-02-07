@@ -61,7 +61,7 @@ class Lobby {
     getPlayersInRoom(name, users, bool, bool2) {
         let members = [];
         try {
-            // TODO: try catch because it can fail to find room when users disconnected
+            // try catch because it can fail to find room when users disconnected
             Object.keys(this.io.sockets.adapter.rooms[name].sockets).forEach((id) => {
                 let obj = {
                     "name": users[id].username,
