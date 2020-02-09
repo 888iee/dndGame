@@ -2,7 +2,7 @@ let Connection = (io) => {
     const Game = require("./game/Game");
     let users = {};
 
-    const Lobby = require("./Lobby");
+    const Lobby = require("./Lobby").default;
     let lobby = new Lobby(io);
 
     // creates object of client information 
@@ -89,7 +89,10 @@ let Connection = (io) => {
         })
 
         socket.on("rdy", bool => {
+            lobby.setReady(bool, socket.id);
             socket.rdy = bool;
+            lobby.check
+            // TODO: !!
             checkReady(lobby.getPlayersInRoom(lobby.getRoomBySock(socket), users, true));
         });
 

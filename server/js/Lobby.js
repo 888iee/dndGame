@@ -4,6 +4,14 @@ class Lobby {
         this.rooms = [];
 
     }
+
+    checkIfAllPlayersAreReady(roomName) {
+        let room = this.getRoomByName(roomName);
+
+        // TODO: !!
+    }
+    
+
     checkIfChampSelectCanStart(roomName) {
         if (this.didRoomReachMaxPlayers(roomName)) {
             this.io.to(roomName).emit("startSelect", this.getRoomByName(roomName).chars);
@@ -39,7 +47,6 @@ class Lobby {
         if (this.getPlayerCount(roomName) == room.max_players) {
             return true;
         }
-        // TODO: chars sich nicht auswählbar 
     }
 
     findRoomIndex(name) {
@@ -99,6 +106,13 @@ class Lobby {
         return this.rooms.find(room => room.roomName == sock.raum);
     }
 
+    // Returns True if all Players are ready
+    getReadyStateInRoom(room) {
+        for(let usr in room.users) {
+            this.io.
+        }
+    }
+
     // returns true if player is in room
     isPlayerInRoom(room, playerId) {
         let isInside = room.users.find(usr => usr == playerId);
@@ -133,7 +147,7 @@ class Lobby {
         let sock = data.sock;
         let room = data.roomData;
         room.users = [];
-        room.users.push(sock.id);
+        room.users.push({"id": sock.id, "origId": sock.originID, "userName": sock.userName, "character": "none",  "ready": false});
         if (data.create) {
             cb()
             // add room to global array
@@ -143,7 +157,8 @@ class Lobby {
         } else {
             sock.raum = room.roomName;
             cb();
-            this.io.to(sock).emit("addPlayer", this.getPlayersInRoom(room, room.users));
+            // this.io.to(sock).emit("addPlayer", this.getPlayersInRoom(room.roomName, room.users));
+            this.io.to(sock).emit("addPlayer", room.users);
             console.log(`${sock.username} joined the room ${sock.raum}`);
         }
         this.checkIfChampSelectCanStart(room.roomName);
@@ -193,5 +208,19 @@ class Lobby {
             console.log(room.chars)
         } 
     }
+
+    // set ready state for player
+    setReadyState(bool, sockId) {
+        // iterate over rooms
+        for(let r in this.rooms) {
+            // iterate over characters
+            for(let c in r.chars) {
+                if(r.chars[c] == sockId) {
+                    r.users.find(u => u.id == sockId).ready = bool;
+                }
+            }
+        }
+    }
 }
+
 module.exports = Lobby;

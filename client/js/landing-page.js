@@ -105,7 +105,7 @@ $(document).ready(function () {
         console.log(ready);
         sendReady(ready);
     });
-    $("#readyBtn").attr("disabled", true);
+    // $("#readyBtn").attr("disabled", true);
 });
 let updateChampSelect = () => {
 
@@ -166,13 +166,13 @@ let initSockConnection = (pass) => {
         socket.on("selection", chars => {
             let selected = false;
             let children = $(".champion-select").children();
-            removeAllClassesFromCharacters(children);
+            removeAllClassesFromCharacters();
             addClassesToCharacters(chars);
-            if (selected) {
-                $("#readyBtn").attr("disabled", false);
-            } else {
-                $("#readyBtn").attr("disabled", true);
-            }
+            // if (selected) {
+            //     $("#readyBtn").attr("disabled", false);
+            // } else {
+            //     $("#readyBtn").attr("disabled", true);
+            // }
         });
         socket.on("startSelect", chars => {
             removeAllClassesFromCharacters();
@@ -360,7 +360,8 @@ $(document).keydown((e) => {
     }
 });
 
-let removeAllClassesFromCharacters = (children) => {
+let removeAllClassesFromCharacters = () => {
+    let children = $(".champion-select").children();
     // removes all classes from characters
     for (let i = 0; i < children.length; i++) {
         if ($(`#${children[i].id}`).hasClass("someoneElseSelected") ||
