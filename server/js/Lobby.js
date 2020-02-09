@@ -6,9 +6,7 @@ class Lobby {
     }
 
     checkIfAllPlayersAreReady(roomName) {
-        let room = this.getRoomByName(roomName);
-
-        // TODO: !!
+        this.getReadyStateInRoom(this.getRoomByName(roomName));
     }
     
 
@@ -108,9 +106,15 @@ class Lobby {
 
     // Returns True if all Players are ready
     getReadyStateInRoom(room) {
-        for(let usr in room.users) {
-            this.io.
+        // iterate over users in room
+        for(let u in room.users) {
+            // check if players are ready
+            // return if not
+            if(!u.ready) {
+                return false;
+            }
         }
+        return true;
     }
 
     // returns true if player is in room
