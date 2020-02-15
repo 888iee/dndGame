@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "sid",
+  "author": "devDath",
   "license": "ISC",
   "dependencies": {
     "jquery": "^3.4.0",
