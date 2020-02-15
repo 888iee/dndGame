@@ -82,7 +82,7 @@ let Connection = (io) => {
 
                 let room = lobby.getRoomBySock(socket);
                 // send to all clients in room 
-    
+
                 io.in(room.roomName).emit("addPlayer", lobby.getPlayersInRoom(room.roomName, users));
                 io.to(room.roomName).emit("selection", room.chars);
             });
@@ -91,13 +91,13 @@ let Connection = (io) => {
         socket.on("rdy", bool => {
             lobby.setReadyState(bool, socket.id);
             socket.rdy = bool;
-            if(lobby.checkIfAllPlayersAreReady(socket.raum)) {
-                while(true) {
+            if (lobby.checkIfAllPlayersAreReady(socket.raum)) {
+                while (true) {
                     console.log("ALL READY");
                 }
                 // TODO: !!
                 checkReady(lobby.getPlayersInRoom(lobby.getRoomBySock(socket), users, true));
-            }else {
+            } else {
                 console.log("NOT READY");
             }
         });
@@ -171,6 +171,10 @@ let Connection = (io) => {
 
         socket.on("disconnect", () => {
             let disconUser = socket;
+            if (socket.io.connecting.indexOf(socket) === -1) {
+                //you should renew token or do another important things before reconnecting
+                socket.connect();
+            }
             if (typeof disconUser.raum !== undefined) {
                 // console.log(`${disconUser.username} wird Raum ${disconUser.raum} verlassen.`);
                 disconUser.broadcast.in(disconUser.raum).emit("getChat", `${disconUser.username} hat den Raum verlassen.`);

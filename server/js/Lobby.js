@@ -8,7 +8,7 @@ class Lobby {
     checkIfAllPlayersAreReady(roomName) {
         this.getReadyStateInRoom(this.getRoomByName(roomName));
     }
-    
+
 
     checkIfChampSelectCanStart(roomName) {
         if (this.didRoomReachMaxPlayers(roomName)) {
@@ -107,10 +107,10 @@ class Lobby {
     // Returns True if all Players are ready
     getReadyStateInRoom(room) {
         // iterate over users in room
-        for(let u in room.users) {
+        for (let u in room.users) {
             // check if players are ready
             // return if not
-            if(!u.ready) {
+            if (!u.ready) {
                 return false;
             }
         }
@@ -120,7 +120,7 @@ class Lobby {
     // returns true if player is in room
     isPlayerInRoom(room, playerId) {
         let isInside = room.users.find(usr => usr == playerId);
-        if(isInside == null) {
+        if (isInside == null) {
             return false;
         }
         return true;
@@ -151,7 +151,13 @@ class Lobby {
         let sock = data.sock;
         let room = data.roomData;
         room.users = [];
-        room.users.push({"id": sock.id, "origId": sock.originID, "userName": sock.userName, "character": "none",  "ready": false});
+        room.users.push({
+            "id": sock.id,
+            "origId": sock.originID,
+            "userName": sock.userName,
+            "character": "none",
+            "ready": false
+        });
         if (data.create) {
             cb()
             // add room to global array
@@ -160,6 +166,13 @@ class Lobby {
             console.log(`Room ${room.roomName} was created with pass: ${room.password}`)
         } else {
             sock.raum = room.roomName;
+            this.rooms.find(r => r.roomName == room.roomName).users.push({
+                "id": sock.id,
+                "origId": sock.originID,
+                "userName": sock.userName,
+                "character": "none",
+                "ready": false
+            });
             cb();
             // this.io.to(sock).emit("addPlayer", this.getPlayersInRoom(room.roomName, room.users));
             this.io.to(sock).emit("addPlayer", room.users);
@@ -189,11 +202,11 @@ class Lobby {
         let room = this.getRoomBySock(socket);
         // check if champ select can start already
         if (this.checkIfChampSelectCanStart(room.roomName)) {
-                // check if chars[char.id] is selected by none
-                if (room.chars[char.id] === "none") { //funktionert wenn man this.rooms[0] nutzt statt room
-                    // deselect previous char
-                    if (room.chars[this.getKeyByValue(room.chars, socket.username)]) {
-                        room.chars[this.getKeyByValue(room.chars, socket.username)] = "none"
+            // check if chars[char.id] is selected by none
+            if (room.chars[char.id] === "none") { //funktionert wenn man this.rooms[0] nutzt statt room
+                // deselect previous char
+                if (room.chars[this.getKeyByValue(room.chars, socket.username)]) {
+                    room.chars[this.getKeyByValue(room.chars, socket.username)] = "none"
                 }
                 // select new char
                 room.chars[char.id] = socket.username;
@@ -210,16 +223,16 @@ class Lobby {
             }
             cb();
             console.log(room.chars)
-        } 
+        }
     }
 
     // set ready state for player
     setReadyState(bool, sockId) {
         // iterate over rooms
-        for(let r in this.rooms) {
+        for (let r in this.rooms) {
             // iterate over characters
-            for(let c in r.chars) {
-                if(r.chars[c] == sockId) {
+            for (let c in r.chars) {
+                if (r.chars[c] == sockId) {
                     r.users.find(u => u.id == sockId).ready = bool;
                 }
             }
