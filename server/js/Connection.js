@@ -89,10 +89,11 @@ let Connection = (io) => {
         })
 
         socket.on("rdy", bool => {
-            lobby.setReadyState(bool, socket.id);
-            if(lobby.checkIfAllPlayersAreReady(socket.raum)) {
-                checkReady(socket.raum);
-            }
+            lobby.setReady(bool, socket.id);
+            socket.rdy = bool;
+            lobby.check
+            // TODO: !!
+            checkReady(lobby.getPlayersInRoom(lobby.getRoomBySock(socket), users, true));
         });
 
         socket.on("getChat", (data) => {
@@ -136,7 +137,11 @@ let Connection = (io) => {
             }
         }, 2000);
 
-        let checkReady = (roomName) => {
+        let checkReady = (arReadyCheck) => {
+            for (var i in arReadyCheck) {
+                if (!arReadyCheck[i].rdy) return console.log("Not all ready yet");
+            }
+            let roomName = lobby.getRoomBySock(socket).roomName;
             // TODO: start countdown and redirect all sockets.of(room) to game site
             console.log("Everyone is ready\nStarting Game in \n3 \n2 \n1");
             io.to(roomName).emit("getChat", "Spiel startet in..")
@@ -169,7 +174,7 @@ let Connection = (io) => {
             }
             // delete this.users[disconUser.id];
             console.log(`${disconUser.username} has been disconnected. [${disconUser.id}]`);
-        });
+        })
     });
 
     let splitPassedCookiesData = (data) => {
