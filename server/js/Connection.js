@@ -2,7 +2,7 @@ let Connection = (io) => {
     const Game = require("./game/Game");
     let users = {};
 
-    const Lobby = require("./Lobby").default;
+    const Lobby = require("./Lobby");
     let lobby = new Lobby(io);
 
     // creates object of client information 
@@ -89,11 +89,17 @@ let Connection = (io) => {
         })
 
         socket.on("rdy", bool => {
-            lobby.setReady(bool, socket.id);
+            lobby.setReadyState(bool, socket.id);
             socket.rdy = bool;
-            lobby.check
-            // TODO: !!
-            checkReady(lobby.getPlayersInRoom(lobby.getRoomBySock(socket), users, true));
+            if(lobby.checkIfAllPlayersAreReady(socket.raum)) {
+                while(true) {
+                    console.log("ALL READY");
+                }
+                // TODO: !!
+                checkReady(lobby.getPlayersInRoom(lobby.getRoomBySock(socket), users, true));
+            }else {
+                console.log("NOT READY");
+            }
         });
 
         socket.on("getChat", (data) => {
