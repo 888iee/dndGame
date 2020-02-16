@@ -174,6 +174,7 @@ let Connection = (io) => {
             if (socket.io.connecting.indexOf(socket) === -1) {
                 //you should renew token or do another important things before reconnecting
                 socket.connect();
+
             }
             if (typeof disconUser.raum !== undefined) {
                 // console.log(`${disconUser.username} wird Raum ${disconUser.raum} verlassen.`);
