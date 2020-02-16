@@ -53,6 +53,7 @@ body {
   -webkit-transition-duration: 0.15s;
           transition-duration: 0.15s;
   cursor: pointer;
+  outline: none;
 }
 
 .button:hover {

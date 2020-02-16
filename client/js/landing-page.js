@@ -95,15 +95,23 @@ $(document).ready(function () {
         requestList();
     });
     $("#readyBtn").click(() => {
-        if (!ready) {
-            ready = true;
-            $("#readyBtn").addClass("clicked");
-        } else {
-            ready = false;
-            $("#readyBtn").removeClass("clicked");
+        let children = $(".champion-select").children();
+        // iterate over all champion
+        for (let i = 0; i < children.length; i++) {
+            // check if one is selected by player
+            if ($(`#${children[i].id}`).hasClass("selectedChamp")) {
+                // if so check ready state
+                if (!ready) {
+                    ready = true;
+                    $("#readyBtn").addClass("clicked");
+                } else {
+                    ready = false;
+                    $("#readyBtn").removeClass("clicked");
+                }
+                console.log(ready);
+                sendReady(ready);
+            }
         }
-        console.log(ready);
-        sendReady(ready);
     });
     // $("#readyBtn").attr("disabled", true);
 });
@@ -249,6 +257,7 @@ let initSockConnection = (pass) => {
         updateChampSelect = () => {
             $.ajax({
                     type: "GET",
+                    // TODO: change url
                     url: "http://localhost:5000/chars",
                     dataType: "json",
                     success: (chars) => {
