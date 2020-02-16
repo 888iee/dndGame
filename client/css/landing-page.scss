@@ -40,6 +40,9 @@ body {
   transition-duration: 0.15s;
   cursor: pointer;
   outline: none;
+  &:focus {
+    outline: none;
+  }
   &:hover {
     color: black;
   }

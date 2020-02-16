@@ -222,12 +222,20 @@ let initSockConnection = (pass) => {
         socket.on("addPlayer", data => {
             deletePlayerList();
             for (let i = 0; i < data.length; i++) {
-                $(`#p${i+1}`).text(data[i].name)
+                let player = $(`#p${i+1}`);
+                // set Player Name
+                player.text(data[i].name)
+                // Set Character if selected
                 if (data[i].character && data[i].character !== "none") {
-                    $(`#p${i+1}`).append(` - ${data[i].character} `);
+                    player.append(` - ${data[i].character} `);
                 }
+                // Set Lead if lead
                 if (i == 0) {
-                    $(`#p${i+1}`).append(" - Lead");
+                    player.append(" - Lead");
+                }
+                // Set Ready if ready
+                if (data[i].rdy) {
+                    player.append("ready");
                 }
             }
 
