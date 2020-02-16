@@ -176,7 +176,7 @@ class Lobby {
             cb();
             // this.io.to(sock).emit("addPlayer", this.getPlayersInRoom(room.roomName, room.users));
             this.io.to(sock).emit("addPlayer", room.users);
-            console.log(`${sock.username} joined the room ${sock.raum}`);
+            // console.log(`${sock.username} joined the room ${sock.raum}`);
         }
         this.checkIfChampSelectCanStart(room.roomName);
     }

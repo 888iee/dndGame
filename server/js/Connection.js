@@ -169,15 +169,14 @@ let Connection = (io) => {
             }, 1000);
         }
 
-        socket.on("disconnect", () => {
-            let disconUser = socket;
-            if (socket.io.connecting.indexOf(socket) === -1) {
-                //you should renew token or do another important things before reconnecting
+        socket.on("disconnect", (reason) => {
+            // the disconnection was initiated by the server, you need to reconnect manually
+            if (reason === 'io server disconnect') {
                 socket.connect();
-
             }
+            let disconUser = socket;
             if (typeof disconUser.raum !== undefined) {
-                // console.log(`${disconUser.username} wird Raum ${disconUser.raum} verlassen.`);
+                console.log(`${disconUser.username} wird Raum ${disconUser.raum} verlassen.`);
                 disconUser.broadcast.in(disconUser.raum).emit("getChat", `${disconUser.username} hat den Raum verlassen.`);
                 // lobby.removePlayerInRoom(data.roomName, users);
                 io.in(disconUser.raum).emit("addPlayer", lobby.getPlayersInRoom(disconUser.raum, this.users));
