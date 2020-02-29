@@ -16,14 +16,14 @@
 
 | Functions      | Description                |
 | :------------- | :------------------------- |
-| addUser        | Adds User                  |
+| getID          | Returns ID                 |
+| getName        | Returns username           |
 | isLeader       | Returns boolean            |
 | isReady        | Returns boolean            |
 | joinRoom       | Adds User to Room          |
 | leaveRoom      | Removes User from Room     |
 | makeLeader     | Grants User Lead for Room  |
-| removeUser     | Removes User               |
-| removeLeader   | Revokes User Lead for Room |
+| revokeLeader   | Revokes User Lead for Room |
 | setCharacter   | Sets Character for User    |
 | setReady       | Sets Ready to true         |
 | unsetCharacter | Unsets Character to User   |
