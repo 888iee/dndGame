@@ -28,6 +28,4 @@
 | setReady       | Sets Ready to true         |
 | unsetCharacter | Unsets Character to User   |
 | unsetReady     | Unsets Ready to true       |
-| getUser        | ?                          |
-|                |                            |
 |                |                            |
