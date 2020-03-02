@@ -1,3 +1,9 @@
+const state = {
+    CONNECTED: "CONNECTED",
+    LOBBY: "IN LOBBY",
+    INGAME: "IN GAME"
+}
+
 class User {
     constructor(socket) {
         this.socket = socket;
@@ -9,6 +15,17 @@ class User {
         this.ready = false;
         this.leader = false;
         this.online = true;
+        this.state = state.CONNECTED;
+    }
+
+    changeState() {
+        if(this.state == "CONNECTED") {
+            this.state = state.LOBBY;
+        } else if (this.state == "IN LOBBY") {
+            this.state = state.INGAME;
+        } else {
+           this.state = state.CONNECTED;
+        }
     }
 
     // returns ID

@@ -13,9 +13,11 @@
 | ready      | boolean  |
 | leader     | boolean  |
 | online     | true     |
+| state      |  Enum    |
 
 | Functions      | Description                |
 | :------------- | :------------------------- |
+| changeState    | Changes User State         |
 | getID          | Returns ID                 |
 | getName        | Returns username           |
 | isLeader       | Returns boolean            |
