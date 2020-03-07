@@ -1,18 +1,16 @@
 const User = require("./User");
 
 class UserList {
-    constructor() {
-        this.list = [];
-    }
+    static list = [];
 
     // adds Player to this.connected
-    addUser(socket) {
+    static addUser(socket) {
         let user = new User(socket);
         this.list.push(user);
     }
 
     // moves user to another state
-    changeState(roomName) {
+    static changeState(roomName) {
         let users = this.getUsersInRoom(roomName);
         for(let i = 0; i < users.length; i++) {
             users[i].changeState();
@@ -20,22 +18,22 @@ class UserList {
     }
 
     // searchs user in all arrays
-    getUser(sessID) {
+    static getUser(sessID) {
         return this.list.find(user => user.sessionID == sessID);
     }
 
     // Returns all Users as Array
-    getAllUsers() {
+    static getAllUsers() {
         return this.list;
     }
 
     // Returns all Users in Room as Array
-    getUsersInRoom(roomName) {
+    static getUsersInRoom(roomName) {
         return this.list.filter(user => user.roomname == roomName);
     }
 
     // Removes User from list
-    removeUser(sessID) {
+    static removeUser(sessID) {
         let user = this.getUser(sessID);
         if(typeof user != undefined) {
             this.list.splice(this.list.indexOf(user), 1);

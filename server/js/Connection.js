@@ -1,8 +1,10 @@
-let Connection = (io) => {
-    const Game = require("./game/Game");
-    let users = {};
+// Dependencies
+const Game = require("./game/Game");
+const Lobby = require("./Lobby");
+const UserList = require("./users/UserList");
 
-    const Lobby = require("./Lobby");
+let Connection = (io) => {
+
     let lobby = new Lobby(io);
 
     // creates object of client information 
