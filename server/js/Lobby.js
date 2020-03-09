@@ -63,68 +63,17 @@ class Lobby {
         return this.players;
     }
 
+    getRoomName() {
+        return this.roomName;
+    }
+
     // returns true if player is in room
-    isPlayerInRoom(room, playerId) {
-        let isInside = room.users.find(usr => usr == playerId);
+    isPlayerInRoom(playerId) {
+        let isInside = this.players.find(usr => usr == playerId);
         if (isInside == null) {
             return false;
         }
         return true;
-    }
-
-    joiningRoom(data, cb) {
-        let room = this.getRoomByName(data.roomName);
-        if (room) {
-            if (this.getPlayerCount(room.roomName) < room.max_players) {
-                let pack = {
-                    sock: data.socket,
-                    roomData: {
-                        "roomName": data.roomName,
-                        "public": data.public
-                    },
-                }
-                this.joinToRoom(pack, cb);
-            } else {
-                console.log(`${data.socket.username} tried to join full room.`)
-            }
-        } else {
-            console.log(`ERROR\n${data.socket.username} tried to join not existing room.`)
-        }
-    }
-
-    // let socket join specific room
-    joinToRoom(data, cb) {
-        let sock = data.sock;
-        let room = data.roomData;
-        room.users = [];
-        room.users.push({
-            "id": sock.id,
-            "origId": sock.originID,
-            "userName": sock.userName,
-            "character": "none",
-            "ready": false
-        });
-        if (data.create) {
-            cb()
-            // add room to global array
-            this.rooms.push(room);
-            sock.raum = room.roomName;
-            console.log(`Room ${room.roomName} was created with pass: ${room.password}`)
-        } else {
-            sock.raum = room.roomName;
-            this.rooms.find(r => r.roomName == room.roomName).users.push({
-                "id": sock.id,
-                "origId": sock.originID,
-                "userName": sock.userName,
-                "character": "none",
-                "ready": false
-            });
-            cb();
-            // this.io.to(sock).emit("addPlayer", this.getPlayersInRoom(room.roomName, room.users));
-            this.io.to(sock).emit("addPlayer", room.users);
-            // console.log(`${sock.username} joined the room ${sock.raum}`);
-        }
-        this.checkIfChampSelectCanStart(room.roomName);
     }
 
     // remove player from room

@@ -38,6 +38,10 @@ class User {
         return this.username;
     }
 
+    getState() {
+        return this.state;
+    }
+
     // returns boolean 
     isLeader() {
         return this.leader;

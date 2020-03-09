@@ -9,7 +9,7 @@ let Connection = (io) => {
     // all other members of client's room a notification
     let welcomeToRoomMsg = (sock) => {
         setTimeout(() => {
-            let lobbyName = LobbyHandler.getLobbyBySocket(sock).roomName;
+            let lobbyName = LobbyHandler.getLobbyBySocket(sock).getRoomName();
             // Welcome Message for Player
             sock.emit("getChat", `Wilkommen im Raum <br>${lobbyName}.`);
             // Notification in Chat for other Room Members
@@ -25,10 +25,10 @@ let Connection = (io) => {
 
         // create Room Event
         socket.on("createRoom", (roomData) => {
-            try {
+            // try {
                 // assigns socket to leader 
                 roomData.leader = socket.id;
-                lobby.creatingRoom(roomData, socket, () => {
+                LobbyHandler.createLobby(roomData, socket, () => {
                     // socket joins room
                     socket.join(roomData.roomName);
                     // emit room display to client
@@ -38,9 +38,9 @@ let Connection = (io) => {
                     }]);
                     welcomeToRoomMsg(socket);
                 });
-            } catch (error) {
-                console.log(error);
-            }
+            // } catch (error) {
+            //     console.log(error);
+            // }
         });
 
         // Player joining Room Event
@@ -88,7 +88,7 @@ let Connection = (io) => {
         });
 
         socket.on("getChat", (data) => {
-            let roomName = lobby.getRoomBySock(socket);
+            let roomName = LobbyHandler.getLobbyBySocket(socket);
             io.to(roomName).emit("getChat", `${socket.username}: ${data}`);
         });
 
@@ -119,9 +119,8 @@ let Connection = (io) => {
         setInterval(() => {
             // check if socket is in room
             // if not send getList package
-            let roomKeys = Object.keys(socket.rooms);
-            for (let i = 0; i < lobby.rooms.length; i++) {
-                if (!roomKeys.includes(lobby.rooms[i].roomName)) {
+            if (UserList.getUser(socket.id).getState() !== "IN LOBBY") {
+                if(LobbyHandler.updateLobbyList) {
                     socket.emit("getList", getRoomList());
                 }
             }
@@ -158,16 +157,16 @@ let Connection = (io) => {
             if (reason === 'io server disconnect') {
                 socket.connect();
             }
-            let disconUser = socket;
-            if (typeof disconUser.raum !== undefined) {
-                console.log(`${disconUser.username} wird Raum ${disconUser.raum} verlassen.`);
-                disconUser.broadcast.in(disconUser.raum).emit("getChat", `${disconUser.username} hat den Raum verlassen.`);
-                // lobby.removePlayerInRoom(data.roomName, users);
-                io.in(disconUser.raum).emit("addPlayer", lobby.getPlayersInRoom(disconUser.raum, this.users));
-                lobby.removePlayerInRoom(disconUser.raum, disconUser.username);
-            }
-            // delete this.users[disconUser.id];
-            console.log(`${disconUser.username} has been disconnected. [${disconUser.id}]`);
+            // let disconUser = socket;
+            // if (typeof disconUser.raum !== undefined) {
+            //     console.log(`${disconUser.username} wird Raum ${disconUser.raum} verlassen.`);
+            //     disconUser.broadcast.in(disconUser.raum).emit("getChat", `${disconUser.username} hat den Raum verlassen.`);
+            //     // lobby.removePlayerInRoom(data.roomName, users);
+            //     io.in(disconUser.raum).emit("addPlayer", lobby.getPlayersInRoom(disconUser.raum, this.users));
+            //     lobby.removePlayerInRoom(disconUser.raum, disconUser.username);
+            // }
+            // // delete this.users[disconUser.id];
+            // console.log(`${disconUser.username} has been disconnected. [${disconUser.id}]`);
         })
     });
 
@@ -176,25 +175,26 @@ let Connection = (io) => {
     }
 
     let getRoomList = () => {
-        let package = [];
-        for (let i = 0; i < lobby.rooms.length; i++) {
-            try {
-                let player_count = lobby.getPlayerCount(lobby.rooms[i].roomName);
-                let canIJoin = player_count < lobby.rooms[i].max_players;
-                package.push({
-                    "roomName": lobby.rooms[i].roomName,
-                    "public": lobby.rooms[i].public,
-                    "player_count": player_count,
-                    "max_players": lobby.rooms[i].max_players,
-                    "leader": lobby.rooms[i].leader,
-                    "canIJoin": canIJoin
-                });
-            } catch (error) {
-                lobby.removeRoom(i);
-                continue
-            }
-        }
-        return package;
+        
+        // let package = [];
+        // for (let i = 0; i < lobby.rooms.length; i++) {
+        //     try {
+        //         let player_count = lobby.getPlayerCount(lobby.rooms[i].roomName);
+        //         let canIJoin = player_count < lobby.rooms[i].max_players;
+        //         package.push({
+        //             "roomName": lobby.rooms[i].roomName,
+        //             "public": lobby.rooms[i].public,
+        //             "player_count": player_count,
+        //             "max_players": lobby.rooms[i].max_players,
+        //             "leader": lobby.rooms[i].leader,
+        //             "canIJoin": canIJoin
+        //         });
+        //     } catch (error) {
+        //         lobby.removeRoom(i);
+        //         continue
+        //     }
+        // }
+        return LobbyHandler.getAllLobbies();
     }
 }
 module.exports = Connection;

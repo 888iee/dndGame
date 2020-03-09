@@ -3,7 +3,7 @@ const UserList  = require("./users/UserList");
 
 class LobbyHandler {
     static lobbies = [];
-    constructor() {}
+    static updateLobbyList = false;
 
     static createLobby(lobbyData, socket, cb) {
         if(this.doesLobbyExist(lobbyData.roomName)) {
@@ -13,7 +13,9 @@ class LobbyHandler {
             let lob = new Lobby(lobbyData);
             lob.addPlayer(UserList.getUser(socket.id));
             this.lobbies.push(lob);
+            cb();
         }
+        this.updateLobbyList = true;
     }
 
     static doesLobbyExist(roomName) {
@@ -31,9 +33,9 @@ class LobbyHandler {
 
     // Returns Room Object
     static getLobbyBySocket(sock) {
-        for(let lob in this.lobbies) {
-            if(lob.isPlayerInRoom(sock.id)) {
-                return lob;
+        for(let i = 0; i < this.lobbies.length; i++) {
+            if(this.lobbies[i].isPlayerInRoom(sock.id)) {
+                return this.lobbies[i];
             }
         }
     }
@@ -60,12 +62,14 @@ class LobbyHandler {
             console.log(`ERROR\n${data.socket.username} tried to join not existing room.`)
         }
         this.getLobbyByName(roomName).addPlayer(user);
+        this.updateLobbyList = true;
     }
 
     static removeLobby(roomName) {
         let lob = this.getLobbyByName(roomName);
         if(typeof lob != undefined) {
             this.lobbies.splice(this.lobbies.indexOf(lob), 1);
+            this.updateLobbyList = true;
         }
     }
 
@@ -81,6 +85,7 @@ class LobbyHandler {
                 canIJoin: i.canIJoin
             })
         }
+        this.updateLobbyList = false;
         return list;
     }
 }
