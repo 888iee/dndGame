@@ -4,9 +4,7 @@ const UserList  = require("./users/UserList");
 class LobbyHandler {
     static lobbies = [];
     static updateLobbyList = false;
-    constructor(io) {
-        this.io = io;
-    }
+    static io;
 
     static createLobby(lobbyData, socket, cb) {
         if(this.doesLobbyExist(lobbyData.roomName)) {
@@ -34,6 +32,22 @@ class LobbyHandler {
         return this.lobbies.find(lob => lob.roomName === roomName);
     }
 
+    // retrieves non-sensitive data to clients
+    static getAllLobbies() {
+        let list = [];
+        for(let i in this.lobbies) {
+            list.push({
+                roomName: i.roomName,
+                max_players: i.max_players,
+                playerCount: i.playerCount,
+                public: i.public,
+                canIJoin: i.canIJoin
+            })
+        }
+        this.updateLobbyList = false;
+        return list;
+    }
+    
     // Returns Room Object
     static getLobbyBySocket(sock) {
         for(let i = 0; i < this.lobbies.length; i++) {
@@ -76,20 +90,9 @@ class LobbyHandler {
         }
     }
 
-    // retrieves non-sensitive data to clients
-    static getAllLobbies() {
-        let list = [];
-        for(let i in this.lobbies) {
-            list.push({
-                roomName: i.roomName,
-                max_players: i.max_players,
-                playerCount: i.playerCount,
-                public: i.public,
-                canIJoin: i.canIJoin
-            })
-        }
-        this.updateLobbyList = false;
-        return list;
+    static setIO(io) {
+        this.io = io;
     }
+
 }
 module.exports = LobbyHandler;
