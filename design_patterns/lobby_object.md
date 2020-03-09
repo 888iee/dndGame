@@ -5,13 +5,15 @@
 |roomName|String|Name of the Room|
 |leader | String | Session ID of the leader |
 |max_players|Integer| maximum amount of players in this lobby|
+|playerCount|Integer| actual amount of players inside of the lobby |
 |password|String|Password if set|
 |public|Boolean|True if public else private|
 |chars|Object| Amount of selectable Characters |
 |canIJoin | Boolean | True if max_players not reached |
 
 | Methods      | Description                |
-|:--|:--| :-- |
+|:--|:--| 
+|addPlayer | Adds Player to Lobby |
 | checkIfAllPlayersAreReady | Returns Boolean |
 | checkIfChampSelectCanStart | Returns Boolean |
 | didRoomReachMaxPlayers | Returns Boolean |

@@ -1,39 +1,25 @@
 // Dependencies
-const Game = require("./game/Game");
-const Lobby = require("./Lobby");
-const UserList = require("./users/UserList");
+const Game          = require("./game/Game");
+const LobbyHandler  = require("./LobbyHandler");
+const UserList      = require("./users/UserList");
 
 let Connection = (io) => {
-
-    let lobby = new Lobby(io);
-
-    // creates object of client information 
-    let createUsrObj = (socket) => {
-        return {
-            sessionID: socket.id,
-            usr: users[socket].username,
-            orID: users[socket].originID
-        }
-    }
 
     // sends welcome msg to client and broadcast to 
     // all other members of client's room a notification
     let welcomeToRoomMsg = (sock) => {
         setTimeout(() => {
-            let room = lobby.getRoomBySock(sock);
+            let lobbyName = LobbyHandler.getLobbyBySocket(sock).roomName;
             // Welcome Message for Player
-            sock.emit("getChat", `Wilkommen im Raum <br>${room.roomName}.`);
+            sock.emit("getChat", `Wilkommen im Raum <br>${lobbyName}.`);
             // Notification in Chat for other Room Members
-            sock.broadcast.to(room.roomName).emit("getChat", `${sock.username} ist dem Raum beigetreten.`);
+            sock.broadcast.to(lobbyName).emit("getChat", `${sock.username} ist dem Raum beigetreten.`);
         });
     }
 
     // io connection
     io.on("connection", (socket) => {
-        // initial SetParams
-        users[socket.id] = socket;
-        socket.char = "none";
-        socket.rdy = false;
+        UserList.addUser(socket);
         // send socket.id to client
         socket.emit("id", socket.id);
 
@@ -41,7 +27,7 @@ let Connection = (io) => {
         socket.on("createRoom", (roomData) => {
             try {
                 // assigns socket to leader 
-                roomData.leader = createUsrObj(socket);
+                roomData.leader = socket.id;
                 lobby.creatingRoom(roomData, socket, () => {
                     // socket joins room
                     socket.join(roomData.roomName);
@@ -60,8 +46,7 @@ let Connection = (io) => {
         // Player joining Room Event
         socket.on("joinToRoom", data => {
             data.socket = socket;
-            lobby.joiningRoom(data, () => {
-
+            LobbyHandler.joinLobby(data, () => {
                 // socket joins room
                 socket.join(data.roomName);
                 // emit room display to client
@@ -71,9 +56,7 @@ let Connection = (io) => {
                     } catch (error) {
                         console.log(error)
                     }
-                    io.in(data.roomName).emit("addPlayer", lobby.getPlayersInRoom(data.roomName, users));
-                    console.log(`${socket.id} ist ${Object.keys(users[socket.id].rooms).find(room => room !== socket.id)} beigetreten.`)
-                }, 0)
+                }, 0);
 
                 welcomeToRoomMsg(socket);
             });
@@ -111,20 +94,19 @@ let Connection = (io) => {
 
         socket.on("cookieCreated", (data) => {
             let arr = splitPassedCookiesData(data);
-            users[arr[0]] = socket;
-            users[arr[0]].clientID = socket.id;
-            users[arr[0]].username = arr[1];
+            let usr = UserList.getUser(socket.id);
+            usr.setName(arr[1]);
+            usr.setOriginalId(socket.id);
             socket.emit("getList", getRoomList());
-            console.log(`${socket.username} [id=${socket.id}] has been registered`);
+            console.log(`${arr[1]} [id=${socket.id}] has been registered`);
         });
         socket.on("authenticate", (data) => {
             socket.emit("getList", getRoomList());
             let arr = splitPassedCookiesData(data);
-            users[socket] = socket;
-            users[socket].clientID = socket.id;
-            users[socket].username = arr[1];
-            users[socket].originID = arr[0];
-            console.log(`${socket.username} [id=${socket.id}] has been authenticated`);
+            let usr = UserList.getUser(socket.id);
+            usr.setName(arr[1]);
+            usr.setOriginalId(arr[0]);
+            console.log(`${arr[1]} [id=${socket.id}] has been authenticated`);
         });
         socket.on("reqList", () => {
             socket.emit("getList", getRoomList());

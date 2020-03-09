@@ -1,120 +1,66 @@
 class Lobby {
-    constructor(io) {
+    constructor(data, io) {
+        this.roomName       = data.roomName;
+        this.leader         = data.leader;
+        this.max_players    = data.max_players;
+        this.playerCount    = 1;
+        this.password       = data.password;
+        this.public         = data.public;
+        this.canIJoin       = data.canIJoin;
+        this.players        = [];
+        this.chars          = {
+            c1: "none",
+            c2: "none",
+            c3: "none",
+            c4: "none",
+            c5: "none",
+        };
+        
         this.io = io;
-        this.rooms = [];
-
     }
-
-    checkIfAllPlayersAreReady(roomName) {
-        this.getReadyStateInRoom(this.getRoomByName(roomName));
-    }
-
-
-    checkIfChampSelectCanStart(roomName) {
-        if (this.didRoomReachMaxPlayers(roomName)) {
-            this.io.to(roomName).emit("startSelect", this.getRoomByName(roomName).chars);
-            return true;
+    
+    addPlayer(user) {
+        this.players.push(user);
+        if(user.getID() !== this.leader) {
+            this.playerCount++;
         }
+        user.joinRoom(this.roomName);
     }
 
-    creatingRoom(roomData, socket, cb) {
-        if (this.getRoomByName(roomData.roomName)) {
-            console.log(`${socket.id} tried to create an already existing Room \n=> ${roomData.roomName}`)
-            socket.emit("msg", "Room already exist!");
-        } else {
-            roomData.chars = {
-                c1: "none",
-                c2: "none",
-                c3: "none",
-                c4: "none",
-                c5: "none",
-            };
-            let data = {
-                create: true,
-                sock: socket,
-                roomData: roomData,
-
-            }
-            this.joinToRoom(data, cb);
-        }
-    }
-
-    didRoomReachMaxPlayers(roomName) {
-        let room = this.getRoomByName(roomName);
-
-        if (this.getPlayerCount(roomName) == room.max_players) {
-            return true;
-        }
-    }
-
-    findRoomIndex(name) {
-        return this.rooms.findIndex(room => room.roomName === name);
-    }
-
-    getIndexByName(name) {
-        return this.rooms.findIndex(obj => obj.roomName === name);
-    }
-
-    getKeyByValue(object, value) {
-        return Object.keys(object).find(key => object[key] === value);
-    }
-    // returns actual size of room
-    getPlayerCount(roomName) {
-        return this.io.sockets.adapter.rooms[roomName].length;
-    }
-
-    // get players in room
-    getPlayersInRoom(name, users, bool, bool2) {
-        let members = [];
-        try {
-            // try catch because it can fail to find room when users disconnected
-            Object.keys(this.io.sockets.adapter.rooms[name].sockets).forEach((id) => {
-                let obj = {
-                    "name": users[id].username,
-                    "character": users[id].char,
-                }
-                if (bool) {
-                    obj["rdy"] = users[id].rdy;
-                }
-                if (bool2) {
-                    obj["originID"] = users[id].originID;
-                }
-                members.push(obj);
-
-            });
-            return members;
-        } catch (error) {
-            // console.log(error);
-        }
-    }
-
-
-    // returns room
-    getR(sock) {
-        return users[sock.id].rooms.find(name => name !== sock.id);
-    }
-
-    // returns room
-    getRoomByName(name) {
-        return this.rooms.find(room => room.roomName === name);
-    }
-
-    // Returns Room Object
-    getRoomBySock(sock) {
-        return this.rooms.find(room => room.roomName == sock.raum);
-    }
-
-    // Returns True if all Players are ready
-    getReadyStateInRoom(room) {
-        // iterate over users in room
-        for (let u in room.users) {
-            // check if players are ready
-            // return if not
-            if (!u.ready) {
+    checkIfAllPlayersAreReady() {
+        for(let player in this.players) {
+            if (!player.ready) {
                 return false;
             }
         }
         return true;
+    }
+
+
+    checkIfChampSelectCanStart() {
+        if (this.isLobbyFull()) {
+            // TODO: returns values need to be updated
+            this.io.to(this.roomName).emit("startSelect", this.getRoomByName(roomName).chars);
+            return true;
+        }
+    }
+
+    isLobbyFull() {
+        if (this.getPlayerCount() == this.max_players) {
+            return true;
+        }
+    }
+    getKeyByValue(object, value) {
+        return Object.keys(object).find(key => object[key] === value);
+    }
+    // returns actual size of room
+    getPlayerCount() {
+        return this.playerCount;
+    }
+
+    // get players in room
+    getPlayers() {
+        return this.players;
     }
 
     // returns true if player is in room

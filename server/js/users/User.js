@@ -7,9 +7,9 @@ const state = {
 class User {
     constructor(socket) {
         this.socket = socket;
-        this.username = socket.username;
+        this.username = "";
         this.sessionID = socket.id;
-        this.originalID = socket.originID;
+        this.originalID = "";
         this.roomname = "";
         this.character = "";
         this.ready = false;
@@ -51,6 +51,7 @@ class User {
     // joins room
     joinRoom(roomname) {
         this.roomname = roomname;
+        this.changeState();
     }
 
     // leaves room
@@ -71,6 +72,14 @@ class User {
     // sets character
     setCharacter(character) {
         this.character = character;
+    }
+
+    setName(username) {
+        this.username = username;
+    }
+
+    setOriginalId(id) {
+        this.originalID = id;
     }
 
     // set ready to true
