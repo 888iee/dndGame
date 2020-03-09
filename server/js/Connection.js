@@ -4,6 +4,7 @@ const LobbyHandler  = require("./LobbyHandler");
 const UserList      = require("./users/UserList");
 
 let Connection = (io) => {
+    let Lobbyist = new LobbyHandler(io);
 
     // sends welcome msg to client and broadcast to 
     // all other members of client's room a notification
@@ -63,7 +64,7 @@ let Connection = (io) => {
         });
 
         socket.on("select", char => {
-            lobby.selectCharacter(socket, char, cb => {
+            LobbyHandler.getLobbyBySocket(socket).selectCharacter(socket, char, cb => {
 
                 let room = lobby.getRoomBySock(socket);
                 // send to all clients in room 
@@ -88,7 +89,7 @@ let Connection = (io) => {
         });
 
         socket.on("getChat", (data) => {
-            let roomName = LobbyHandler.getLobbyBySocket(socket);
+            let roomName = Lobbyist.getLobbyBySocket(socket);
             io.to(roomName).emit("getChat", `${socket.username}: ${data}`);
         });
 

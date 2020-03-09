@@ -4,6 +4,9 @@ const UserList  = require("./users/UserList");
 class LobbyHandler {
     static lobbies = [];
     static updateLobbyList = false;
+    constructor(io) {
+        this.io = io;
+    }
 
     static createLobby(lobbyData, socket, cb) {
         if(this.doesLobbyExist(lobbyData.roomName)) {

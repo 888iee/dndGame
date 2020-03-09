@@ -38,7 +38,8 @@ class Lobby {
 
 
     checkIfChampSelectCanStart() {
-        if (this.isLobbyFull()) {
+        // if (this.isLobbyFull()) {
+        if(true) {
             // TODO: returns values need to be updated
             this.io.to(this.roomName).emit("startSelect", this.getRoomByName(roomName).chars);
             return true;
@@ -69,7 +70,7 @@ class Lobby {
 
     // returns true if player is in room
     isPlayerInRoom(playerId) {
-        let isInside = this.players.find(usr => usr == playerId);
+        let isInside = this.players.find(usr => usr.getID() == playerId);
         if (isInside == null) {
             return false;
         }
@@ -94,25 +95,24 @@ class Lobby {
     }
 
     selectCharacter(socket, char, cb) {
-        let room = this.getRoomBySock(socket);
         // check if champ select can start already
-        if (this.checkIfChampSelectCanStart(room.roomName)) {
+        if (this.checkIfChampSelectCanStart()) {
             // check if chars[char.id] is selected by none
-            if (room.chars[char.id] === "none") { //funktionert wenn man this.rooms[0] nutzt statt room
+            if (this.chars[char.id] === "none") { //funktionert wenn man this.rooms[0] nutzt statt room
                 // deselect previous char
-                if (room.chars[this.getKeyByValue(room.chars, socket.username)]) {
-                    room.chars[this.getKeyByValue(room.chars, socket.username)] = "none"
+                if (this.chars[this.getKeyByValue(this.chars, socket.username)]) {
+                    this.chars[this.getKeyByValue(room.chars, socket.username)] = "none"
                 }
                 // select new char
-                room.chars[char.id] = socket.username;
+                this.chars[char.id] = socket.username;
                 socket.char = char.name;
-                socket.broadcast.to(room).emit("getChat", `${socket.username} hat ${char.name} ausgewählt.`)
-                this.io.in(room).emit("addPlayer", this.getPlayersInRoom(room, room.users));
+                socket.broadcast.to(this.roomName).emit("getChat", `${socket.username} hat ${char.name} ausgewählt.`)
+                this.io.in(this.roomName).emit("addPlayer", this.getPlayers());
             } else {
                 // check if selected char should be unchecked
-                if (room.chars[char.id] === socket.username) {
+                if (this.chars[char.id] === socket.username) {
                     // deselect char
-                    room.chars[char.id] = "none";
+                    this.chars[char.id] = "none";
                     socket.char = "none";
                 }
             }
