@@ -2,20 +2,10 @@
 const Game          = require("./game/Game");
 const LobbyHandler  = require("./LobbyHandler");
 const UserList      = require("./users/UserList");
+const Message       = require("./Message");
 
 let Connection = (io) => {
     LobbyHandler.setIO(io);
-    // sends welcome msg to client and broadcast to 
-    // all other members of client's room a notification
-    let welcomeToRoomMsg = (sock) => {
-        setTimeout(() => {
-            let lobbyName = LobbyHandler.getLobbyBySocket(sock).getRoomName();
-            // Welcome Message for Player
-            sock.emit("getChat", `Wilkommen im Raum <br>${lobbyName}.`);
-            // Notification in Chat for other Room Members
-            sock.broadcast.to(lobbyName).emit("getChat", `${sock.username} ist dem Raum beigetreten.`);
-        });
-    }
 
     // io connection
     io.on("connection", (socket) => {
@@ -36,7 +26,7 @@ let Connection = (io) => {
                     socket.emit("addPlayer", [{
                         "name": socket.username
                     }]);
-                    welcomeToRoomMsg(socket);
+                    Message.welcomeToRoomMsg(socket);
                 });
             // } catch (error) {
             //     console.log(error);
@@ -58,7 +48,7 @@ let Connection = (io) => {
                     }
                 }, 0);
 
-                welcomeToRoomMsg(socket);
+                Message.welcomeToRoomMsg(socket);
             });
         });
 
@@ -87,10 +77,8 @@ let Connection = (io) => {
             }
         });
 
-        socket.on("getChat", (data) => {
-            let roomName = Lobbyist.getLobbyBySocket(socket);
-            io.to(roomName).emit("getChat", `${socket.username}: ${data}`);
-        });
+        // data passed to Message.js
+        socket.on("getChat", (data) => Message.getChat(socket, data));
 
         socket.on("cookieCreated", (data) => {
             let arr = splitPassedCookiesData(data);
@@ -174,27 +162,6 @@ let Connection = (io) => {
         return data.split("&&");
     }
 
-    let getRoomList = () => {
-        
-        // let package = [];
-        // for (let i = 0; i < lobby.rooms.length; i++) {
-        //     try {
-        //         let player_count = lobby.getPlayerCount(lobby.rooms[i].roomName);
-        //         let canIJoin = player_count < lobby.rooms[i].max_players;
-        //         package.push({
-        //             "roomName": lobby.rooms[i].roomName,
-        //             "public": lobby.rooms[i].public,
-        //             "player_count": player_count,
-        //             "max_players": lobby.rooms[i].max_players,
-        //             "leader": lobby.rooms[i].leader,
-        //             "canIJoin": canIJoin
-        //         });
-        //     } catch (error) {
-        //         lobby.removeRoom(i);
-        //         continue
-        //     }
-        // }
-        return LobbyHandler.getAllLobbies();
-    }
+    let getRoomList = () => LobbyHandler.getAllLobbies();
 }
 module.exports = Connection;
