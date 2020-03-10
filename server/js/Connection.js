@@ -1,11 +1,13 @@
 // Dependencies
-const Game          = require("./game/Game");
-const LobbyHandler  = require("./LobbyHandler");
-const UserList      = require("./users/UserList");
-const Message       = require("./Message");
+const Game              = require("./game/Game");
+const LobbyHandler      = require("./LobbyHandler");
+const UserList          = require("./users/UserList");
+const Message           = require("./Message");
 
 let Connection = (io) => {
+    let Msg = new Message();
     LobbyHandler.setIO(io);
+
 
     // io connection
     io.on("connection", (socket) => {
@@ -26,7 +28,7 @@ let Connection = (io) => {
                     socket.emit("addPlayer", [{
                         "name": socket.username
                     }]);
-                    Message.welcomeToRoomMsg(socket);
+                    Msg.welcomeToRoomMessage(socket);
                 });
             // } catch (error) {
             //     console.log(error);
@@ -48,7 +50,7 @@ let Connection = (io) => {
                     }
                 }, 0);
 
-                Message.welcomeToRoomMsg(socket);
+                Msg.welcomeToRoomMessage(socket);
             });
         });
 

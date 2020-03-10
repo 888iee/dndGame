@@ -1,6 +1,7 @@
 const LobbyHandler = require("./LobbyHandler");
 
 class Message {
+    constructor(){}
 
     // sends chat to sockets
     getChat(socket, data) {

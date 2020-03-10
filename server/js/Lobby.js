@@ -41,7 +41,7 @@ class Lobby {
         // if (this.isLobbyFull()) {
         if(true) {
             // TODO: returns values need to be updated
-            this.io.to(this.roomName).emit("startSelect", this.getRoomByName(roomName).chars);
+            this.io.to(this.roomName).emit("startSelect", this.chars);
             return true;
         }
     }
