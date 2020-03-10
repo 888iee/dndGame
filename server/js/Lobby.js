@@ -116,8 +116,9 @@ class Lobby {
                     socket.char = "none";
                 }
             }
-            cb();
-            console.log(room.chars)
+            this.io.in(this.roomName).emit("addPlayer", this.getPlayersInRoom());
+            this.io.to(this.roomName).emit("selection", this.chars);
+            console.log(this.chars)
         }
     }
 

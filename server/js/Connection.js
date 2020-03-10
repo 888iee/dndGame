@@ -52,16 +52,7 @@ let Connection = (io) => {
             });
         });
 
-        socket.on("select", char => {
-            LobbyHandler.getLobbyBySocket(socket).selectCharacter(socket, char, cb => {
-
-                let room = lobby.getRoomBySock(socket);
-                // send to all clients in room 
-
-                io.in(room.roomName).emit("addPlayer", lobby.getPlayersInRoom(room.roomName, users));
-                io.to(room.roomName).emit("selection", room.chars);
-            });
-        })
+        socket.on("select", char => LobbyHandler.getLobbyBySocket(socket).selectCharacter(socket, char));
 
         socket.on("rdy", bool => {
             lobby.setReadyState(bool, socket.id);
@@ -85,11 +76,11 @@ let Connection = (io) => {
             let usr = UserList.getUser(socket.id);
             usr.setName(arr[1]);
             usr.setOriginalId(socket.id);
-            socket.emit("getList", getRoomList());
+            socket.emit("getList", getLobbyList());
             console.log(`${arr[1]} [id=${socket.id}] has been registered`);
         });
         socket.on("authenticate", (data) => {
-            socket.emit("getList", getRoomList());
+            socket.emit("getList", getLobbyList());
             let arr = splitPassedCookiesData(data);
             let usr = UserList.getUser(socket.id);
             usr.setName(arr[1]);
@@ -97,7 +88,7 @@ let Connection = (io) => {
             console.log(`${arr[1]} [id=${socket.id}] has been authenticated`);
         });
         socket.on("reqList", () => {
-            socket.emit("getList", getRoomList());
+            socket.emit("getList", getLobbyList());
             console.log("reqlist sent")
         });
 
@@ -109,7 +100,7 @@ let Connection = (io) => {
             // if not send getList package
             if (UserList.getUser(socket.id).getState() !== "IN LOBBY") {
                 if(LobbyHandler.updateLobbyList) {
-                    socket.emit("getList", getRoomList());
+                    socket.emit("getList", getLobbyList());
                 }
             }
         }, 2000);
@@ -162,6 +153,7 @@ let Connection = (io) => {
         return data.split("&&");
     }
 
-    let getRoomList = () => LobbyHandler.getAllLobbies();
+    // returns LobbyList to socket
+    let getLobbyList = () => LobbyHandler.getAllLobbies();
 }
 module.exports = Connection;

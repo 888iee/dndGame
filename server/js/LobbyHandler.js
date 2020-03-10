@@ -11,7 +11,7 @@ class LobbyHandler {
             console.log(`${socket.id} tried to create an already existing Room \n=> ${roomData.roomName}`)
             socket.emit("msg", "Room already exist!");
         } else {
-            let lob = new Lobby(lobbyData);
+            let lob = new Lobby(lobbyData, this.io);
             lob.addPlayer(UserList.getUser(socket.id));
             this.lobbies.push(lob);
             cb();
