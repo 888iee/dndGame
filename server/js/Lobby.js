@@ -38,8 +38,7 @@ class Lobby {
 
 
     checkIfChampSelectCanStart() {
-        // if (this.isLobbyFull()) {
-        if(true) {
+        if (this.isLobbyFull()) {
             // TODO: returns values need to be updated
             this.io.to(this.roomName).emit("startSelect", this.chars);
             return true;
@@ -94,7 +93,7 @@ class Lobby {
         this.rooms.splice(count, 1);
     }
 
-    selectCharacter(socket, char, cb) {
+    selectCharacter(socket, char) {
         // check if champ select can start already
         if (this.checkIfChampSelectCanStart()) {
             // check if chars[char.id] is selected by none
@@ -116,9 +115,9 @@ class Lobby {
                     socket.char = "none";
                 }
             }
-            this.io.in(this.roomName).emit("addPlayer", this.getPlayersInRoom());
-            this.io.to(this.roomName).emit("selection", this.chars);
-            console.log(this.chars)
+            // this.io.in(this.roomName).emit("addPlayer", this.getPlayersInRoom());
+            // this.io.to(this.roomName).emit("selection", this.chars);
+            // console.log(this.chars)
         }
     }
 

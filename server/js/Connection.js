@@ -30,9 +30,6 @@ let Connection = (io) => {
                     }]);
                     Msg.welcomeToRoomMessage(socket);
                 });
-            // } catch (error) {
-            //     console.log(error);
-            // }
         });
 
         // Player joining Room Event
