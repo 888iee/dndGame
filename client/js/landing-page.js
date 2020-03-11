@@ -311,6 +311,7 @@ let deleteList = () => {
 
 // appends roomlist
 let insertList = (roomList, joinBtn) => {
+  console.table(roomList);
   deleteList();
   for (let i = 0; i < roomList.length; i++) {
     // console.log(`Room to check ${roomList[i].roomName}, ${roomList[i].public}`)
@@ -326,7 +327,7 @@ let insertList = (roomList, joinBtn) => {
     container.appendChild(
       createDiv(
         "player-count",
-        `${roomList[i].player_count}/${roomList[i].max_players}`
+        `${roomList[i].playerCount}/${roomList[i].max_players}`
       )
     );
     let btn = document.createElement("button");

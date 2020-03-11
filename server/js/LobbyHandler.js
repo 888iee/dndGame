@@ -20,8 +20,8 @@ class LobbyHandler {
     }
 
     static doesLobbyExist(roomName) {
-        for(let lob in this.lobbies) {
-            if(lob.roomName === roomName) {
+        for(let i = 0; i < this.lobbies.length; i++) {
+            if(this.lobbies[i].roomName === roomName) {
                 return true;
             }
         }
@@ -35,14 +35,14 @@ class LobbyHandler {
     // retrieves non-sensitive data to clients
     static getAllLobbies() {
         let list = [];
-        for(let i in this.lobbies) {
+        for(let i = 0; i < this.lobbies.length; i++) {
             list.push({
-                roomName: i.roomName,
-                max_players: i.max_players,
-                playerCount: i.playerCount,
-                public: i.public,
-                canIJoin: i.canIJoin
-            })
+                roomName: this.lobbies[i].roomName,
+                max_players: this.lobbies[i].max_players,
+                playerCount: this.lobbies[i].playerCount,
+                public: this.lobbies[i].public,
+                canIJoin: this.lobbies[i].canIJoin
+            });
         }
         this.updateLobbyList = false;
         return list;
@@ -70,7 +70,7 @@ class LobbyHandler {
             if(!lob.isLobbyFull()) {
                 lob.addPlayer(usr);
                 cb();
-                io.in(data.roommName).emit("addPlayer", lob.getPlayers());
+                this.io.in(data.roommName).emit("addPlayer", lob.getPlayers());
                 console.log(`${data.socket.id} ist ${data.roomName} beigetreten.`)
             } else {
                 console.log(`${data.socket.username} tried to join full room.`)
