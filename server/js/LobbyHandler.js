@@ -70,7 +70,8 @@ class LobbyHandler {
             if(!lob.isLobbyFull()) {
                 lob.addPlayer(usr);
                 cb();
-                this.io.in(data.roommName).emit("addPlayer", lob.getPlayers());
+                // setTimeout to let nodejs time to clear the stack
+                setTimeout(() => this.io.in(lob.getRoomName()).emit("addPlayer", lob.getPlayers()), 0);
                 console.log(`${data.socket.id} ist ${data.roomName} beigetreten.`)
             } else {
                 console.log(`${data.socket.username} tried to join full room.`)
