@@ -113,7 +113,7 @@ let Connection = (io) => {
             // if not send getList package
             if (UserList.getUser(socket.id).getState() !== "IN LOBBY") {
                 if(LobbyHandler.updateLobbyList) {
-                    socket.emit("getList", getLobbyList());
+                    socket.emit("getList", getLobbyList()); 
                 }
             }
         }, 2000);
