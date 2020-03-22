@@ -1,5 +1,5 @@
 {
-  "name": "Dungeons and Dragons - A Fantasy Board Game",
+  "name": "dnd_game",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
