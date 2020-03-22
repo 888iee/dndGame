@@ -61,7 +61,7 @@ class LobbyHandler {
         this.getLobbyByName(roomName).getPlayers();
     }
 
-    static joinLobby(data, cb) {
+    static async joinLobby(data, cb) {
         let usr = UserList.getUser(data.socket.id);
         // check lobby exists
         if(this.doesLobbyExist(data.roomName)) {
@@ -69,18 +69,22 @@ class LobbyHandler {
             // check lobby is full
             if(!lob.isLobbyFull()) {
                 lob.addPlayer(usr);
-                cb();
+                await cb();
                 // setTimeout to let nodejs time to clear the stack
-                setTimeout(() => this.io.in(lob.getRoomName()).emit("addPlayer", lob.getPlayers()), 0);
-                console.log(`${data.socket.id} ist ${data.roomName} beigetreten.`)
+                setTimeout(() => {
+                    this.io.in(lob.getRoomName()).emit("addPlayer",  lob.getPlayers());
+                }, 0);
+                setTimeout(() => {
+                    this.getLobbyByName(data.roomName).addPlayer(usr);
+                }, 0);
+                this.updateLobbyList = true;
+                // await console.log(`${data.socket.id} ist ${data.roomName} beigetreten.`);
             } else { 
                 console.log(`${data.socket.username} tried to join full room.`)
             }
         } else {
             console.log(`ERROR\n${data.socket.username} tried to join not existing room.`)
         }
-        this.getLobbyByName(roomName).addPlayer(user);
-        this.updateLobbyList = true;
     }
 
     static removeLobby(roomName) {

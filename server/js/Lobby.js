@@ -60,7 +60,10 @@ class Lobby {
 
     // get players in room
     getPlayers() {
-        return this.players;
+        let reduced = [];
+        // reduce accessible player information for clients
+        this.players.forEach(player => reduced.push({username: player.username, leader: player.leader}))
+        return reduced;
     }
 
     getRoomName() {

@@ -33,9 +33,9 @@ let Connection = (io) => {
         });
 
         // Player joining Room Event
-        socket.on("joinToRoom", data => {
+        socket.on("joinToRoom", async data => {
             data.socket = socket;
-            LobbyHandler.joinLobby(data, () => {
+            await LobbyHandler.joinLobby(data, () => {
                 // socket joins room
                 socket.join(data.roomName);
                 // emit room display to client
