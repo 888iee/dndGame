@@ -51,19 +51,33 @@ let Connection = (io) => {
             });
         });
 
-        socket.on("select", char => LobbyHandler.getLobbyBySocket(socket).selectCharacter(socket, char));
-
-        socket.on("rdy", bool => {
-            lobby.setReadyState(bool, socket.id);
-            socket.rdy = bool;
-            if (lobby.checkIfAllPlayersAreReady(socket.raum)) {
-                while (true) {
-                    console.log("ALL READY");
+        socket.on("select", char => {
+            try {
+                if(UserList.getUser(socket.id).getState() === "IN LOBBY") {
+                    LobbyHandler.getLobbyBySocket(socket).selectCharacter(socket, char);
                 }
-                // TODO: !!
-                checkReady(lobby.getPlayersInRoom(lobby.getRoomBySock(socket), users, true));
-            } else {
-                console.log("NOT READY");
+            } catch (error) {
+                console.log(error);
+            }
+        });
+        
+        socket.on("rdy", bool => {
+            try {
+                if(UserList.getUser(socket.id).getState() === "IN LOBBY") {
+                    lobby.setReadyState(bool, socket.id);
+                    socket.rdy = bool;
+                    if (lobby.checkIfAllPlayersAreReady(socket.raum)) {
+                        while (true) {
+                            console.log("ALL READY");
+                        }
+                        // TODO: !!
+                        checkReady(lobby.getPlayersInRoom(lobby.getRoomBySock(socket), users, true));
+                    } else {
+                        console.log("NOT READY");
+                    }
+                }
+            } catch (error) {
+                console.log(error);
             }
         });
 
