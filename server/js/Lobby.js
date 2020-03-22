@@ -1,3 +1,4 @@
+const UserList          = require("./users/UserList");
 class Lobby {
     constructor(data, io) {
         this.roomName       = data.roomName;
@@ -17,14 +18,19 @@ class Lobby {
         };
         
         this.io = io;
+
     }
     
     addPlayer(user) {
-        this.players.push(user);
         if(user.getID() !== this.leader) {
             this.playerCount++;
         }
+        if(this.playerCount === 1) {
+            this.setLeader(this.leader);
+        }
         user.joinRoom(this.roomName);
+        this.players.push(user);
+        this.io.to(this.roomName).emit("addPlayer", this.getPlayers());
     }
 
     checkIfAllPlayersAreReady() {
@@ -62,7 +68,7 @@ class Lobby {
     getPlayers() {
         let reduced = [];
         // reduce accessible player information for clients
-        this.players.forEach(player => reduced.push({username: player.username, leader: player.leader}))
+        this.players.forEach(player => reduced.push({username: player.username, leader: player.leader, ready: player.ready}));
         return reduced;
     }
 
@@ -121,6 +127,18 @@ class Lobby {
             // this.io.in(this.roomName).emit("addPlayer", this.getPlayersInRoom());
             // this.io.to(this.roomName).emit("selection", this.chars);
             // console.log(this.chars)
+        }
+    }
+
+    // sets user as leader
+    setLeader(sessId) {
+        if(this.leader !== sessId) {
+            UserList.getUser(sessId).makeLeader();
+        }
+        for(let i = 0; i < this.players.length; i++) {
+            if(this.players[i].getID() === sessId) {
+                this.players[i].makeLeader();
+            }
         }
     }
 

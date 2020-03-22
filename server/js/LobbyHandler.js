@@ -12,6 +12,11 @@ class LobbyHandler {
             socket.emit("msg", "Room already exist!");
         } else {
             let lob = new Lobby(lobbyData, this.io);
+            // socket joins room
+            socket.join(lobbyData.roomName);
+            // emit room display to client
+            socket.emit("openRoom", lobbyData);
+            // socket.emit("addPlayer", [{username: socket.username, leader: true}]);
             lob.addPlayer(UserList.getUser(socket.id));
             this.lobbies.push(lob);
             cb();

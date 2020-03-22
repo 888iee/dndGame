@@ -217,20 +217,21 @@ let initSockConnection = pass => {
     // updates player list
     socket.on("addPlayer", data => {
       deletePlayerList();
+      console.table(data);
       for (let i = 0; i < data.length; i++) {
         let player = $(`#p${i + 1}`);
         // set Player Name
-        player.text(data[i].name);
+        player.text(data[i].username);
         // Set Character if selected
         if (data[i].character && data[i].character !== "none") {
           player.append(` - ${data[i].character} `);
         }
         // Set Lead if lead
-        if (i == 0) {
+        if (data[i].leader === true) {
           player.append(" - Lead");
         }
         // Set Ready if ready
-        if (data[i].rdy) {
+        if (data[i].ready) {
           player.append("ready");
         }
       }
@@ -314,12 +315,6 @@ let insertList = (roomList, joinBtn) => {
   console.table(roomList);
   deleteList();
   for (let i = 0; i < roomList.length; i++) {
-    // console.log(`Room to check ${roomList[i].roomName}, ${roomList[i].public}`)
-    //     let roomStr = `<div class="room-list-element">
-    // <div class="column column-private">${roomList[i].public}</div>
-    // <div class="column column-name">${roomList[i].roomName}</div>
-    // <div class="column column-player-count">${roomList[i].player_count}/${roomList[i].max_players}</div>
-    // `;
 
     let container = createDiv("c");
     container.appendChild(createDiv("private", roomList[i].public));

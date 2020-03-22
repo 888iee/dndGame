@@ -21,13 +21,6 @@ let Connection = (io) => {
                 // assigns socket to leader 
                 roomData.leader = socket.id;
                 LobbyHandler.createLobby(roomData, socket, () => {
-                    // socket joins room
-                    socket.join(roomData.roomName);
-                    // emit room display to client
-                    socket.emit("openRoom", roomData);
-                    socket.emit("addPlayer", [{
-                        "name": socket.username
-                    }]);
                     Msg.welcomeToRoomMessage(socket);
                 });
         });
